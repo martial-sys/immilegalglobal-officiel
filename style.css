@@ -1,0 +1,4264 @@
+/* 0: Réinitialisation et verrouillage horizontal – Évite les débordements latéraux indésirables */
+html, body {
+    overflow-x: hidden;       /* Supprime les scrolls horizontaux causés par des débordements */
+    width: 100%;              /* Force le corps à occuper toute la largeur de l’écran */
+    margin: 0;                /* Supprime les marges par défaut du navigateur */
+    padding: 0;               /* Supprime les paddings par défaut du navigateur */
+}
+
+/* Uniformise le calcul des dimensions pour tous les éléments */
+*, *::before, *::after {
+    box-sizing: border-box;   /* Évite les bugs de layout liés aux padding et borders */
+}
+
+/* --- DÉBUT DU BLOC À REMPLACER (Copiez TOUT ce bloc) --- */
+
+/* ========================================= */
+/* 1. RÉINITIALISATION & VARIABLES GLOBALES TARGETMAX */
+/* ========================================= */
+
+/* Définitions des animations spécifiques aux boutons */
+@keyframes breathingGlow {
+    0%, 100% {
+        box-shadow: 0 0 0 rgba(0, 123, 255, 0.4);
+        filter: brightness(100%);
+        transform: scale(1);
+    }
+    50% {
+        box-shadow: 0 0 35px rgba(0, 123, 255, 1), 0 0 70px rgba(0, 123, 255, 0.7);
+        filter: brightness(140%);
+        transform: scale(1.03);
+    }
+}
+
+@keyframes subtlePulseGlow {
+    0%, 100% {
+        box-shadow: 0 0 0 rgba(216, 34, 43, 0.4);
+        filter: brightness(100%);
+        transform: scale(1);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(216, 34, 43, 0.8);
+        filter: brightness(115%);
+        transform: scale(1.005);
+    }
+}
+
+/* Reset CSS de base */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+    font-size: var(--base-font-size);
+}
+
+body {
+    font-family: var(--font-family-primary);
+    line-height: 1.6;
+    color: var(--color-text-dark);
+    background-color: var(--color-background-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+ul {
+    list-style: none;
+}
+
+/* --- VARIABLES GLOBALES TARGETMAX --- */
+:root {
+    --color-primary-orange: #FF8C00;
+    --color-primary-blue: #32A8DB;
+    --color-primary-blue-dark: #0056b3;
+    --color-heading: #1D3557;
+    --color-text-dark: #333333;
+    --color-text-light: #666666;
+
+    --color-primary-canadian-red: #CC0000;
+    --color-primary-canadian-red-hover: #FF3333;
+    --color-primary-canadian-red-active: #B30000;
+
+    --color-primary-canadian-blue: #004678;
+    --color-secondary-canadian-blue-light: #F2F9FC;
+    --color-success-green: #28A745;
+    
+    --color-background-white: #FFFFFF;
+    --color-background-soft: #FDF9F3;
+    --color-background-primary: #F8F9FA;
+    --color-background-light: #F2F4F7;
+    --color-background-warning: #FEF3C7;
+
+    --color-accent-green: #28A745;
+    --color-accent-red: #DC3545;
+    --color-border-light: #DDDDDD;
+
+    --shadow-light: 0 2px 5px rgba(0, 0, 0, 0.1);
+    --shadow-medium: 0 5px 15px rgba(0, 0, 0, 0.15);
+    --shadow-strong: 0 10px 30px rgba(0, 10px, 30px, 0.2);
+
+    --font-family-primary: 'Poppins', sans-serif;
+    --font-family-secondary: 'Roboto', sans-serif;
+    --base-font-size: 16px;
+
+    --spacing-unit: 8px;
+    --padding-section: 80px 0;
+    --font-size-large: 1.25em;
+}
+
+/* ========================================= */
+/* 2. STYLES DES COMPOSANTS GLOBALS (Boutons, Cards, Inputs, etc.) */
+/* ========================================= */
+
+/* Socle global pour TOUS les CTA génériques (ROUGES par défaut) */
+/* C'est ICI que vous contrôlez le style et la taille de tous les CTA secondaires. */
+/* Ces boutons utilisent la combinaison de classes .cta-button.main-cta */
+.cta-button.main-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 28px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 1em;
+    font-weight: 800;
+    color: #FFF;
+    background: #D8222B;
+    box-shadow: 0 8px 20px rgba(216, 34, 43, 0.4);
+    transition: all 0.3s ease-in-out;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    text-shadow: none;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
+}
+
+/* Effet de survol pour TOUS les boutons CTA génériques (ROUGE) */
+.cta-button.main-cta:hover {
+    background: #BF0A30;
+    box-shadow: 0 12px 25px rgba(216, 34, 43, 0.5);
+    transform: translateY(-3px);
+    animation: none;
+}
+
+/* Effet au clic (active) pour TOUS les boutons CTA génériques (ROUGE) */
+.cta-button.main-cta:active {
+    transform: scale(0.95);
+    box-shadow: 0 4px 10px rgba(216, 34, 43, 0.4);
+}
+
+/* S'assurer que les pseudo-éléments ne sont pas actifs par défaut */
+.cta-button.main-cta::before,
+.cta-button.main-cta::after {
+    content: none !important;
+}
+
+/* Applique l'animation 'Subtle Pulse Glow' UNIQUEMENT aux boutons .cta-button.main-cta.animated */
+.cta-button.main-cta.animated {
+    animation: subtlePulseGlow 3.5s ease-in-out infinite;
+}
+
+
+/* --- Bouton CTA Exclusif pour la Section Pricing (Bleu, Pilule, Breathing Glow) --- */
+/* Ce bloc est la SEULE EXCEPTION. Il s'applique UNIQUEMENT au bouton du Pricing Card. */
+/* Ce bouton doit avoir les classes .cta-button ET .main-cta pour être ciblé. */
+.pricing-card .cta-button.main-cta {
+    background: linear-gradient(135deg, var(--color-primary-blue), var(--color-primary-blue-dark));
+    border-radius: 999px;
+    padding: 20px 35px;
+    font-size: 1.4em;
+    font-weight: 700;
+    box-shadow: 0 0 0 rgba(0, 123, 255, 0.4);
+    animation: breathingGlow 2.5s ease-in-out infinite;
+}
+
+.pricing-card .cta-button.main-cta:hover {
+    background: linear-gradient(135deg, var(--color-primary-blue-dark), var(--color-primary-blue));
+    box-shadow: 0 12px 25px rgba(0, 123, 255, 0.5);
+    transform: translateY(-3px);
+    animation: none;
+}
+
+.pricing-card .cta-button.main-cta:active {
+    transform: scale(0.95);
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.4);
+}
+
+/* Assurer que le texte et l'icône du bouton sont toujours au-dessus de tout pour le bouton Pricing */
+.pricing-card .cta-button.main-cta span,
+.pricing-card .cta-button.main-cta i {
+    position: relative;
+    z-index: 1;
+}
+
+/* Styles spécifiques de positionnement/taille pour les boutons dans certaines sections */
+/* Ces règles sont là UNIQUEMENT si un bouton a besoin d'un positionnement/affichage différent. */
+/* La taille, couleur, forme viennent désormais de .cta-button.main-cta par défaut. */
+
+/* Bouton de la section Héros */
+.hero-section .cta-button.main-cta {
+    /* Décommentez et ajustez si vous voulez que ce bouton soit PLUS GRAND que la taille standard de 14px 28px / 1em */
+    /* padding: 18px 35px; */
+    /* font-size: 1.5em; */
+}
+
+/* Bouton de la section "Après la Solution" */
+.solution-section .cta-button.main-cta {
+    display: block;
+    margin: 0 auto;
+    max-width: 400px;
+}
+
+/* Bouton de la section Garantie */
+.guarantee-section .cta-button.main-cta {
+    margin-top: 40px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Bouton de la section "Pack Complet" - Cette règle assure la taille standard */
+.complete-pack-section .cta-button.main-cta {
+    margin-top: 30px; /* Conserve une marge spécifique si nécessaire */
+    padding: 14px 28px; /* Force la taille de padding standard */
+    font-size: 1em;    /* Force la taille de police standard */
+}
+
+/* --- Bouton CTA Sticky --- */
+#cta-sticky-button {
+    /* Propriétés de positionnement et d'affichage initial */
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    z-index: 1000; /* Toujours au-dessus */
+
+    /* Masquer le bouton par défaut avec une transition pour une apparition douce */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(50px); /* Pour un effet d'apparition par le bas */
+    transition: opacity 0.3s ease-out, visibility 0.3s ease-out, transform 0.3s ease-out;
+
+    /* Styles de base du bouton (reprend ceux de .cta-button .main-cta) */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px 30px; /* Padding générique, sera ajusté pour mobile */
+    border-radius: 8px; /* Forme par défaut */
+    text-decoration: none;
+    font-size: 1.1em; /* Taille générique, sera ajustée pour mobile */
+    font-weight: 700;
+    color: #FFF;
+    background: #D8222B; /* Votre couleur rouge principale */
+    box-shadow: 0 8px 20px rgba(216, 34, 43, 0.4);
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    border: none;
+}
+
+/* État visible (ajouté par JS) */
+#cta-sticky-button.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* Hover/Active states (vous pouvez les ajouter si vous voulez un effet spécifique sur le sticky) */
+#cta-sticky-button:hover {
+    background: #BF0A30;
+    box-shadow: 0 12px 25px rgba(216, 34, 43, 0.5);
+    transform: translateY(-3px);
+}
+#cta-sticky-button:active {
+    transform: scale(0.95);
+    box-shadow: 0 4px 10px rgba(216, 34, 43, 0.4);
+}
+
+
+/* --- Styles spécifiques pour le bouton sticky sur mobile (en bas, centré) --- */
+@media (max-width: 768px) {
+    #cta-sticky-button {
+        bottom: 15px;
+        left: 10px; /* Bouton collé au bord gauche */
+        right: auto;
+        transform: translateY(0); /* Supprime le translate X */
+        width: calc(100% - 20px); /* Prend presque toute la largeur avec 10px de marge de chaque côté */
+        max-width: none; /* Supprime la largeur maximale */
+        padding: 12px 15px;
+        font-size: 1em;
+        white-space: normal;
+        text-align: center;
+    }
+
+    #cta-sticky-button.is-visible {
+        transform: translateY(0);
+    }
+}
+
+/* Pour les écrans encore plus petits */
+@media (max-width: 400px) {
+    #cta-sticky-button {
+        padding: 10px;
+        font-size: 0.9em;
+    }
+}
+
+
+/* ========================================= */
+/* 3.--- STYLES GÉNÉRIQUES POUR SECTIONS --- */
+/* ========================================= */
+section {
+    padding: var(--padding-section);
+    position: relative;
+    overflow: hidden;
+}
+
+section h2 {
+    font-size: 3.2em;
+    color: var(--color-heading);
+    text-align: center;
+    margin-bottom: calc(var(--spacing-unit) * 3.125);
+    padding-bottom: calc(var(--spacing-unit) * 2.5);
+    position: relative;
+    line-height: 1.3;
+    font-weight: 700;
+}
+
+section h2::after {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 4px;
+    background-color: var(--color-primary-blue);
+    margin: calc(var(--spacing-unit) * 1.25) auto 0 auto;
+    border-radius: 2px;
+}
+
+.icon-section {
+    font-size: 4.5em;
+    color: var(--color-primary-orange);
+    margin-bottom: calc(var(--spacing-unit) * 3.125);
+    display: block;
+    text-align: center;
+}
+
+.section-intro {
+    font-size: var(--font-size-large);
+    color: var(--color-text-light);
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto calc(var(--spacing-unit) * 6.25) auto;
+    line-height: 1.7;
+}
+/* --- FIN DU BLOC À REMPLACER --- */
+
+
+/* ========================================= */
+/* --- HERO SECTION - Guide Immigration Canada (Optimisé Conversion) --- */
+/* ========================================= */
+.hero-section {
+    background: linear-gradient(160deg, #E6F2F7 0%, #D1E7F2 100%);
+    padding: calc(var(--spacing-unit) * 12.5) 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    color: #333333;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+        linear-gradient(rgba(0, 70, 120, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 70, 120, 0.03) 1px, transparent 1px);
+    background-size: 80px 80px;
+    opacity: 0.8;
+    animation: none;
+    z-index: 0;
+}
+
+.hero-section .hero-content {
+    max-width: 990px;
+    margin: 0 auto;
+    padding: 0 calc(var(--spacing-unit) * 2.5);
+    position: relative;
+    z-index: 1;
+}
+
+.hero-section h1 {
+    /* Ajustement de la taille de police pour le nouveau titre plus long */
+    font-size: 3.8em; /* Légèrement réduit par rapport à 4.5em pour mieux tenir sur 3 lignes */
+    color: #004678;
+    line-height: 1.1; /* Garde votre préférence pour l'interligne serré */
+    margin-bottom: calc(var(--spacing-unit) * 3);
+    font-weight: 900;
+    font-family: 'Poppins', sans-serif;
+    text-shadow: none;
+    /* Ajout d'une largeur max pour aider le wrap sur 3 lignes et le centrage du bloc */
+    max-width: 850px; /* Ajustez cette valeur pour contrôler le saut de ligne si nécessaire */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Pas de `<strong>` dans le nouveau titre, donc cette règle n'est plus directement appliquée
+   mais je la laisse au cas où vous en rajouteriez ailleurs.
+   Si vous voulez styliser "Seule Vérité" ou "Réussir Vraiment" spécifiquement,
+   il faudra les entourer d'un <strong> ou <span> et ajuster cette règle.
+*/
+.hero-section h1 strong {
+    color: #D8222B; /* Rouge Canada vibrant */
+    background: none;
+    -webkit-background-clip: unset;
+    -webkit-text-fill-color: unset;
+    text-shadow: none;
+    animation: none;
+}
+
+
+.hero-section .subtitle {
+    font-size: 1.7em; /* Légèrement ajusté pour mieux s'intégrer */
+    color: #00609B;
+    font-weight: 700;
+    margin-bottom: calc(var(--spacing-unit) * 4);
+    line-height: 1.4;
+    text-shadow: none;
+}
+
+.hero-section .intro-paragraph {
+    font-size: 1.15em; /* Légèrement ajusté */
+    color: #555555;
+    max-width: 750px;
+    margin: 0 auto calc(var(--spacing-unit) * 6) auto;
+    line-height: 1.8;
+}
+
+.hero-section .cta-button.main-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px 35px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 1.5em;
+    font-weight: 800;
+    color: #FFF;
+    background: #D8222B;
+    box-shadow: 0 8px 20px rgba(216, 34, 43, 0.4);
+    transition: all 0.3s ease-in-out;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    text-shadow: none;
+    border: none;
+}
+
+.hero-section .cta-button.main-cta:hover {
+    background: #BF0A30;
+    box-shadow: 0 12px 25px rgba(216, 34, 43, 0.5);
+    transform: translateY(-3px);
+}
+
+.hero-section .cta-subtext {
+    font-size: 1.05em;
+    color: #777777;
+    margin-top: calc(var(--spacing-unit) * 3);
+    line-height: 1.6;
+    font-style: italic;
+    text-shadow: none;
+}
+
+/* Media queries */
+@media (max-width: 168px) {
+    .hero-section {
+        padding: calc(var(--spacing-unit) * 8) 0;
+    }
+    .hero-section h1 {
+        font-size: 2.5em; /* Ajusté pour bien tenir sur 3 lignes sur tablette */
+        line-height: 1.2; /* L'interligne peut être un peu plus lâche sur mobile pour la lisibilité */
+        max-width: 90%; /* S'assurer que le titre ne déborde pas */
+    }
+    .hero-section .subtitle {
+        font-size: 1.3em; /* Ajusté */
+    }
+    .hero-section .intro-paragraph {
+        font-size: 1em;
+    }
+    .hero-section .cta-button.main-cta {
+        padding: 15px 25px;
+        font-size: 1.3em;
+    }
+    .hero-section .cta-subtext {
+        font-size: 0.95em; /* Ajusté */
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-section h1 {
+        font-size: 1.9em; /* Ajusté pour bien tenir sur 3 lignes sur mobile */
+        line-height: 1.3; /* Encore un peu plus d'espace sur très petits écrans */
+    }
+    .hero-section .subtitle {
+        font-size: 1.1em; /* Ajusté */
+    }
+    .hero-section .intro-paragraph {
+        font-size: 0.95em;
+    }
+    .hero-section .cta-button.main-cta {
+        font-size: 1.1em;
+        padding: 12px 20px;
+    }
+    .hero-section .cta-subtext {
+        font-size: 0.9em; /* Ajusté */
+    }
+}
+
+
+/* ========================================= */
+/* --- PROBLEM SECTION - Défis de l'Immigration (Optimisé Conversion) --- */
+/* ========================================= */
+.problem-section {
+    /* Fond apaisant et professionnel, légèrement contrasté avec le Hero Section */
+    background-color: #EBF3F8; /* Un bleu très clair, doux et accueillant */
+    padding: calc(var(--spacing-unit) * 10) 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    color: #333333; /* Texte sombre pour une meilleure lisibilité */
+}
+
+/* Grille de fond animée et lumineuse : Supprimée, remplacée par la propreté */
+.problem-section::before {
+    content: none; /* Supprime l'effet futuriste */
+    animation: none;
+}
+
+.problem-section .icon-section {
+    font-size: 5.5em;
+    /* Mise à jour pour la nouvelle icône fa-question-circle */
+    color: var(--color-primary-orange); /* Utilisez votre orange primaire pour l'interrogation */
+    text-shadow: none;
+    margin-bottom: calc(var(--spacing-unit) * 4);
+    animation: none;
+    position: relative;
+    z-index: 1;
+}
+
+.problem-section h2 {
+    font-size: 3.8em;
+    color: #004678; /* Bleu marine profond pour l'autorité et la gravité du problème */
+    line-height: 1.2;
+    margin-bottom: calc(var(--spacing-unit) * 3);
+    font-weight: 800;
+    font-family: 'Poppins', sans-serif;
+    text-shadow: none;
+    position: relative;
+    z-index: 1;
+    max-width: 900px; /* Ajouté pour centrer le titre large si besoin */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.problem-section .intro-problem-text {
+    font-size: 1.25em;
+    text-align: center;
+    max-width: 850px;
+    margin: 0 auto calc(var(--spacing-unit) * 6) auto;
+    color: #555555;
+    line-height: 1.7;
+    position: relative;
+    z-index: 1;
+}
+
+.problem-scenarios-grid {
+    display: grid;
+    /* Ajusté pour potentiellement accommoder 5 éléments de manière équilibrée */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: calc(var(--spacing-unit) * 5);
+    margin-top: calc(var(--spacing-unit) * 5);
+    margin-bottom: calc(var(--spacing-unit) * 6);
+    position: relative;
+    z-index: 1;
+}
+
+.scenario-item {
+    background-color: #FFFFFF;
+    padding: calc(var(--spacing-unit) * 4);
+    border-radius: 8px;
+    border: 1px solid #D9E3EB;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, background-color 0.3s ease;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+.scenario-item:hover {
+    transform: translateY(-5px) scale(1.01);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    background-color: #FDFDFD;
+    border-color: #00609B;
+}
+
+.scenario-item .scenario-icon {
+    font-size: 4em;
+    color: #00609B; /* Bleu "information" pour les icônes de scénario, inspire la clarté */
+    text-shadow: none;
+    margin-bottom: calc(var(--spacing-unit) * 3);
+}
+
+.scenario-item h3 {
+    font-size: 1.7em;
+    color: #004678; /* Bleu marine pour les titres de scénario, inspire la confiance */
+    margin-bottom: calc(var(--spacing-unit) * 1.5);
+    line-height: 1.4;
+    font-weight: 700;
+}
+
+.scenario-item p {
+    font-size: 1.05em;
+    color: #555555;
+    line-height: 1.6;
+}
+
+.problem-section .call-to-action-problem {
+    font-size: 1.5em;
+    font-weight: 700;
+    color: #004678; /* Bleu marine pour l'appel à l'action final, autoritaire et rassurant */
+    text-shadow: none;
+    margin-top: calc(var(--spacing-unit) * 7);
+    text-align: center;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+    position: relative;
+    z-index: 1;
+}
+
+/* Nouveau style pour le paragraphe en gras à la fin */
+.problem-section .call-to-action-problem-bold {
+    font-size: 1.6em; /* Légèrement plus grand pour l'impact */
+    font-weight: 800; /* Plus gras pour souligner l'importance */
+    color: #D8222B; /* Rouge Canada pour un impact final fort sur la question clé */
+    text-shadow: none;
+    margin-top: calc(var(--spacing-unit) * 3); /* Marge pour le séparer du texte précédent */
+    text-align: center;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.5;
+    position: relative;
+    z-index: 1;
+}
+
+
+/* --- MEDIA QUERIES : Problem Section --- */
+@media (max-width: 768px) {
+    .problem-section {
+        padding: calc(var(--spacing-unit) * 8) 0;
+    }
+    .problem-section .icon-section {
+        font-size: 4.5em;
+        margin-bottom: calc(var(--spacing-unit) * 3);
+    }
+    .problem-section h2 {
+        font-size: 2.8em;
+    }
+    .problem-section .intro-problem-text {
+        font-size: 1.1em;
+        margin-bottom: calc(var(--spacing-unit) * 4);
+    }
+    .problem-scenarios-grid {
+        gap: calc(var(--spacing-unit) * 3);
+    }
+    .scenario-item {
+        padding: calc(var(--spacing-unit) * 3);
+    }
+    .scenario-item .scenario-icon {
+        font-size: 3.5em;
+        margin-bottom: calc(var(--spacing-unit) * 2.5);
+    }
+    .scenario-item h3 {
+        font-size: 1.4em;
+    }
+    .scenario-item p {
+        font-size: 0.95em;
+    }
+    .problem-section .call-to-action-problem {
+        font-size: 1.2em;
+        margin-top: calc(var(--spacing-unit) * 5);
+    }
+    /* Styles pour le nouveau paragraphe en gras sur tablette */
+    .problem-section .call-to-action-problem-bold {
+        font-size: 1.3em;
+        margin-top: calc(var(--spacing-unit) * 2); /* Ajustement de la marge */
+    }
+}
+
+@media (max-width: 480px) {
+    .problem-section .icon-section {
+        font-size: 3.5em;
+    }
+    .problem-section h2 {
+        font-size: 2.2em;
+    }
+    .problem-section .intro-problem-text {
+        font-size: 1em;
+    }
+    .scenario-item {
+        padding: calc(var(--spacing-unit) * 2.5);
+    }
+    .scenario-item .scenario-icon {
+        font-size: 3em;
+        margin-bottom: calc(var(--spacing-unit) * 2);
+    }
+    .scenario-item h3 {
+        font-size: 1.2em;
+    }
+    .scenario-item p {
+        font-size: 0.9em;
+    }
+    .problem-section .call-to-action-problem {
+        font-size: 1.1em;
+    }
+    /* Styles pour le nouveau paragraphe en gras sur mobile */
+    .problem-section .call-to-action-problem-bold {
+        font-size: 1.15em;
+        margin-top: calc(var(--spacing-unit) * 1.5); /* Ajustement de la marge */
+    }
+}
+
+
+
+/* ========================================= */
+/* --- SOLUTION SECTION - Le Guide comme Solution (Optimisé Conversion) --- */
+/* ========================================= */
+.solution-section {
+    background: linear-gradient(180deg, #F3F8FB 0%, #FFFFFF 100%);
+    padding: calc(var(--spacing-unit) * 10) 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    color: #333333;
+}
+
+.solution-section::before {
+    content: none;
+    animation: none;
+}
+
+.solution-section .icon-section {
+    font-size: 5.5em;
+    color: #00A859; /* CHANGEMENT ICI : #00609B remplacé par #00A859 (vert) */
+    text-shadow: none;
+    margin-bottom: calc(var(--spacing-unit) * 4);
+    animation: none;
+    position: relative;
+    z-index: 1;
+}
+
+/* Le reste du CSS reste inchangé */
+.solution-section h2 {
+    font-size: 3.8em;
+    color: #004678;
+    line-height: 1.2;
+    margin-bottom: calc(var(--spacing-unit) * 3);
+    font-weight: 800;
+    font-family: 'Poppins', sans-serif;
+    text-shadow: none;
+    position: relative;
+    z-index: 1;
+}
+
+.solution-section .section-intro {
+    font-size: 1.25em;
+    text-align: center;
+    max-width: 850px;
+    margin: 0 auto calc(var(--spacing-unit) * 6) auto;
+    color: #555555;
+    line-height: 1.7;
+    position: relative;
+    z-index: 1;
+}
+
+.solution-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: calc(var(--spacing-unit) * 5);
+    margin-top: calc(var(--spacing-unit) * 5);
+    position: relative;
+    z-index: 1;
+}
+
+.solution-item {
+    background-color: #FFFFFF;
+    padding: calc(var(--spacing-unit) * 4);
+    border-radius: 8px;
+    border: 1px solid #D9E3EB;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, background-color 0.3s ease;
+    text-align: left;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+.solution-item:hover {
+    transform: translateY(-5px) scale(1.01);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    background-color: #FDFDFD;
+    border-color: #00609B;
+}
+
+.solution-item h3 {
+    font-size: 1.7em;
+    color: #004678;
+    margin-bottom: calc(var(--spacing-unit) * 1.5);
+    line-height: 1.4;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+}
+.solution-item h3 i {
+    color: #00A859;
+    margin-right: calc(var(--spacing-unit) * 2);
+    font-size: 1.3em;
+    text-shadow: none;
+}
+.solution-item p {
+    font-size: 1.05em;
+    color: #555555;
+    line-height: 1.6;
+}
+
+.solution-section .cta-button.main-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px 35px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 1.5em;
+    font-weight: 800;
+    color: #FFF;
+    background: #D8222B;
+    box-shadow: 0 8px 20px rgba(216, 34, 43, 0.4);
+    transition: all 0.3s ease-in-out;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    text-shadow: none;
+    border: none;
+    margin-top: calc(var(--spacing-unit) * 7);
+}
+
+.solution-section .cta-button.main-cta:hover {
+    background: #BF0A30;
+    box-shadow: 0 12px 25px rgba(216, 34, 43, 0.5);
+    transform: translateY(-3px);
+}
+
+
+/* --- MEDIA QUERIES : Solution Section --- */
+@media (max-width: 768px) {
+    .solution-section {
+        padding: calc(var(--spacing-unit) * 8) 0;
+    }
+    .solution-section .icon-section {
+        font-size: 4.5em;
+        margin-bottom: calc(var(--spacing-unit) * 3);
+    }
+    .solution-section h2 {
+        font-size: 2.8em;
+    }
+    .solution-section .section-intro {
+        font-size: 1.1em;
+        margin-bottom: calc(var(--spacing-unit) * 4);
+    }
+    .solution-grid {
+        gap: calc(var(--spacing-unit) * 3);
+    }
+    .solution-item {
+        padding: calc(var(--spacing-unit) * 3);
+    }
+    .solution-item h3 {
+        font-size: 1.4em;
+    }
+    .solution-item h3 i {
+        font-size: 1.2em;
+        margin-right: calc(var(--spacing-unit) * 1.5);
+    }
+    .solution-item p {
+        font-size: 0.95em;
+    }
+    .solution-section .cta-button.main-cta {
+        font-size: 1.3em;
+        padding: 15px 25px;
+        margin-top: calc(var(--spacing-unit) * 5);
+    }
+}
+
+@media (max-width: 480px) {
+    .solution-section .icon-section {
+        font-size: 3.5em;
+    }
+    .solution-section h2 {
+        font-size: 2.2em;
+    }
+    .solution-section .section-intro {
+        font-size: 1em;
+    }
+    .solution-item {
+        padding: calc(var(--spacing-unit) * 2.5);
+    }
+    .solution-item h3 {
+        font-size: 1.2em;
+    }
+    .solution-item h3 i {
+        font-size: 1.1em;
+        margin-right: calc(var(--spacing-unit) * 1.2);
+    }
+    .solution-item p {
+        font-size: 0.9em;
+    }
+    .solution-section .cta-button.main-cta {
+        font-size: 1.1em;
+        padding: 12px 20px;
+    }
+}
+
+/* ========================================= */
+/* --- APERÇU DU CONTENU--- */
+/* ========================================= */
+/* Variables (assurez-vous qu'elles sont définies plus haut dans votre CSS si ce n'est pas déjà fait) */
+:root {
+    --spacing-unit: 10px; /* Exemple, ajustez si nécessaire */
+    /* ... autres variables si vous en avez ... */
+}
+
+/* Styles existants pour .guide-preview-section et ses enfants */
+.guide-preview-section {
+    background-color: #F8F8F8;
+    padding: calc(var(--spacing-unit) * 10) 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    color: #333333;
+}
+
+.guide-preview-section .icon-section {
+    font-size: 5.5em;
+    color: #004678;
+    margin-bottom: calc(var(--spacing-unit) * 4);
+    position: relative;
+    z-index: 1;
+}
+
+.guide-preview-section h2 {
+    font-size: 3.8em;
+    color: #004678;
+    line-height: 1.2;
+    margin-bottom: calc(var(--spacing-unit) * 3);
+    font-weight: 800;
+    font-family: 'Poppins', sans-serif;
+    position: relative;
+    z-index: 1;
+}
+
+.guide-preview-section .section-intro {
+    font-size: 1.25em;
+    text-align: center;
+    max-width: 850px;
+    margin: 0 auto calc(var(--spacing-unit) * 4) auto;
+    color: #555555;
+    line-height: 1.7;
+    position: relative;
+    z-index: 1;
+}
+
+.guide-preview-section .click-instruction {
+    font-size: 1.1em;
+    color: #00609B;
+    font-weight: 600;
+    margin-bottom: calc(var(--spacing-unit) * 5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: calc(var(--spacing-unit) * 1);
+    text-shadow: 0 0 5px rgba(0, 96, 155, 0.2);
+    padding: calc(var(--spacing-unit) * 1) 0;
+}
+
+.animated-hand {
+    animation: wave 2s infinite ease-in-out;
+    transform-origin: bottom right;
+    display: inline-block;
+    font-size: 1.3em;
+    color: #D8222B;
+}
+
+@keyframes wave {
+    0% { transform: rotate(0deg); }
+    15% { transform: rotate(14deg); }
+    30% { transform: rotate(-8deg); }
+    45% { transform: rotate(14deg); }
+    60% { transform: rotate(-4deg); }
+    75% { transform: rotate(10deg); }
+    100% { transform: rotate(0deg); }
+}
+
+.access-platform-showcase {
+    max-width: 500px;
+    margin: 0 auto calc(var(--spacing-unit) * 6) auto;
+    border: 1px solid #D9E3EB;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    background-color: #FFFFFF;
+}
+
+.access-platform-showcase img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.access-platform-showcase .image-description {
+    font-size: 1em;
+    color: #666;
+    padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 2);
+    text-align: center;
+    line-height: 1.5;
+    background-color: #fcfcfc;
+    border-top: 1px solid #eee;
+}
+
+.separator {
+    width: 100px;
+    height: 4px;
+    background-color: #00609B;
+    margin: calc(var(--spacing-unit) * 8) auto;
+    border-radius: 2px;
+}
+
+.preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    /* AJUSTEMENT : Augmenter le gap vertical si besoin, et s'assurer d'un bon gap horizontal */
+    gap: calc(var(--spacing-unit) * 5) calc(var(--spacing-unit) * 4); /* Vertical, Horizontal */
+    margin-top: calc(var(--spacing-unit) * 5);
+    /* AJUSTEMENT : S'assurer d'un padding latéral suffisant pour éviter que les bords des cartes ne touchent l'écran */
+    padding: 0 calc(var(--spacing-unit) * 3); /* Augmenté légèrement pour desktop/tablet */
+}
+
+.preview-item {
+    background-color: #FFFFFF;
+    border-radius: 8px;
+    border: 1px solid #D9E3EB;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    cursor: pointer;
+    /* AJOUT : Assurer un padding interne si le contenu se collait aux bords */
+    padding-bottom: calc(var(--spacing-unit) * 2.5); /* Pour que le bas ne soit pas trop collé si le texte est long */
+}
+
+.preview-item:hover {
+    transform: translateY(-5px) scale(1.01);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.preview-item .image-wrapper {
+    position: relative;
+    width: 100%;
+    padding-bottom: 75%; /* Ratio 4:3 pour l'espace de l'image */
+    overflow: hidden;
+    background-color: #f0f0f0;
+}
+
+.preview-item img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease-in-out;
+}
+
+.preview-item:hover img {
+    transform: scale(1.05);
+}
+
+.preview-item .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 70, 120, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.preview-item:hover .overlay {
+    opacity: 1;
+}
+
+.preview-item .overlay i {
+    color: #FFF;
+    font-size: 2.5em;
+}
+
+.preview-item .item-content {
+    /* AJUSTEMENT : Assurer des paddings généreux pour le texte */
+    padding: calc(var(--spacing-unit) * 2.5) calc(var(--spacing-unit) * 3);
+    text-align: left;
+    /* AJOUT : Uniformiser la hauteur si les textes ont des longueurs très différentes */
+    min-height: 120px; /* Exemple de hauteur minimale, ajustez si besoin */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Aligne le contenu en haut */
+}
+
+.preview-item h3 {
+    font-size: 1.5em;
+    color: #004678;
+    margin-bottom: calc(var(--spacing-unit) * 1);
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.preview-item p {
+    font-size: 0.95em;
+    color: #555555;
+    line-height: 1.6;
+    /* AJOUT : Marge pour séparer les paragraphes si plusieurs dans le futur */
+    margin-bottom: 0; /* Important pour éviter un double padding-bottom avec le parent */
+}
+
+.text-center {
+    margin-top: calc(var(--spacing-unit) * 8);
+    padding-bottom: calc(var(--spacing-unit) * 2);
+}
+
+/* Styles pour la modale (inchangés) */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    padding-top: 60px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.9);
+}
+
+.modal-content {
+    margin: auto;
+    display: block;
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+}
+
+#caption {
+    margin: auto;
+    display: block;
+    width: 80%;
+    max-width: 700px;
+    text-align: center;
+    color: #ccc;
+    padding: 10px 0;
+    height: 150px;
+}
+
+.close-button {
+    position: absolute;
+    top: 15px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.prev-button, .next-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 3em;
+    color: #f1f1f1;
+    cursor: pointer;
+    padding: 10px;
+    z-index: 1001;
+    transition: 0.3s;
+}
+
+.prev-button {
+    left: 20px;
+}
+
+.next-button {
+    right: 20px;
+}
+
+.prev-button:hover, .next-button:hover {
+    color: #bbb;
+}
+
+/* --- MEDIA QUERIES : Guide Preview Section --- */
+@media (max-width: 768px) {
+    .guide-preview-section {
+        padding: calc(var(--spacing-unit) * 8) 0;
+    }
+    .guide-preview-section .icon-section {
+        font-size: 4.5em;
+        margin-bottom: calc(var(--spacing-unit) * 3);
+    }
+    .guide-preview-section h2 {
+        font-size: 2.8em;
+    }
+    .guide-preview-section .section-intro {
+        font-size: 1.1em;
+        margin-bottom: calc(var(--spacing-unit) * 3);
+    }
+    .guide-preview-section .click-instruction {
+        font-size: 1em;
+        margin-bottom: calc(var(--spacing-unit) * 4);
+    }
+    .animated-hand {
+        font-size: 1.2em;
+    }
+    .access-platform-showcase {
+        max-width: 100%;
+        margin-left: calc(var(--spacing-unit) * 2);
+        margin-right: calc(var(--spacing-unit) * 2);
+        margin-bottom: calc(var(--spacing-unit) * 5);
+    }
+    .access-platform-showcase .image-description {
+        font-size: 0.9em;
+        padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 1.5);
+    }
+    .separator {
+        margin: calc(var(--spacing-unit) * 7) auto;
+    }
+
+    .preview-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        /* AJUSTEMENT : Augmentation du gap vertical pour mobile/tablet */
+        gap: calc(var(--spacing-unit) * 4) calc(var(--spacing-unit) * 3); /* Vertical, Horizontal */
+        margin-top: calc(var(--spacing-unit) * 4);
+        /* AJUSTEMENT : Plus de padding latéral pour les bords */
+        padding: 0 calc(var(--spacing-unit) * 3); /* Augmenté */
+    }
+    .preview-item .image-wrapper {
+        padding-bottom: 70%;
+    }
+    .preview-item .item-content {
+        padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 2.5);
+        /* AJUSTEMENT : Maintenir la min-height pour la consistance */
+        min-height: 110px; /* Ajusté pour mobile */
+    }
+    .preview-item h3 {
+        font-size: 1.2em;
+    }
+    .preview-item p {
+        font-size: 0.9em;
+    }
+    .modal-content {
+        max-width: 95%;
+        max-height: 95%;
+    }
+    .text-center {
+        margin-top: calc(var(--spacing-unit) * 7);
+    }
+}
+
+@media (max-width: 480px) {
+    .guide-preview-section .icon-section {
+        font-size: 3.5em;
+    }
+    .guide-preview-section h2 {
+        font-size: 2.2em;
+    }
+    .guide-preview-section .section-intro {
+        font-size: 1em;
+    }
+    .guide-preview-section .click-instruction {
+        font-size: 0.9em;
+        margin-bottom: calc(var(--spacing-unit) * 3.5);
+    }
+    .animated-hand {
+        font-size: 1.1em;
+    }
+    .access-platform-showcase {
+        margin-left: calc(var(--spacing-unit) * 1.5);
+        margin-right: calc(var(--spacing-unit) * 1.5);
+        margin-bottom: calc(var(--spacing-unit) * 4);
+    }
+    .access-platform-showcase .image-description {
+        font-size: 0.85em;
+        padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 1.5);
+    }
+    .separator {
+        margin: calc(var(--spacing-unit) * 5) auto;
+    }
+    .preview-grid {
+        grid-template-columns: 1fr;
+        /* AJUSTEMENT : Augmentation du gap vertical pour très petit mobile */
+        gap: calc(var(--spacing-unit) * 3.5); /* Vertical */
+        margin-top: calc(var(--spacing-unit) * 3.5);
+        /* AJUSTEMENT : Encore plus de padding latéral pour les bords */
+        padding: 0 calc(var(--spacing-unit) * 2.5); /* Augmenté */
+    }
+    .preview-item .image-wrapper {
+        padding-bottom: 65%;
+    }
+    .preview-item .item-content {
+        padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 2);
+        /* AJUSTEMENT : Maintenir la min-height pour la consistance */
+        min-height: 100px; /* Ajusté pour très petit mobile */
+    }
+    .preview-item h3 {
+        font-size: 1.1em;
+    }
+    .preview-item p {
+        font-size: 0.85em;
+    }
+    .prev-button, .next-button {
+        font-size: 2.5em;
+    }
+    .text-center {
+        margin-top: calc(var(--spacing-unit) * 6);
+    }
+}
+
+
+/* ========================================= */
+/* --- STORY SECTION - L'Histoire de Réussite (Optimisé Conversion) --- */
+/* ========================================= */
+.aisha-story-section {
+    /* Fond apaisant pour raconter une histoire personnelle, propice à l'empathie */
+    background-color: #E6F2F7; /* Un bleu très clair, doux et accueillant */
+    padding: calc(var(--spacing-unit) * 10) 0; /* Garde le padding d'origine */
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    color: #333333; /* Texte sombre pour la lisibilité */
+}
+
+/* Effet de fond : lignes de temps lumineuses ou flux de données : Supprimé car futuriste */
+.aisha-story-section::before {
+    content: none; /* Supprime l'effet futuriste */
+    animation: none;
+}
+
+/* @keyframes background-pulse : Supprimé */
+
+.aisha-story-section .icon-section {
+    font-size: 5.5em; /* Garde la taille d'origine */
+    color: #004678; /* Bleu marine profond pour l'icône principale (chemin, guidance) */
+    text-shadow: none; /* Supprime les lueurs futuristes */
+    margin-bottom: calc(var(--spacing-unit) * 4); /* Garde la marge d'origine */
+    animation: none; /* Supprime l'animation de pulsation */
+    position: relative;
+    z-index: 1;
+}
+
+/* @keyframes icon-time-pulse : Supprimé */
+
+.aisha-story-section h2 {
+    font-size: 3.8em; /* Garde la taille d'origine */
+    color: #004678; /* Bleu marine pour le titre */
+    line-height: 1.2;
+    margin-bottom: calc(var(--spacing-unit) * 5); /* Garde la marge d'origine */
+    font-weight: 800;
+    font-family: 'Poppins', sans-serif;
+    text-shadow: none; /* Supprime les lueurs */
+    position: relative;
+    z-index: 1;
+}
+
+.aisha-story-section .aisha-story-block {
+    /* Fond clair pour le bloc d'histoire, mettant en valeur le texte */
+    background-color: #FFFFFF; /* Blanc pur pour la clarté */
+    /* Bordure latérale : Rouge Canada pour le problème, Vert succès pour la solution */
+    border-left: 5px solid #D8222B; /* Bordure Rouge Canada pour la phase "problème" */
+    padding: calc(var(--spacing-unit) * 5); /* Garde le padding d'origine */
+    border-radius: 8px; /* Bords légèrement arrondis pour un look professionnel */
+    /* Ombre douce et professionnelle, sans lueurs futuristes */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    max-width: 850px; /* Garde le max-width d'origine */
+    margin: 0 auto calc(var(--spacing-unit) * 5) auto; /* Garde les marges d'origine */
+    text-align: left;
+    /* Bordures fines et subtiles */
+    border-right: 1px solid #D9E3EB; /* Gris-bleu clair */
+    border-top: 1px solid #D9E3EB;
+    border-bottom: 1px solid #D9E3EB;
+    backdrop-filter: none; /* Supprime l'effet glassmorphism */
+    -webkit-backdrop-filter: none;
+    position: relative;
+    z-index: 1;
+    animation: story-reveal 2s ease-out forwards; /* Garde l'animation de révélation */
+}
+
+@keyframes story-reveal {
+    0% { opacity: 0; transform: translateY(20px); border-left-color: #D8222B; } /* Commence en Rouge Canada */
+    50% { opacity: 1; transform: translateY(0); border-left-color: #D8222B; } /* Transition en Rouge Canada */
+    100% { 
+        border-left-color: #00A859; /* Termine en Vert succès */
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Ombre douce à la fin */
+    }
+}
+
+
+.aisha-story-section .aisha-story-block p {
+    font-size: 1.15em; /* Garde la taille d'origine */
+    color: #555555; /* Gris foncé pour le texte, très lisible */
+    line-height: 1.7;
+    margin-bottom: calc(var(--spacing-unit) * 2.5); /* Garde la marge d'origine */
+}
+.aisha-story-section .aisha-story-block p strong {
+    color: #D8222B; /* Les mots clés du problème en Rouge Canada */
+    text-shadow: none; /* Supprime les lueurs */
+    transition: color 1s ease-in-out; /* Garde la transition de couleur */
+}
+
+/* Applique la couleur de solution aux paragraphes spécifiques qui décrivent la solution */
+/* Les sélecteurs doivent correspondre aux paragraphes où la solution est introduite */
+.aisha-story-section .aisha-story-block p:nth-child(3) strong, /* "C'est là qu'il a découvert le Guide TargetMax" */
+.aisha-story-section .aisha-story-block p:nth-child(4) strong, /* "Chaque module du guide était une révélation" */
+.aisha-story-section .aisha-story-block p:nth-child(5) strong { /* "Aujourd'hui, Karim est fier..." */
+    color: #00A859; /* Mots clés de la solution en Vert succès */
+    text-shadow: none; /* Supprime les lueurs */
+}
+
+.aisha-story-section .aisha-story-block p:last-child {
+    margin-bottom: 0;
+}
+
+.aisha-story-section .story-lesson-text {
+    font-size: 1.4em; /* Garde la taille d'origine */
+    font-weight: 600;
+    color: #004678; /* Bleu marine pour la leçon finale, autoritaire et rassurante */
+    text-shadow: none; /* Supprime les lueurs */
+    max-width: 900px; /* Garde le max-width d'origine */
+    margin: 0 auto;
+    line-height: 1.6;
+    margin-bottom: calc(var(--spacing-unit) * 5); /* Garde la marge d'origine */
+    position: relative;
+    z-index: 1;
+}
+
+.aisha-story-section .cta-button {
+    /* Reprise du style du CTA du Hero pour la cohérence */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px 35px; /* Garde le padding d'origine */
+    border-radius: 8px; /* Coins légèrement arrondis pour un look professionnel (cohérent avec le Hero) */
+    text-decoration: none;
+    font-size: 1.5em; /* Garde la taille d'origine */
+    font-weight: 800;
+    color: #FFF; /* Texte blanc */
+    background: #D8222B; /* Rouge Canada vibrant pour l'action principale (cohérent avec le Hero) */
+    /* Ombre douce pour un effet de profondeur et d'importance */
+    box-shadow: 0 8px 20px rgba(216, 34, 43, 0.4);
+    transition: all 0.3s ease-in-out;
+    letter-spacing: 0.02em; /* Espacement de lettres subtil (cohérent avec le Hero) */
+    text-transform: uppercase;
+    text-shadow: none; /* Pas de lueur */
+    border: none; /* Pas de bordure */
+    margin-top: calc(var(--spacing-unit) * 4); /* Garde l'espacement d'origine */
+    position: relative;
+    z-index: 1;
+}
+
+.aisha-story-section .cta-button:hover {
+    background: #BF0A30; /* Rouge Canada plus profond au survol */
+    /* Ombre plus prononcée pour l'effet de soulèvement */
+    box-shadow: 0 12px 25px rgba(216, 34, 43, 0.5);
+    transform: translateY(-3px); /* Léger effet de soulèvement */
+}
+
+.aisha-story-section .aisha-disclaimer-text {
+    font-size: 0.9em; /* Garde la taille d'origine */
+    color: #808080; /* Gris moyen pour le disclaimer, lisible et discret */
+    margin-top: calc(var(--spacing-unit) * 2.5); /* Garde la marge d'origine */
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    text-shadow: none; /* Supprime les lueurs */
+}
+
+/* --- MEDIA QUERIES : Aisha Story Section --- */
+@media (max-width: 768px) {
+    .aisha-story-section {
+        padding: calc(var(--spacing-unit) * 8) 0;
+    }
+    .aisha-story-section .icon-section {
+        font-size: 4.5em;
+        margin-bottom: calc(var(--spacing-unit) * 3);
+    }
+    .aisha-story-section h2 {
+        font-size: 2.8em;
+        margin-bottom: calc(var(--spacing-unit) * 4);
+    }
+    .aisha-story-section .aisha-story-block {
+        padding: calc(var(--spacing-unit) * 4);
+        margin-bottom: calc(var(--spacing-unit) * 4);
+    }
+    .aisha-story-section .aisha-story-block p {
+        font-size: 1.05em;
+    }
+    .aisha-story-section .story-lesson-text {
+        font-size: 1.2em;
+        margin-bottom: calc(var(--spacing-unit) * 4);
+    }
+    .aisha-story-section .cta-button {
+        font-size: 1.3em;
+        padding: 15px 25px;
+        margin-top: calc(var(--spacing-unit) * 3);
+    }
+    .aisha-story-section .aisha-disclaimer-text {
+        font-size: 0.8em;
+    }
+}
+
+@media (max-width: 480px) {
+    .aisha-story-section .icon-section {
+        font-size: 3.5em;
+    }
+    .aisha-story-section h2 {
+        font-size: 2.2em;
+    }
+    .aisha-story-section .aisha-story-block {
+        padding: calc(var(--spacing-unit) * 3);
+    }
+    .aisha-story-section .aisha-story-block p {
+        font-size: 0.95em;
+    }
+    .aisha-story-section .story-lesson-text {
+        font-size: 1.1em;
+    }
+    .aisha-story-section .cta-button {
+        font-size: 1.1em;
+        padding: 12px 20px;
+    }
+}
+
+
+
+/* ========================================= */
+/* --- MEDIA QUERIES (RESPONSIVE DESIGN) --- */
+/* (Ordre du plus grand au plus petit pour max-width) */
+/* ========================================= */
+
+@media (max-width: 992px) {
+    /* Ajustements généraux pour tablettes (992px et moins) */
+    section {
+        padding: calc(var(--spacing-unit) * 7.5) 0; /* 60px -> 7.5 * 8 = 60px */
+    }
+    section h2 {
+        font-size: 2.8em;
+        margin-bottom: calc(var(--spacing-unit) * 2.5); /* 20px -> 2.5 * 8 = 20px */
+        padding-bottom: calc(var(--spacing-unit) * 1.875); /* 15px -> 1.875 * 8 = 15px */
+    }
+    section h2::after {
+        width: 60px;
+        height: 3px;
+        margin: calc(var(--spacing-unit) * 1.25) auto 0 auto; /* 10px -> 1.25 * 8 = 10px */
+    }
+    .icon-section {
+        color: var(--color-primary-blue);
+        margin-bottom: calc(var(--spacing-unit) * 2.5); /* 20px -> 2.5 * 8 = 20px */
+    }
+    .section-intro {
+        font-size: 1.15em;
+        margin-bottom: calc(var(--spacing-unit) * 5); /* 40px -> 5 * 8 = 40px */
+    }
+
+    /* Hero Section */
+    .hero-section {
+        padding: calc(var(--spacing-unit) * 10) 0; /* 80px -> 10 * 8 = 80px */
+    }
+    .hero-section h1 {
+        font-size: 3.5em;
+    }
+    .hero-section .subtitle {
+        font-size: 1.5em;
+    }
+    .hero-section .intro-paragraph {
+        font-size: 1.05em;
+        margin-bottom: calc(var(--spacing-unit) * 5); /* 40px -> 5 * 8 = 40px */
+    }
+    .hero-section .cta-subtext {
+        font-size: 1em;
+    }
+
+    /* Problem Section */
+    .problem-section h2 {
+        font-size: 2.5em;
+    }
+    .problem-section .intro-problem-text {
+        font-size: 1.1em;
+        margin-bottom: calc(var(--spacing-unit) * 3.75); /* 30px -> 3.75 * 8 = 30px */
+    }
+    .problem-scenarios-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: calc(var(--spacing-unit) * 3.125); /* 25px -> 3.125 * 8 = 25px */
+        margin-bottom: calc(var(--spacing-unit) * 5); /* 40px -> 5 * 8 = 40px */
+    }
+    .scenario-item {
+        padding: calc(var(--spacing-unit) * 3.125); /* 25px -> 3.125 * 8 = 25px */
+    }
+    .scenario-item .scenario-icon {
+        font-size: 3em;
+    }
+    .scenario-item h3 {
+        font-size: 1.4em;
+    }
+    .problem-section .call-to-action-problem {
+        font-size: 1.2em;
+        margin-top: calc(var(--spacing-unit) * 5); /* 40px -> 5 * 8 = 40px */
+    }
+
+    /* Solution Section */
+    .solution-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: calc(var(--spacing-unit) * 3.125); /* 25px -> 3.125 * 8 = 25px */
+    }
+    .solution-item {
+        padding: calc(var(--spacing-unit) * 3.125); /* 25px -> 3.125 * 8 = 25px */
+    }
+    .solution-item h3 {
+        font-size: 1.4em;
+    }
+    .solution-item h3 i {
+        font-size: 1.1em;
+    }
+    .solution-item p {
+        font-size: 1em;
+    }
+
+    /* Content/Themes Section */
+    .themes-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: calc(var(--spacing-unit) * 3.125); /* 25px -> 3.125 * 8 = 25px */
+        margin-bottom: calc(var(--spacing-unit) * 5); /* 40px -> 5 * 8 = 40px */
+    }
+    .theme-item {
+        padding: calc(var(--spacing-unit) * 3.125); /* 25px -> 3.125 * 8 = 25px */
+    }
+    .theme-item .theme-icon {
+        font-size: 3em;
+    }
+    .theme-item h3 {
+        font-size: 1.4em;
+    }
+
+    /* Aisha Story Section */
+    .aisha-story-section h2 {
+        font-size: 2.5em;
+    }
+    .aisha-story-section .aisha-story-block {
+        padding: calc(var(--spacing-unit) * 3.75); /* 30px -> 3.75 * 8 = 30px */
+    }
+    .aisha-story-section .aisha-story-block p {
+        font-size: 1.1em;
+    }
+    .aisha-story-section .story-lesson-text {
+        font-size: 1.2em;
+    }
+
+    /* Garantie Section */
+    .guarantee-content-block {
+        padding: calc(var(--spacing-unit) * 4.375); /* 35px -> 4.375 * 8 = 35px */
+    }
+    .guarantee-content-block .guarantee-icon-large {
+        font-size: 3.5em;
+        margin-bottom: calc(var(--spacing-unit) * 2.5); /* 20px -> 2.5 * 8 = 20px */
+    }
+    .guarantee-content-block h3 {
+        font-size: 1.8em;
+    }
+    .guarantee-content-block p {
+        font-size: 1.05em;
+    }
+    .guarantee-content-block .guarantee-cta-text {
+        font-size: 1.1em;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Ajustements généraux pour mobiles et tablettes plus petites (768px et moins) */
+    section {
+        padding: calc(var(--spacing-unit) * 5) 0; /* 40px -> 5 * 8 = 40px */
+    }
+    section h2 {
+        font-size: 2.2em;
+        margin-bottom: calc(var(--spacing-unit) * 1.875); /* 15px -> 1.875 * 8 = 15px */
+        padding-bottom: calc(var(--spacing-unit) * 1.25); /* 10px -> 1.25 * 8 = 10px */
+    }
+    section h2::after {
+        width: 50px;
+        height: 2px;
+        margin: calc(var(--spacing-unit) * 0.625) auto 0 auto; /* 5px -> 0.625 * 8 = 5px */
+    }
+    .icon-section {
+        color: var(--color-primary-blue);
+        margin-bottom: calc(var(--spacing-unit) * 1.875); /* 15px -> 1.875 * 8 = 15px */
+    }
+    .section-intro {
+        font-size: 1em;
+        margin-bottom: calc(var(--spacing-unit) * 3.75); /* 30px -> 3.75 * 8 = 30px */
+    }
+
+    .hero-section {
+        padding: calc(var(--spacing-unit) * 7.5) 0; /* 60px -> 7.5 * 8 = 60px */
+    }
+    .hero-section h1 {
+        font-size: 2.8em;
+    }
+    .hero-section .subtitle {
+        font-size: 1.3em;
+    }
+    .hero-section .intro-paragraph {
+        font-size: 1em;
+        margin-bottom: calc(var(--spacing-unit) * 3.75); /* 30px -> 3.75 * 8 = 30px */
+    }
+    .hero-section .cta-subtext {
+        font-size: 0.95em;
+    }
+
+    .problem-section h2 {
+        font-size: 2.2em;
+    }
+    .problem-section .intro-problem-text {
+        font-size: 1em;
+        margin-bottom: calc(var(--spacing-unit) * 2.5); /* 20px -> 2.5 * 8 = 20px */
+    }
+    .problem-scenarios-grid {
+        grid-template-columns: 1fr;
+        gap: calc(var(--spacing-unit) * 2.5); /* 20px -> 2.5 * 8 = 20px */
+        margin-bottom: calc(var(--spacing-unit) * 3.75); /* 30px -> 3.75 * 8 = 30px */
+    }
+    .scenario-item {
+        padding: calc(var(--spacing-unit) * 2.5); /* 20px -> 2.5 * 8 = 20px */
+    }
+    .scenario-item .scenario-icon {
+        font-size: 2.5em;
+    }
+    .scenario-item h3 {
+        font-size: 1.2em;
+    }
+    .problem-section .call-to-action-problem {
+        font-size: 1.1em;
+        margin-top: calc(var(--spacing-unit) * 3.75); /* 30px -> 3.75 * 8 = 30px */
+    }
+
+    .solution-grid {
+        grid-template-columns: 1fr;
+        gap: calc(var(--spacing-unit) * 2.5); /* 20px -> 2.5 * 8 = 20px */
+    }
+    .solution-item {
+        padding: calc(var(--spacing-unit) * 2.5); /* 20px -> 2.5 * 8 = 20px */
+    }
+    .solution-item h3 {
+        font-size: 1.2em;
+    }
+    .solution-item h3 i {
+        font-size: 1em;
+    }
+    .solution-item p {
+        font-size: 0.95em;
+    }
+
+    .themes-grid {
+        grid-template-columns: 1fr;
+        gap: calc(var(--spacing-unit) * 2.5); /* 20px -> 2.5 * 8 = 20px */
+        margin-bottom: calc(var(--spacing-unit) * 3.75); /* 30px -> 3.75 * 8 = 30px */
+    }
+    .theme-item {
+        padding: calc(var(--spacing-unit) * 2.5); /* 20px -> 2.5 * 8 = 20px */
+    }
+    .theme-item .theme-icon {
+        font-size: 2.5em;
+    }
+    .theme-item h3 {
+        font-size: 1.2em;
+    }
+
+    /* Aisha Story Section */
+    .aisha-story-section h2 {
+        font-size: 2em;
+    }
+    .aisha-story-section .aisha-story-block {
+        padding: calc(var(--spacing-unit) * 2.5); /* 20px -> 2.5 * 8 = 20px */
+        margin-bottom: calc(var(--spacing-unit) * 3.125); /* 25px -> 3.125 * 8 = 25px */
+    }
+    .aisha-story-section .aisha-story-block p {
+        font-size: 0.95em;
+    }
+    .aisha-story-section .story-lesson-text {
+        font-size: 1em;
+    }
+
+    /* Garantie Section */
+    .guarantee-section {
+        padding: calc(var(--spacing-unit) * 7.5) 0; /* 60px -> 7.5 * 8 = 60px */
+    }
+    .guarantee-content-block {
+        margin-top: calc(var(--spacing-unit) * 5); /* 40px -> 5 * 8 = 40px */
+        padding: calc(var(--spacing-unit) * 3.75); /* 30px -> 3.75 * 8 = 30px */
+    }
+    .guarantee-content-block .guarantee-icon-large {
+        font-size: 3em;
+        margin-bottom: calc(var(--spacing-unit) * 1.875); /* 15px -> 1.875 * 8 = 15px */
+    }
+    .guarantee-content-block h3 {
+        font-size: 1.6em;
+    }
+    .guarantee-content-block p {
+        font-size: 1em;
+    }
+    .guarantee-content-block .guarantee-cta-text {
+        font-size: 1.05em;
+    }
+
+    /* Footer adjustments for small screens */
+    .footer-grid-layout {
+        grid-template-columns: 1fr;
+        gap: calc(var(--spacing-unit) * 3.75); /* 30px -> 3.75 * 8 = 30px */
+    }
+    .footer-nav-area,
+    .footer-info-area {
+        text-align: center;
+    }
+    .footer-nav-area h4,
+    .footer-info-area h4 {
+        text-align: center;
+        margin-bottom: calc(var(--spacing-unit) * 1.875); /* 15px -> 1.875 * 8 = 15px */
+    }
+    .footer-social {
+        justify-content: center;
+        margin-top: calc(var(--spacing-unit) * 1.875); /* 15px -> 1.875 * 8 = 15px */
+    }
+    .footer-social a {
+        margin: 0 calc(var(--spacing-unit) * 1.25); /* 10px -> 1.25 * 8 = 10px */
+    }
+}
+
+@media (max-width: 480px) {
+    /* Ajustements généraux pour mobiles étroits (480px et moins) */
+    .container {
+        padding: 0 calc(var(--spacing-unit) * 1.875); /* 15px -> 1.875 * 8 = 15px */
+    }
+    section h2 {
+        font-size: 1.8em;
+    }
+    .hero-section h1 {
+        font-size: 2.2em;
+    }
+    .hero-section .subtitle {
+        font-size: 1.1em;
+    }
+    .problem-section h2,
+    .solution-section h2,
+    .content-section h2,
+    .aisha-story-section h2 {
+        font-size: 1.8em;
+    }
+    .scenario-item .scenario-icon,
+    .theme-item .theme-icon {
+        font-size: 2em;
+    }
+    .scenario-item h3,
+    .theme-item h3 {
+        font-size: 1.1em;
+    }
+
+    /* Garantie Section */
+    .guarantee-content-block {
+        padding: calc(var(--spacing-unit) * 3.125); /* 25px -> 3.125 * 8 = 25px */
+    }
+    .guarantee-content-block .guarantee-icon-large {
+        font-size: 2.5em;
+    }
+    .guarantee-content-block h3 {
+        font-size: 1.4em;
+    }
+    .guarantee-content-block p {
+        font-size: 0.95em;
+    }
+    .guarantee-content-block .guarantee-cta-text {
+        font-size: 1em;
+    }
+
+    /* Footer adjustments for small screens */
+    .footer-grid-layout {
+        grid-template-columns: 1fr;
+        gap: calc(var(--spacing-unit) * 3.75); /* 30px -> 3.75 * 8 = 30px */
+    }
+    .footer-nav-area,
+    .footer-info-area {
+        text-align: center;
+    }
+    .footer-nav-area h4,
+    .footer-info-area h4 {
+        text-align: center;
+        margin-bottom: calc(var(--spacing-unit) * 1.875); /* 15px -> 1.875 * 8 = 15px */
+    }
+    .footer-social {
+        justify-content: center;
+        margin-top: calc(var(--spacing-unit) * 1.875); /* 15px -> 1.875 * 8 = 15px */
+    }
+    .footer-social a {
+        margin: 0 calc(var(--spacing-unit) * 1.25); /* 10px -> 1.25 * 8 = 10px */
+    }
+
+    /* Header & Mockup */
+    .main-header {
+        padding: calc(var(--spacing-unit) * 1.25) 0; /* 10px -> 1.25 * 8 = 10px */
+    }
+    .main-header .logo img {
+        max-height: 35px;
+    }
+    .initial-preview-section {
+        padding: calc(var(--spacing-unit) * 2.5) 0; /* 20px -> 2.5 * 8 = 20px */
+    }
+    .initial-preview-section .product-mockup {
+        max-width: 250px;
+    }
+
+    /* Testimonials */
+    .testimonial .fa-quote-left {
+        font-size: 1.8em;
+    }
+    .testimonial p {
+        font-size: 0.9em;
+        padding-left: calc(var(--spacing-unit) * 3.75); /* 30px -> 3.75 * 8 = 30px */
+    }
+    .testimonial .author {
+        font-size: 0.9em;
+    }
+}
+
+/* ========================================= */
+/* --- MAIN HEADER - En-tête Principal (Optimisé Conversion) --- */
+/* ========================================= */
+.main-header {
+    /* Nouveau fond : Un fond clair et professionnel, évoquant la propreté et la confiance */
+    background: linear-gradient(to right, #F9FCFD, #EBF3F8); /* Dégradé de bleus très clairs, presque blancs */
+    padding: calc(var(--spacing-unit) * 3) 0; /* Garde le padding d'origine */
+    /* Bordure subtile et nette, sans lueur */
+    border-bottom: 1px solid #D9E3EB; /* Gris-bleu clair pour une délimitation douce */
+    /* Ombre douce et professionnelle, donnant une légère élévation sans être agressive */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* Ombre très légère et diffuse */
+    position: relative;
+    z-index: 1000; /* Assure qu'il est toujours au-dessus */
+    overflow: hidden; /* Garde l'overflow pour une bonne gestion du contenu */
+}
+
+/* Effet de lueur subtile sur le bas du header : Supprimé car futuriste */
+.main-header::after {
+    content: none; /* Supprime complètement l'élément et son animation futuriste */
+    animation: none;
+}
+
+/* @keyframes header-bottom-glow : Supprimé car l'élément est retiré */
+
+
+.main-header .container {
+    display: flex;
+    justify-content: center; /* Centré par défaut */
+    align-items: center;
+    max-width: var(--container-max-width); /* Utilisation de la variable globale */
+    margin: 0 auto;
+    padding: 0 var(--padding-container-horizontal); /* Utilisation de la variable globale */
+}
+
+@media (min-width: 768px) {
+    .main-header .container {
+        justify-content: flex-start; /* Ou space-between si vous avez un menu à droite */
+    }
+}
+
+.main-header .logo {
+    display: inline-block;
+    transition: transform 0.3s ease-in-out;
+}
+
+.main-header .logo img {
+    max-height: 60px; /* Garde la taille d'origine pour l'impact visuel */
+    width: auto;
+    /* Supprime tous les effets de lueur futuristes et de teinte */
+    filter: none; /* Retire drop-shadow, grayscale, brightness */
+    transition: filter 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.main-header .logo:hover {
+    transform: scale(1.03); /* Léger zoom au survol (légèrement réduit pour plus de subtilité) */
+}
+
+.main-header .logo:hover img {
+    /* Aucune lueur ou teinte spéciale au survol, le logo reste fidèle */
+    filter: none;
+    /* Optionnel : si le logo est monochrome et que vous voulez une touche de couleur au survol
+    filter: drop-shadow(0 0 5px rgba(216, 34, 43, 0.5)); // Petite ombre rouge subtile
+    */
+}
+
+
+
+/* --- MEDIA QUERIES : Header --- */
+@media (max-width: 768px) {
+    .main-header {
+        padding: calc(var(--spacing-unit) * 2) 0;
+    }
+    .main-header .logo img {
+        max-height: 50px;
+    }
+}
+@media (max-width: 480px) {
+    .main-header {
+        padding: calc(var(--spacing-unit) * 1.5) 0;
+    }
+    .main-header .logo img {
+        max-height: 45px;
+    }
+}
+
+/* ========================================= */
+/* --- INITIAL PREVIEW SECTION - Aperçu du Guide (Optimisé Conversion) --- */
+/* ========================================= */
+.initial-preview-section {
+    background-color: #F8F8F8; /* Un fond très clair, presque blanc, pour la propreté et la clarté */
+    padding: calc(var(--spacing-unit) * 10) 0; /* Garde le padding d'origine */
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    color: #333333; /* Texte sombre pour un contraste optimal */
+}
+
+/* Effet de fond : Retiré ou très minimaliste pour un style non-futuriste */
+.initial-preview-section::before {
+    content: none; /* Supprime complètement l'effet de fond futuriste */
+    /* Alternative subtile si souhaité :
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(circle at 50% 10%, rgba(0, 70, 120, 0.02), transparent 70%); // Très léger halo bleu en haut
+    filter: blur(50px);
+    z-index: 0; */
+    animation: none; /* Aucune animation */
+}
+
+
+.initial-preview-section .preview-content {
+    margin-bottom: calc(var(--spacing-unit) * 5); /* Garde l'espacement d'origine */
+    position: relative;
+    z-index: 1;
+}
+
+.initial-preview-section .mockup-display {
+    position: relative;
+    z-index: 1; /* Assure que la maquette est au-dessus du fond */
+    display: inline-block; /* Pour centrer l'ombre de la maquette */
+}
+
+.initial-preview-section .product-mockup {
+    max-width: 500px; /* Garde la taille d'origine pour l'impact visuel */
+    height: auto;
+    margin: 0 auto;
+    display: block;
+    border-radius: calc(var(--spacing-unit) * 1.5); /* Bords légèrement arrondis pour un aspect plus doux et professionnel (légèrement moins que l'original calc(var(--spacing-unit) * 2)) */
+    /* Ombre réaliste pour donner de la profondeur et un aspect tangible, sans lueur */
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15), /* Ombre plus diffuse pour un effet "flottant" doux */
+                0 5px 10px rgba(0, 0, 0, 0.08); /* Ombre plus nette pour la définition */
+    transition: transform 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
+    border: 1px solid #E0E0E0; /* Bordure très fine et discrète pour délimiter l'objet */
+    animation: none; /* Supprime toutes les animations de pulsation */
+}
+
+.initial-preview-section .product-mockup:hover {
+    transform: translateY(-5px) scale(1.01); /* Léger soulèvement et agrandissement au survol pour l'interactivité */
+    /* Ombre accentuée pour l'effet de soulèvement */
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2),
+                0 8px 15px rgba(0, 0, 0, 0.12);
+    border-color: #D8222B; /* Bordure Rouge Canada au survol pour un feedback visuel */
+    animation: none; /* S'assure que l'animation est toujours désactivée au survol */
+}
+
+
+/* --- MEDIA QUERIES : Initial Preview Section --- */
+@media (max-width: 768px) {
+    .initial-preview-section {
+        padding: calc(var(--spacing-unit) * 6) 0;
+    }
+    .initial-preview-section .product-mockup {
+        max-width: 400px;
+        box-shadow: 0 0 25px rgba(0, 201, 255, 0.5); /* Ombre ajustée pour mobile */
+    }
+}
+@media (max-width: 480px) {
+    .initial-preview-section {
+        padding: calc(var(--spacing-unit) * 4) 0;
+    }
+    .initial-preview-section .product-mockup {
+        max-width: 300px;
+        border-radius: calc(var(--spacing-unit) * 1.5);
+        box-shadow: 0 0 20px rgba(0, 201, 255, 0.4);
+    }
+}
+
+
+/* ========================================= */
+/* --- TESTIMONIALS SECTION - Témoignages (Optimisé Conversion) --- */
+/* ========================================= */
+.testimonials-section {
+    /* Fond professionnel et inspirant pour les témoignages */
+    background-color: #004678; /* Bleu marine profond, évoquant la confiance et l'autorité */
+    padding: calc(var(--spacing-unit) * 10) 0; /* Garde le padding d'origine */
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    color: #FFFFFF; /* Texte blanc par défaut sur fond sombre */
+}
+
+/* Effet de fond : ondes lumineuses ou connexions de données : Supprimé car futuriste */
+.testimonials-section::before {
+    content: none; /* Supprime l'effet futuriste */
+    animation: none;
+}
+
+/* @keyframes radial-pulse : Supprimé */
+
+.testimonials-section .icon-section {
+    font-size: 5.5em; /* Garde la taille d'origine */
+    color: #FFFFFF; /* Icône blanche sur fond bleu, très lisible */
+    text-shadow: none; /* Supprime les lueurs futuristes */
+    margin-bottom: calc(var(--spacing-unit) * 4); /* Garde la marge d'origine */
+    animation: none; /* Supprime l'animation de pulsation */
+    position: relative;
+    z-index: 1;
+}
+
+.testimonials-section h2 {
+    font-size: 3.8em; /* Garde la taille d'origine */
+    color: #FFFFFF; /* Blanc pur pour le titre sur fond bleu */
+    line-height: 1.2;
+    margin-bottom: calc(var(--spacing-unit) * 3); /* Garde la marge d'origine */
+    font-weight: 800;
+    font-family: 'Poppins', sans-serif;
+    text-shadow: none; /* Supprime les lueurs */
+    position: relative;
+    z-index: 1;
+}
+
+.testimonials-section .section-intro {
+    font-size: 1.25em; /* Garde la taille d'origine */
+    text-align: center;
+    max-width: 850px; /* Garde le max-width d'origine */
+    margin: 0 auto calc(var(--spacing-unit) * 6) auto; /* Garde les marges d'origine */
+    color: #D9E3EB; /* Gris-bleu clair pour le texte d'intro, harmonieux sur le fond */
+    line-height: 1.7;
+    position: relative;
+    z-index: 1;
+}
+
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: calc(var(--spacing-unit) * 5); /* Garde l'espacement d'origine */
+    margin-top: calc(var(--spacing-unit) * 5);
+    margin-bottom: calc(var(--spacing-unit) * 6);
+    position: relative;
+    z-index: 1;
+}
+
+.testimonial {
+    /* Fond clair pour chaque témoignage, pour un contraste maximal avec le fond de section */
+    background-color: #FFFFFF; /* Blanc pur pour la clarté */
+    padding: calc(var(--spacing-unit) * 4); /* Garde le padding d'origine */
+    border-radius: 8px; /* Bords légèrement arrondis pour un look professionnel */
+    /* Bordure subtile et nette */
+    border: 1px solid #D9E3EB; /* Gris-bleu clair */
+    /* Ombre douce pour la profondeur, sans lueur futuriste */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    position: relative;
+    text-align: left;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, background-color 0.3s ease;
+    backdrop-filter: none; /* Supprime l'effet glassmorphism */
+    -webkit-backdrop-filter: none;
+}
+
+.testimonial:hover {
+    transform: translateY(-5px) scale(1.01); /* Soulèvement subtil au survol */
+    /* Ombre accentuée pour l'effet de soulèvement */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    background-color: #FDFDFD; /* Très léger changement de fond au survol */
+    border-color: #00609B; /* Bordure bleu "information" au survol */
+}
+
+.testimonial .fa-quote-left {
+    font-size: 3em; /* Garde la taille d'origine */
+    color: #D9E3EB; /* Gris-bleu clair pour le guillemet, subtil et élégant */
+    position: absolute;
+    top: calc(var(--spacing-unit) * 2.5); /* Garde la position d'origine */
+    left: calc(var(--spacing-unit) * 2.5); /* Garde la position d'origine */
+    opacity: 0.8; /* Garde l'opacité d'origine */
+    text-shadow: none; /* Supprime les lueurs */
+}
+
+.testimonial p {
+    font-size: 1.05em; /* Garde la taille d'origine */
+    color: #555555; /* Gris foncé pour le texte du témoignage, très lisible */
+    line-height: 1.7;
+    margin-bottom: calc(var(--spacing-unit) * 2.5); /* Garde la marge d'origine */
+    padding-left: calc(var(--spacing-unit) * 7); /* Garde le padding d'origine */
+    position: relative;
+}
+.testimonial p strong {
+    font-weight: 700;
+    color: #00609B; /* Bleu "information" pour les mots clés importants, cohérent et professionnel */
+    text-shadow: none; /* Supprime les lueurs */
+}
+.testimonial .author {
+    font-size: 1em; /* Garde la taille d'origine */
+    color: #777777; /* Gris un peu plus foncé pour l'auteur, bien lisible */
+    font-style: normal; /* Garde le style normal */
+    text-align: right;
+    margin-top: calc(var(--spacing-unit) * 1.5); /* Garde la marge d'origine */
+    font-weight: 500;
+}
+
+
+/* --- MEDIA QUERIES : Testimonials Section --- */
+@media (max-width: 768px) {
+    .testimonials-section {
+        padding: calc(var(--spacing-unit) * 8) 0;
+    }
+    .testimonials-section .icon-section {
+        font-size: 4.5em;
+        margin-bottom: calc(var(--spacing-unit) * 3);
+    }
+    .testimonials-section h2 {
+        font-size: 2.8em;
+    }
+    .testimonials-section .section-intro {
+        font-size: 1.1em;
+        margin-bottom: calc(var(--spacing-unit) * 4);
+    }
+    .testimonials-grid {
+        gap: calc(var(--spacing-unit) * 3);
+    }
+    .testimonial {
+        padding: calc(var(--spacing-unit) * 3);
+    }
+    .testimonial .fa-quote-left {
+        font-size: 2.5em;
+        top: calc(var(--spacing-unit) * 2);
+        left: calc(var(--spacing-unit) * 2);
+    }
+    .testimonial p {
+        font-size: 1em;
+        padding-left: calc(var(--spacing-unit) * 6);
+    }
+    .testimonial .author {
+        font-size: 0.95em;
+    }
+}
+
+@media (max-width: 480px) {
+    .testimonials-section .icon-section {
+        font-size: 3.5em;
+    }
+    .testimonials-section h2 {
+        font-size: 2.2em;
+    }
+    .testimonials-section .section-intro {
+        font-size: 1em;
+    }
+    .testimonial {
+        padding: calc(var(--spacing-unit) * 2.5);
+    }
+    .testimonial .fa-quote-left {
+        font-size: 2em;
+        top: calc(var(--spacing-unit) * 1.5);
+        left: calc(var(--spacing-unit) * 1.5);
+    }
+    .testimonial p {
+        font-size: 0.95em;
+        padding-left: calc(var(--spacing-unit) * 5);
+    }
+    .testimonial .author {
+        font-size: 0.9em;
+    }
+}
+
+
+/* --- MEDIA QUERIES : Témoignages --- */
+@media (max-width: 992px) {
+    .testimonials-grid {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+    }
+    .testimonial {
+        padding: 25px;
+    }
+    .testimonial .fa-quote-left {
+        font-size: 2.2em;
+        top: 15px;
+        left: 15px;
+    }
+    .testimonial p {
+        font-size: 1em;
+        padding-left: 40px;
+    }
+}
+@media (max-width: 768px) {
+    .testimonials-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    .testimonial {
+        padding: 20px;
+    }
+    .testimonial .fa-quote-left {
+        font-size: 2em;
+        top: 10px;
+        left: 10px;
+    }
+    .testimonial p {
+        font-size: 0.95em;
+        padding-left: 35px;
+    }
+}
+@media (max-width: 480px) {
+    .testimonial .fa-quote-left {
+        font-size: 1.8em;
+    }
+    .testimonial p {
+        font-size: 0.9em;
+        padding-left: 30px;
+    }
+    .testimonial .author {
+        font-size: 0.9em;
+    }
+}
+
+/* ========================================= */
+/* --- PACK COMPLETE SECTION - Le Pack Complet (Optimisé Conversion) --- */
+/* ========================================= */
+/* --- Pack Complet Section (FUSIONNÉE AVEC CONTENU/THÈMES & COULEURS MISES À JOUR) --- */
+.pack-complete-section {
+    background-color: #F2F9FC; /* Arrière-plan initial du pack complet */
+    padding: var(--padding-section);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    color: #333333;
+}
+
+.pack-complete-section::before,
+.pack-complete-section::after {
+    content: none;
+    animation: none;
+}
+
+.pack-complete-section .icon-section {
+    font-size: 5.5em;
+    color: #004678; /* Bleu marine profond pour l'icône principale (connaissance, autorité) */
+    text-shadow: none;
+    margin-bottom: calc(var(--spacing-unit) * 4);
+    animation: none;
+    position: relative;
+    z-index: 1;
+}
+
+.pack-complete-section h2 {
+    font-size: 3.2em; /* Taille du titre principale confirmée */
+    color: #004678; /* Bleu marine pour le titre principal */
+    line-height: 1.3;
+    margin-bottom: calc(var(--spacing-unit) * 5);
+    font-weight: 800;
+    font-family: 'Poppins', sans-serif;
+    text-shadow: none;
+    position: relative;
+    z-index: 1;
+}
+
+.pack-complete-section .section-intro {
+    font-size: 1.15em;
+    text-align: center;
+    max-width: 850px;
+    margin: 0 auto calc(var(--spacing-unit) * 6) auto;
+    color: #555555; /* Gris foncé pour le texte, très lisible */
+    line-height: 1.7;
+    position: relative;
+    z-index: 1;
+}
+
+.pack-content-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: calc(var(--spacing-unit) * 7.5);
+    margin-top: calc(var(--spacing-unit) * 6);
+    position: relative;
+    z-index: 1;
+}
+
+.main-guide-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: calc(var(--spacing-unit) * 5);
+    background-color: #FFFFFF;
+    padding: calc(var(--spacing-unit) * 5);
+    border-radius: 8px;
+    border: 1px solid #D9E3EB;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    max-width: 900px;
+    width: 100%;
+    box-sizing: border-box;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    position: relative;
+}
+
+.main-guide-block .guide-image {
+    flex-shrink: 0;
+    width: 100%;
+    max-width: 350px;
+    margin-bottom: calc(var(--spacing-unit) * 2.5);
+    position: relative;
+}
+
+.main-guide-block .guide-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.main-guide-block .guide-image img:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+}
+
+.main-guide-block .guide-description {
+    flex-grow: 1;
+    width: 100%;
+    text-align: center;
+}
+
+/* Styles par défaut pour les h3 dans .main-guide-block .guide-description */
+.main-guide-block .guide-description h3 {
+    font-size: 2em;
+    color: #004678; /* Couleur par défaut si aucune classe spécifique n'est appliquée */
+    margin-bottom: calc(var(--spacing-unit) * 3);
+    line-height: 1.3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-weight: 700;
+}
+
+.main-guide-block .guide-description h3 i {
+    font-size: 1.1em;
+    color: #00609B;
+    margin-right: calc(var(--spacing-unit) * 2);
+    text-shadow: none;
+}
+
+/* NOUVELLE COULEUR : Titre "Le Guide Complet: Maîtrisez Votre Immigration au Canada !" */
+.pack-complete-section .guide-complete-title {
+    color: #005082; /* Bleu légèrement plus foncé */
+}
+
+/* NOUVELLE COULEUR : Titre "Le Contenu Essentiel: Votre Guide Structuré par Thèmes Clés" */
+.pack-complete-section .content-essential-title {
+    color: #D8222B; /* Rouge */
+}
+
+
+.main-guide-block .guide-description ul {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.main-guide-block .guide-description ul li {
+    font-size: 1.1em;
+    color: #555555;
+    margin-bottom: calc(var(--spacing-unit) * 2);
+    line-height: 1.6;
+    display: flex;
+    align-items: flex-start;
+}
+
+.main-guide-block .guide-description ul li .checkmark {
+    font-size: 1.2em;
+    color: #00A859;
+    margin-right: calc(var(--spacing-unit) * 1.25);
+    flex-shrink: 0;
+    line-height: 1.6;
+    text-shadow: none;
+}
+
+.main-guide-block .guide-description ul li .content {
+    font-weight: 400;
+}
+
+.main-guide-block .guide-description ul li .content strong {
+    color: #004678;
+    font-weight: 700;
+    text-shadow: none;
+}
+
+/* Styles pour les thèmes (anciens styles .content-section) */
+.pack-complete-section .themes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: calc(var(--spacing-unit) * 5);
+    margin-top: calc(var(--spacing-unit) * 5); /* Ajustez selon besoin */
+    margin-bottom: calc(var(--spacing-unit) * 6); /* Ajustez selon besoin */
+    position: relative;
+    z-index: 1;
+}
+
+.pack-complete-section .theme-item {
+    background-color: #FFFFFF; /* Blanc pur pour la clarté */
+    padding: calc(var(--spacing-unit) * 4);
+    border-radius: 8px;
+    border: 1px solid #D9E3EB;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, background-color 0.3s ease;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+.pack-complete-section .theme-item:hover {
+    transform: translateY(-5px) scale(1.01);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    background-color: #FDFDFD;
+    border-color: #00609B;
+}
+
+.pack-complete-section .theme-item .theme-icon {
+    font-size: 4em;
+    color: #00609B; /* Bleu "information" pour les icônes de thème */
+    text-shadow: none;
+    margin-bottom: calc(var(--spacing-unit) * 3);
+}
+
+.pack-complete-section .theme-item h4 { /* Changé de h3 à h4 pour éviter conflit avec .main-guide-block h3 */
+    font-size: 1.7em;
+    color: #004678; /* Bleu marine pour les titres de thème */
+    margin-bottom: calc(var(--spacing-unit) * 1.5);
+    line-height: 1.4;
+    font-weight: 700;
+}
+
+.pack-complete-section .theme-item p {
+    font-size: 1.05em;
+    color: #555555;
+    line-height: 1.6;
+}
+
+/* Fin des styles pour les thèmes */
+
+.bonus-section {
+    width: 100%;
+    max-width: 900px;
+    text-align: center;
+    margin-top: calc(var(--spacing-unit) * 5);
+}
+
+/* NOUVELLE COULEUR : Titre "Des Bonus Exclusifs Pour Optimiser Votre Parcours :" */
+.bonus-section h3 {
+    font-size: 2em;
+    color: #00A859; /* Vert */
+    margin-bottom: calc(var(--spacing-unit) * 5);
+    line-height: 1.3;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    text-shadow: none;
+}
+
+.bonus-section h3 i {
+    font-size: 1.1em;
+    color: #D8222B;
+    margin-right: calc(var(--spacing-unit) * 2);
+    text-shadow: none;
+}
+
+.bonus-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: calc(var(--spacing-unit) * 4);
+}
+
+.bonus-item {
+    background-color: #F8FCFE;
+    padding: calc(var(--spacing-unit) * 4);
+    border-radius: 8px;
+    border: 1px solid #D9E3EB;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, background-color 0.3s ease;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    position: relative;
+}
+
+.bonus-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    background-color: #FFFFFF;
+}
+
+.bonus-item .bonus-icon {
+    font-size: 3em;
+    color: #00609B;
+    margin-bottom: calc(var(--spacing-unit) * 2.5);
+    text-shadow: none;
+}
+
+.bonus-item h4 {
+    font-size: 1.5em;
+    color: #004678;
+    margin-bottom: calc(var(--spacing-unit) * 1.5);
+    line-height: 1.3;
+    font-weight: 700;
+}
+
+.bonus-item p {
+    font-size: 1em;
+    color: #555555;
+    line-height: 1.6;
+}
+
+.pack-complete-section .cta-button.main-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px 35px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 1.5em;
+    font-weight: 800;
+    color: #FFF;
+    background: #D8222B;
+    box-shadow: 0 8px 20px rgba(216, 34, 43, 0.4);
+    transition: all 0.3s ease-in-out;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    text-shadow: none;
+    border: none;
+    margin-top: calc(var(--spacing-unit) * 7.5);
+    position: relative;
+    z-index: 1;
+}
+
+.pack-complete-section .cta-button.main-cta:hover {
+    background: #BF0A30;
+    box-shadow: 0 12px 25px rgba(216, 34, 43, 0.5);
+    transform: translateY(-3px);
+}
+
+.pack-complete-section .cta-subtext {
+    font-size: 1em;
+    margin-top: calc(var(--spacing-unit) * 2);
+    color: #555555;
+    text-shadow: none;
+    position: relative;
+    z-index: 1;
+}
+
+.info-line.warning {
+    background-color: #FFF3CD;
+    color: #856404;
+    padding: calc(var(--spacing-unit) * 2.5);
+    border-radius: 8px;
+    margin-top: calc(var(--spacing-unit) * 6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1em;
+    font-weight: 600;
+    max-width: 850px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid #FFECB3;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.info-line.warning i {
+    margin-right: calc(var(--spacing-unit) * 1.5);
+    font-size: 1em;
+    color: #D39E00;
+    text-shadow: none;
+}
+
+.info-line.warning strong {
+    color: #6C5202;
+}
+
+/* --- MEDIA QUERIES : Pack Complet Section (FUSIONNÉE) --- */
+@media (min-width: 769px) {
+    .main-guide-block {
+        flex-direction: row;
+        text-align: left;
+        justify-content: center;
+        align-items: center;
+        padding: 50px;
+    }
+    .main-guide-block .guide-image {
+        flex-basis: 35%;
+        max-width: 35%;
+        margin-right: 50px;
+        margin-bottom: 0;
+    }
+    .main-guide-block .guide-description {
+        flex-basis: 65%;
+        flex-grow: 0;
+        text-align: left;
+    }
+    .main-guide-block .guide-description h3 {
+        justify-content: flex-start;
+        text-align: left;
+    }
+    .main-guide-block .guide-description ul {
+        margin: 0;
+    }
+    .main-guide-block .guide-description ul li {
+        justify-content: flex-start;
+    }
+    .bonus-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .pack-complete-section .themes-grid { /* Ajustement pour la nouvelle grille de thèmes */
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: calc(var(--spacing-unit) * 5);
+        margin-top: calc(var(--spacing-unit) * 5);
+        margin-bottom: calc(var(--spacing-unit) * 6);
+    }
+}
+
+@media (max-width: 992px) {
+    .pack-complete-section h2 {
+        font-size: 2.8em;
+    }
+    .pack-complete-section .section-intro {
+        font-size: 1.1em;
+    }
+    .main-guide-block {
+        padding: 30px;
+        gap: 30px;
+    }
+    .main-guide-block .guide-image {
+        max-width: 300px;
+    }
+    .main-guide-block .guide-description h3 {
+        font-size: 1.8em;
+    }
+    .main-guide-block .guide-description ul li {
+        font-size: 1.05em;
+    }
+    .pack-complete-section .themes-grid { /* Ajustement pour la nouvelle grille de thèmes */
+        gap: calc(var(--spacing-unit) * 4);
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+    .pack-complete-section .theme-item {
+        padding: calc(var(--spacing-unit) * 3);
+    }
+    .pack-complete-section .theme-item .theme-icon {
+        font-size: 3.5em;
+        margin-bottom: calc(var(--spacing-unit) * 2.5);
+    }
+    .pack-complete-section .theme-item h4 {
+        font-size: 1.4em;
+    }
+    .pack-complete-section .theme-item p {
+        font-size: 0.95em;
+    }
+    .bonus-section h3 {
+        font-size: 1.8em;
+        margin-bottom: 30px;
+    }
+    .bonus-grid {
+        gap: 25px;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+    .bonus-item {
+        padding: 25px;
+    }
+    .bonus-item h4 {
+        font-size: 1.3em;
+    }
+    .bonus-item .bonus-icon {
+        font-size: 2.5em;
+    }
+}
+
+@media (max-width: 768px) {
+    .pack-complete-section {
+        padding: 40px 0;
+    }
+    .pack-complete-section h2 {
+        font-size: 2.5em;
+    }
+    .pack-complete-section .section-intro {
+        font-size: 1.05em;
+    }
+    .pack-content-grid {
+        gap: 40px;
+        margin-top: 30px;
+    }
+    .main-guide-block {
+        flex-direction: column;
+        text-align: center;
+        padding: 25px;
+        gap: 25px;
+    }
+    .main-guide-block .guide-image {
+        max-width: 250px;
+        margin-bottom: 20px;
+        margin-right: 0;
+    }
+    .main-guide-block .guide-description {
+        width: 100%;
+        text-align: center;
+    }
+    .main-guide-block .guide-description h3 {
+        font-size: 1.6em;
+        justify-content: center;
+    }
+    .main-guide-block .guide-description ul {
+        text-align: left;
+        padding-left: 0;
+        margin: 0 auto;
+    }
+    .main-guide-block .guide-description ul li {
+        justify-content: flex-start;
+        text-align: left;
+    }
+    .main-guide-block .guide-description ul li i {
+        margin-right: 10px;
+        margin-top: 0;
+    }
+    .pack-complete-section .themes-grid { /* Ajustement pour la nouvelle grille de thèmes */
+        grid-template-columns: 1fr;
+        gap: calc(var(--spacing-unit) * 3);
+        margin-top: calc(var(--spacing-unit) * 4);
+        margin-bottom: calc(var(--spacing-unit) * 5);
+    }
+    .pack-complete-section .theme-item {
+        padding: calc(var(--spacing-unit) * 3);
+    }
+    .pack-complete-section .theme-item .theme-icon {
+        font-size: 3em;
+        margin-bottom: calc(var(--spacing-unit) * 2);
+    }
+    .pack-complete-section .theme-item h4 {
+        font-size: 1.3em;
+    }
+    .pack-complete-section .theme-item p {
+        font-size: 0.9em;
+    }
+    .bonus-section h3 {
+        font-size: 1.6em;
+        margin-bottom: 25px;
+    }
+    .bonus-item h4 {
+        font-size: 1.3em;
+    }
+    .bonus-item .bonus-icon {
+        font-size: 2.2em;
+    }
+    .bonus-grid {
+        grid-template-columns: 1fr;
+    }
+    .pack-complete-section .cta-button.main-cta {
+        font-size: 1.3em;
+    }
+    .pack-complete-section .cta-subtext {
+        font-size: 0.9em;
+    }
+}
+
+@media (max-width: 480px) {
+    .pack-complete-section h2 {
+        font-size: 2em;
+    }
+    .pack-complete-section .section-intro {
+        font-size: 1em;
+    }
+    .main-guide-block .guide-description h3 {
+        font-size: 1.4em;
+    }
+    .main-guide-block .guide-description ul li {
+        font-size: 0.95em;
+    }
+    .pack-complete-section .themes-grid { /* Ajustement pour la nouvelle grille de thèmes */
+        gap: calc(var(--spacing-unit) * 2.5);
+        margin-top: calc(var(--spacing-unit) * 3);
+        margin-bottom: calc(var(--spacing-unit) * 4);
+    }
+    .pack-complete-section .theme-item {
+        padding: calc(var(--spacing-unit) * 2);
+    }
+    .pack-complete-section .theme-item .theme-icon {
+        font-size: 2.5em;
+        margin-bottom: calc(var(--spacing-unit) * 1.5);
+    }
+    .pack-complete-section .theme-item h4 {
+        font-size: 1.1em;
+    }
+    .pack-complete-section .theme-item p {
+        font-size: 0.9em;
+    }
+    .bonus-section h3 {
+        font-size: 1.4em;
+    }
+    .bonus-item h4 {
+        font-size: 1.1em;
+    }
+    .bonus-item .bonus-icon {
+        font-size: 2em;
+    }
+    .pack-complete-section .cta-button.main-cta {
+        font-size: 1.1em;
+    }
+    .pack-complete-section .cta-subtext {
+        font-size: 0.85em;
+    }
+}
+
+/* ========================================= */
+/* --- STYLES SPÉCIFIQUES POUR LA VARIANTE "WARNING" (Optimisé Conversion) --- */
+/* ========================================= */
+.info-line.warning {
+    /* Styles spécifiques pour l'avertissement, clairs et sans effets futuristes */
+    background-color: #FFF3CD; /* Jaune clair pour un avertissement doux mais visible */
+    color: #856404; /* Couleur de texte sombre pour la lisibilité sur fond jaune */
+    border: 1px solid #FFECB3; /* Bordure subtile assortie */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* Ombre douce */
+    border-left: 8px solid #FFC107; /* Bordure gauche plus épaisse, jaune plus prononcé pour l'avertissement */
+    animation: none; /* Supprime toutes les animations de pulsation ou autres */
+}
+
+/* Couleur de l'icône dans la ligne d'avertissement */
+.info-line.warning i {
+    color: #D39E00; /* Jaune doré pour l'icône d'avertissement */
+    text-shadow: none; /* Supprime les lueurs */
+    animation: none; /* Supprime l'animation de l'icône (hourglass) */
+}
+
+/* Les animations (spinHourglass, pulseWarningGlow) sont supprimées pour cette variante */
+/* @keyframes spinHourglass : Supprimé */
+/* @keyframes pulseWarningGlow : Supprimé */
+
+/* Style pour le texte à l'intérieur de l'info-line, notamment le "strong" */
+.info-line span {
+    color: inherit; /* Utilise la couleur de texte du parent (.info-line ou .info-line.warning) */
+}
+
+.info-line span strong {
+    color: inherit; /* Utilise la couleur de texte du parent */
+    text-shadow: none; /* Supprime les lueurs */
+}
+
+/* Correction spécifique pour le .info-line.warning strong pour avoir une couleur plus sombre */
+.info-line.warning span strong {
+    color: #6C5202; /* Couleur plus foncée pour le texte fort de l'avertissement */
+}
+/* ========================================= */
+/* --- STYLES DE BASE POUR .info-line (Avec Animation Subtile) --- */
+/* ========================================= */
+.info-line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 25px 40px;
+    border-radius: 8px; /* Taille maintenue */
+    margin: 50px auto 0 auto;
+    max-width: 800px;
+    font-size: 1.25em;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.4;
+    position: relative;
+    overflow: hidden;
+    color: #333333; /* Texte sombre sur fond clair */
+    background-color: #F8FCFE; /* Très léger bleu/gris */
+    border: 1px solid #D9E3EB; /* Bordure nette */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* Ombre douce */
+    transition: all 0.3s ease-in-out; /* Transition pour les interactions */
+}
+
+.info-line i {
+    margin-right: 20px;
+    font-size: 1.8em;
+    flex-shrink: 0;
+    color: #00609B; /* Bleu "information" */
+    text-shadow: none; /* Pas de lueur par défaut */
+    transition: color 0.3s ease-in-out;
+}
+
+/* ========================================= */
+/* --- STYLES SPÉCIFIQUES POUR LA VARIANTE "WARNING" (Avec Animation Contrôlée) --- */
+/* ========================================= */
+.info-line.warning {
+    background-color: #FFF3CD; /* Jaune clair pour l'avertissement */
+    color: #856404; /* Couleur de texte sombre */
+    border: 1px solid #FFECB3; /* Bordure assortie */
+    border-left: 8px solid #FFC107; /* Bordure gauche épaisse jaune prononcé */
+    /* Animation de pulsation subtile sur l'ombre et la bordure pour attirer l'attention */
+    animation: pulseWarningSubtle 2s infinite ease-in-out;
+}
+
+/* Couleur de l'icône dans la ligne d'avertissement */
+.info-line.warning i {
+    color: #D39E00; /* Jaune doré pour l'icône d'avertissement */
+    /* Animation de pulsation légère pour l'icône - peut être combinée avec la rotation */
+    animation: iconPulseSubtle 2s infinite alternate ease-in-out;
+}
+
+/* Animation de rotation spécifique pour l'icône de sablier */
+.info-line.warning .fas.fa-hourglass-half {
+    animation: spinHourglass 3s infinite linear; /* Rotation douce et continue */
+    display: inline-block; /* Nécessaire pour les transformations */
+}
+
+/* Animation de pulsation pour l'ombre et la bordure du warning */
+@keyframes pulseWarningSubtle {
+    0% {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        border-color: #FFECB3;
+    }
+    50% {
+        box-shadow: 0 4px 15px rgba(255, 193, 7, 0.15); /* Ombre légèrement plus prononcée avec une touche de jaune */
+        border-color: #FFC107; /* Bordure un peu plus vive */
+    }
+    100% {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        border-color: #FFECB3;
+    }
+}
+
+/* Animation de pulsation subtile pour l'icône du warning (sauf le sablier si rotation appliquée) */
+@keyframes iconPulseSubtle {
+    0% { transform: scale(1); opacity: 0.9; }
+    50% { transform: scale(1.05); opacity: 1; }
+    100% { transform: scale(1); opacity: 0.9; }
+}
+
+/* Animation de rotation pour le sablier */
+@keyframes spinHourglass {
+    from { transform: rotateZ(0deg); }
+    to { transform: rotateZ(360deg); }
+}
+
+
+/* Style pour le texte à l'intérieur de l'info-line, notamment le "strong" */
+.info-line span {
+    color: inherit;
+}
+
+.info-line span strong {
+    color: inherit;
+    text-shadow: none;
+}
+
+/* Correction spécifique pour le .info-line.warning strong pour avoir une couleur plus sombre */
+.info-line.warning span strong {
+    color: #6C5202; /* Couleur plus foncée pour le texte fort de l'avertissement */
+}
+
+
+/* --- MEDIA QUERIES (Tailles inchangées) --- */
+@media (max-width: 768px) {
+    .info-line {
+        padding: 20px 30px; /* Ajuste le padding, ne change pas la taille de la police */
+        margin: 40px auto 0 auto;
+    }
+    .info-line i {
+        margin-right: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .info-line {
+        padding: 15px 20px; /* Ajuste le padding, ne change pas la taille de la police */
+        margin: 30px auto 0 auto;
+        font-size: 1.1em; /* Réduit légèrement la taille du texte pour les petits écrans si nécessaire, mais conserve la proportion */
+    }
+    .info-line i {
+        margin-right: 10px;
+    }
+}
+
+
+/* --- MEDIA QUERIES pour les lignes d'information (Adaptation responsive) --- */
+@media (max-width: 768px) {
+    .info-line {
+        font-size: 1.1em;
+        padding: 20px 25px;
+        margin-top: 40px;
+    }
+    .info-line i {
+        font-size: 1.5em;
+        margin-right: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .info-line {
+        flex-direction: column;
+        font-size: 1em;
+        padding: 15px 20px;
+        margin-top: 30px;
+    }
+    .info-line i {
+        margin-right: 0;
+        margin-bottom: 10px;
+        font-size: 1.6em;
+    }
+}
+
+/* ========================================= */
+/* --- FAQ SECTION - Questions Fréquentes (Optimisé Conversion) --- */
+/* ========================================= */
+/* --- FAQ Section --- */
+.faq-section {
+    background-color: #F2F9FC; /* Un bleu très clair, comme les sections précédentes */
+    padding: var(--padding-section); /* Garde le padding d'origine */
+    color: #333333; /* Texte sombre pour la lisibilité sur fond clair */
+    position: relative; /* Nécessaire pour positionner les éléments internes */
+    overflow: hidden; /* Assure que le contenu ne déborde pas */
+}
+
+/* Effet de fond futuriste : Supprimé */
+.faq-section::before {
+    content: none;
+    animation: none;
+}
+
+.faq-section .icon-section {
+    font-size: 5.5em; /* Garde la taille d'origine */
+    color: #004678; /* Bleu marine profond pour l'icône de question */
+    text-shadow: none; /* Supprime les lueurs */
+    margin-bottom: calc(var(--spacing-unit) * 4); /* Garde la marge d'origine */
+    animation: none; /* Supprime l'animation de pulsation */
+    position: relative;
+    z-index: 1; /* Assure que l'icône est au-dessus du fond si un effet était ajouté */
+}
+
+.faq-section h2 {
+    font-size: 3.2em; /* MODIFIÉ : Harmonisé avec le titre h2 du "Pack Complet" */
+    color: #004678; /* Bleu marine pour le titre */
+    line-height: 1.2;
+    margin-bottom: calc(var(--spacing-unit) * 3); /* Garde la marge d'origine */
+    font-weight: 800;
+    font-family: 'Poppins', sans-serif;
+    text-shadow: none; /* Supprime les lueurs */
+    position: relative;
+    z-index: 1;
+}
+
+.faq-section .section-intro {
+    font-size: 1.15em; /* MODIFIÉ : Harmonisé avec le .section-intro du "Pack Complet" */
+    text-align: center;
+    max-width: 850px; /* Garde la max-width d'origine */
+    margin: 0 auto calc(var(--spacing-unit) * 6) auto; /* Garde la marge d'origine */
+    color: #555555; /* Gris foncé pour le texte d'intro, très lisible */
+    line-height: 1.7;
+    position: relative;
+    z-index: 1;
+}
+
+.faq-accordion-container {
+    max-width: 900px; /* Garde la max-width d'origine */
+    margin: 50px auto 0 auto; /* Garde la marge d'origine */
+    text-align: left;
+    position: relative;
+    z-index: 1;
+}
+
+.faq-item {
+    background-color: #FFFFFF; /* Fond blanc pur pour chaque élément FAQ */
+    border: 1px solid #D9E3EB; /* Bordure fine et nette (gris-bleu clair) */
+    border-radius: 8px; /* Bords légèrement arrondis pour un look professionnel (ancien: 10px) */
+    margin-bottom: 20px; /* Garde la marge d'origine */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* Ombre douce et professionnelle */
+    overflow: hidden;
+    transition: all 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    backdrop-filter: none; /* Supprime l'effet glassmorphism */
+    -webkit-backdrop-filter: none;
+}
+
+.faq-item:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* Ombre plus prononcée au survol */
+    border-color: #C0D0E0; /* Bordure légèrement plus foncée au survol */
+    transform: translateY(-3px); /* Léger soulèvement */
+}
+
+/* Cache la checkbox par défaut */
+.accordion-toggle {
+    display: none;
+}
+
+.accordion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 30px; /* Garde le padding d'origine */
+    font-size: 1.25em; /* Garde la taille de police d'origine */
+    font-weight: 600; /* Garde le poids de police d'origine */
+    color: #004678; /* Bleu marine pour le texte de l'en-tête */
+    background-color: #F8FCFE; /* Fond d'en-tête très léger bleu/gris, pour le distinguer du blanc du faq-item */
+    cursor: pointer;
+    border-bottom: 1px solid #E0E0E0; /* Séparateur gris clair et net */
+    transition: background-color 0.3s ease, color 0.3s ease, border-bottom-color 0.3s ease;
+}
+
+.accordion-header:hover {
+    background-color: #E6F2F7; /* Un bleu très léger au survol */
+    color: #004678; /* Maintient la couleur principale ou un peu plus foncée */
+}
+
+/* Icône du chevron */
+.accordion-icon {
+    font-size: 0.9em; /* Garde la taille d'icône d'origine */
+    color: #00609B; /* Bleu "information" pour l'icône */
+    transition: transform 0.3s ease, color 0.3s ease; /* Supprime la transition sur text-shadow */
+    text-shadow: none; /* Supprime les lueurs */
+}
+
+/* Fait pivoter l'icône quand la checkbox est cochée */
+.accordion-toggle:checked + .accordion-header .accordion-icon {
+    transform: rotate(180deg);
+    color: #00A859; /* Vert "succès" quand ouvert, pour indiquer l'information révélée */
+    text-shadow: none; /* Supprime les lueurs */
+}
+
+.accordion-content {
+    max-height: 0; /* Cache le contenu par défaut */
+    overflow: hidden;
+    transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out; /* Transition légèrement augmentée pour la fluidité */
+    padding: 0 30px; /* Garde le padding latéral d'origine */
+    background-color: #FFFFFF; /* Fond blanc pur pour le contenu déployé, clair et lisible */
+}
+
+.accordion-toggle:checked + .accordion-header + .accordion-content {
+    max-height: 1000px; /* MODIFIÉ : Valeur plus grande pour éviter la coupure de contenu */
+    padding: 20px 30px; /* Garde le padding vertical d'origine quand déployé */
+}
+
+.accordion-content p {
+    font-size: 1.05em; /* Garde la taille de police d'origine */
+    color: #555555; /* Gris foncé pour le contenu, très lisible */
+    line-height: 1.7;
+}
+
+.accordion-content p strong {
+    color: #004678; /* Mots clés importants en bleu marine profond */
+    font-weight: 700; /* Garde le poids de police d'origine */
+    text-shadow: none; /* Supprime les lueurs */
+}
+
+
+/* --- MEDIA QUERIES pour la section FAQ --- */
+@media (max-width: 992px) {
+    .faq-section h2 {
+        font-size: 2.8em; /* Harmonisé avec le "Pack Complet" */
+    }
+    .faq-section .section-intro {
+        font-size: 1.1em; /* Harmonisé avec le "Pack Complet" */
+    }
+    .faq-accordion-container {
+        margin-top: 40px;
+    }
+    .accordion-header {
+        font-size: 1.15em;
+        padding: 18px 25px;
+    }
+    .accordion-content {
+        padding: 0 25px;
+    }
+    .accordion-toggle:checked + .accordion-header + .accordion-content {
+        padding: 15px 25px;
+    }
+    .accordion-content p {
+        font-size: 1em;
+    }
+}
+
+@media (max-width: 768px) {
+    .faq-section {
+        padding: 60px 0;
+    }
+    .faq-section h2 {
+        font-size: 2.5em; /* Harmonisé avec le "Pack Complet" */
+    }
+    .faq-section .section-intro {
+        font-size: 1.05em; /* Harmonisé avec le "Pack Complet" */
+    }
+    .faq-accordion-container {
+        margin-top: 30px;
+    }
+    .faq-item {
+        margin-bottom: 15px;
+    }
+    .accordion-header {
+        font-size: 1.05em;
+        padding: 15px 20px;
+    }
+    .accordion-icon {
+        font-size: 0.8em;
+    }
+    .accordion-content {
+        padding: 0 20px;
+    }
+    .accordion-toggle:checked + .accordion-header + .accordion-content {
+        padding: 15px 20px;
+    }
+    .accordion-content p {
+        font-size: 0.95em;
+    }
+}
+
+@media (max-width: 480px) {
+    .faq-section h2 {
+        font-size: 2em; /* Harmonisé avec le "Pack Complet" */
+    }
+    .faq-section .section-intro {
+        font-size: 1em; /* Harmonisé avec le "Pack Complet" */
+    }
+    .accordion-header {
+        font-size: 1em;
+        padding: 12px 15px;
+    }
+    .accordion-content {
+        padding: 0 15px;
+    }
+    .accordion-toggle:checked + .accordion-header + .accordion-content {
+        padding: 12px 15px;
+    }
+    .accordion-content p {
+        font-size: 0.9em;
+    }
+}
+
+
+/* ========================================= */
+/* --- PRICING SECTION - Tarification (Optimisé Conversion) --- */
+/* ========================================= */
+/* --- Pricing Section --- */
+.pricing-section {
+    background-color: #FFFFFF;
+    padding: var(--padding-section);
+    position: relative;
+    overflow: hidden;
+    color: #333333;
+}
+
+/* Suppression des effets de fond futuristes (scanlines et particules) */
+.pricing-section::before {
+    content: none;
+    animation: none;
+}
+/* @keyframes scanlines-effect { } n'est plus nécessaire si l'animation n'est pas utilisée */
+
+.pricing-section .icon-section {
+    font-size: 5.5em;
+    color: #004678;
+    text-shadow: none;
+    margin-bottom: calc(var(--spacing-unit) * 4);
+    animation: none;
+    position: relative;
+    z-index: 1;
+}
+
+.pricing-section h2 {
+    font-size: 3.2em; /* Harmonisé avec les h2 des autres sections */
+    color: #004678;
+    line-height: 1.2;
+    margin-bottom: calc(var(--spacing-unit) * 3);
+    font-weight: 800;
+    font-family: 'Poppins', sans-serif;
+    text-shadow: none;
+    position: relative;
+    z-index: 1;
+}
+
+.pricing-section .section-intro {
+    font-size: 1.15em; /* Harmonisé avec les .section-intro des autres sections */
+    text-align: center;
+    max-width: 850px;
+    margin: 0 auto calc(var(--spacing-unit) * 6) auto;
+    color: #555555;
+    line-height: 1.7;
+    position: relative;
+    z-index: 1;
+}
+
+.pricing-card-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
+    position: relative;
+    z-index: 1;
+}
+
+.pricing-card {
+    background-color: #F8FCFE;
+    border-radius: 12px;
+    border: 1px solid #D9E3EB;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    padding: 40px;
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+    transform: none;
+    transition: all 0.4s ease-in-out;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    position: relative;
+    overflow: hidden; /* Garde overflow:hidden pour le nouveau bouton */
+}
+
+/* Suppression de la bordure animée pour la carte de prix */
+.pricing-card::before {
+    content: none;
+    animation: none;
+}
+/* @keyframes rotate-border { } n'est plus nécessaire si l'animation n'est pas utilisée */
+
+.pricing-card .card-header {
+    margin-bottom: 30px;
+}
+
+.pricing-card .card-header h3 {
+    font-size: 2.2em;
+    color: #004678;
+    margin-bottom: 10px;
+    font-weight: 800;
+    text-shadow: none;
+}
+
+.pricing-card .card-header .subtitle-card {
+    font-size: 1.1em;
+    color: #555555;
+}
+
+.pricing-card .card-body {
+    margin-bottom: 30px;
+}
+
+.pricing-card .price-display {
+    margin-bottom: 30px;
+}
+
+.pricing-card .old-price {
+    display: block;
+    font-size: 1.3em;
+    color: #888888;
+    text-decoration: line-through;
+    margin-bottom: 5px;
+    text-shadow: none;
+}
+
+.pricing-card .current-price {
+    display: block;
+    font-size: 1.8em;
+    color: #333333;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.pricing-card .price-value {
+    font-size: 2.8em; /* Taille ajustée pour un meilleur équilibre visuel */
+    font-weight: 900;
+    color: #CC0000; /* Rouge Canadien (Couleur d'impact pour le prix) */
+    display: inline-block;
+    line-height: 1;
+    text-shadow: none;
+    animation: none; /* Supprime l'animation de pulsation sur le prix */
+}
+
+/* @keyframes pulse-price { } n'est plus nécessaire si l'animation n'est pas utilisée */
+
+.pricing-card .savings {
+    font-size: 1.1em;
+    color: #00A859; /* Vert "succès" pour les économies */
+    font-weight: 700;
+    margin-top: 10px;
+    text-shadow: none;
+}
+
+.pricing-card .features-list {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 40px;
+    text-align: left;
+}
+
+.pricing-card .features-list li {
+    font-size: 1.1em;
+    color: #555555;
+    margin-bottom: 12px;
+    line-height: 1.5;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.pricing-card .features-list li i {
+    color: #00A859; /* Vert "succès" pour les coches */
+    font-size: 1.1em;
+    flex-shrink: 0;
+    margin-top: 3px;
+    text-shadow: none;
+}
+
+.pricing-card .card-footer {
+    margin-top: 30px;
+    padding-top: 25px;
+    border-top: 1px solid #E0E0E0;
+    position: relative;
+}
+
+.pricing-card .card-footer p {
+    font-size: 0.95em;
+    color: #555555;
+    margin-bottom: 15px;
+}
+
+.pricing-card .card-footer p strong {
+    color: #004678;
+    text-shadow: none;
+}
+
+.pricing-card .card-footer p a {
+    color: inherit;
+    text-decoration: underline;
+    transition: color 0.3s ease;
+}
+
+.pricing-card .card-footer p a:hover {
+    color: #00609B;
+}
+
+/* STYLES DES INFO-LINE DANS LE FOOTER DE LA CARTE */
+.pricing-card .card-footer .info-line {
+    margin: 15px auto;
+    padding: 15px 25px;
+    font-size: 1.05em;
+    border-radius: 8px;
+    background-color: #E6F2F7;
+    border: 1px solid #C0D0E0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    color: #555555;
+}
+
+.pricing-card .card-footer .info-line i {
+    font-size: 1.05em;
+    color: #00609B;
+    text-shadow: none;
+}
+
+.pricing-card .card-footer .info-line span {
+    color: inherit;
+}
+
+.pricing-card .card-footer .info-line span strong {
+    color: #004678;
+    text-shadow: none;
+}
+
+/* Styles pour les informations de paiement */
+.pricing-card .payment-security {
+    font-size: 1em;
+    color: #555555;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.pricing-card .payment-security i {
+    color: #00A859;
+    font-size: 1.1em;
+    text-shadow: none;
+}
+
+.pricing-card .payment-security strong {
+    color: #004678;
+    text-shadow: none;
+}
+
+.pricing-card .payment-methods {
+    margin-top: 25px;
+}
+
+.pricing-card .payment-methods p {
+    font-size: 1em;
+    color: #555555;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.pricing-card .payment-logos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.pricing-card .payment-logos img {
+    max-height: 40px;
+    width: auto;
+    filter: none;
+    opacity: 1;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease;
+}
+
+.pricing-card .payment-logos img:hover {
+    transform: translateY(-3px) scale(1.05);
+    opacity: 0.9;
+}
+
+.pricing-card .mobile-payments-note {
+    font-size: 0.9em;
+    color: #888888;
+    margin-top: 10px;
+    line-height: 1.4;
+}
+
+/* Styles pour la classe .limited-offer-text (si utilisée) */
+.limited-offer-text {
+    font-size: 1.15em;
+    color: #CC0000;
+    margin-top: 50px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-shadow: none;
+    animation: none;
+}
+
+.limited-offer-text i {
+    color: #CC0000;
+    font-size: 1.2em;
+    text-shadow: none;
+}
+
+/* --- MEDIA QUERIES pour la section Prix (Harmonisé avec les autres sections) --- */
+@media (max-width: 992px) {
+    .pricing-section h2 {
+        font-size: 2.8em;
+    }
+    .pricing-section .section-intro {
+        font-size: 1.1em;
+    }
+    .pricing-card {
+        padding: 35px;
+        max-width: 450px;
+    }
+    .pricing-card .card-header h3 {
+        font-size: 2em;
+    }
+    .pricing-card .price-value {
+        font-size: 2.5em;
+    }
+    .pricing-card .features-list li {
+        font-size: 1.05em;
+    }
+    .pricing-card .payment-security {
+        font-size: 0.95em;
+    }
+    .pricing-card .payment-methods p {
+        font-size: 0.95em;
+    }
+    .pricing-card .payment-logos img {
+        max-height: 35px;
+    }
+    .pricing-card .mobile-payments-note {
+        font-size: 0.85em;
+    }
+}
+
+@media (max-width: 768px) {
+    .pricing-section {
+        padding: 60px 0;
+    }
+    .pricing-section h2 {
+        font-size: 2.5em;
+    }
+    .pricing-section .section-intro {
+        font-size: 1.05em;
+    }
+    .pricing-card {
+        padding: 30px;
+        max-width: 350px;
+    }
+    .pricing-card .card-header h3 {
+        font-size: 1.8em;
+    }
+    .pricing-card .price-value {
+        font-size: 2.2em;
+    }
+    .pricing-card .features-list li {
+        font-size: 1em;
+    }
+    .limited-offer-text {
+        font-size: 1em;
+        margin-top: 40px;
+    }
+    .pricing-card .payment-security {
+        font-size: 0.9em;
+    }
+    .pricing-card .payment-methods p {
+        font-size: 0.9em;
+    }
+    .pricing-card .payment-logos img {
+        max-height: 30px;
+    }
+    .pricing-card .mobile-payments-note {
+        font-size: 0.8em;
+    }
+}
+
+@media (max-width: 480px) {
+    .pricing-card {
+        padding: 25px;
+    }
+    .pricing-card .card-header h3 {
+        font-size: 1.6em;
+    }
+    .pricing-card .price-value {
+        font-size: 2em;
+    }
+    .pricing-card .features-list li {
+        font-size: 0.95em;
+    }
+    .limited-offer-text {
+        font-size: 0.9em;
+    }
+    .pricing-card .payment-security {
+        font-size: 0.85em;
+    }
+    .pricing-card .payment-methods p {
+        font-size: 0.85em;
+    }
+    .pricing-card .payment-logos img {
+        max-height: 25px;
+    }
+    .pricing-card .mobile-payments-note {
+        font-size: 0.75em;
+    }
+}
+/* Définition de la nouvelle animation "Breathing Glow" (intensifiée pour plus de visibilité) */
+@keyframes breathingGlow {
+    0% {
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25); /* Ombre de base */
+        filter: brightness(100%); /* Luminosité normale */
+        transform: scale(1); /* Taille normale */
+    }
+    50% {
+        box-shadow: 0 12px 30px rgba(0, 123, 255, 0.8); /* Lueur plus INTENSE et plus large (bleu éclatant) */
+        filter: brightness(130%); /* Éclaircissement plus PRONONCÉ du bouton */
+        transform: scale(1.015); /* Léger agrandissement très subtil pour un effet "respiratoire" */
+    }
+    100% {
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25); /* Retour à l'ombre de base */
+        filter: brightness(100%); /* Retour à la luminosité normale */
+        transform: scale(1); /* Retour à la taille normale */
+    }
+}
+
+/* --- Bouton CTA Exclusif pour la Section Pricing : Effet Breathing Glow (amélioré) --- */
+.pricing-card .cta-button.main-cta {
+    display: inline-block;
+    width: auto;
+    padding: 20px 35px;
+    font-size: 1.4em;
+    font-weight: 700;
+    color: #FFFFFF;
+    text-align: center;
+    text-decoration: none;
+    background-color: #00609B; /* Couleur de base du bouton */
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25); /* Ombre de base */
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    transition: all 0.3s ease-in-out; /* Transition douce pour le bouton lui-même */
+    background-size: auto !important;
+
+    /* NOUVEAUTÉ : Applique l'animation de souffle lumineux (plus visible) */
+    animation: breathingGlow 3s ease-in-out infinite; /* Durée réduite pour un cycle plus fréquent et dynamique */
+}
+
+/* Suppression des pseudo-éléments pour cet effet (::before et ::after) */
+.pricing-card .cta-button.main-cta::before,
+.pricing-card .cta-button.main-cta::after {
+    content: none !important;
+}
+
+/* Effets de survol (hover) pour le bouton lui-même */
+.pricing-card .cta-button.main-cta:hover {
+    transform: translateY(-5px); /* Légère élévation au survol */
+    background-color: #007BC7; /* Couleur plus vive au survol */
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.35); /* Ombre plus marquée au survol */
+    animation: none; /* Arrête l'animation de souffle au survol pour que la transition prenne le relais */
+}
+
+/* Effet de clic (active) pour donner un retour physique */
+.pricing-card .cta-button.main-cta:active {
+    transform: translateY(-2px); /* Léger enfoncement au clic */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25); /* Ombre ajustée au clic */
+}
+
+/* Assurer que le texte et l'icône du bouton sont toujours au-dessus de tout */
+.pricing-card .cta-button.main-cta span,
+.pricing-card .cta-button.main-cta i {
+    position: relative;
+    z-index: 1;
+}
+
+/* --- MEDIA QUERIES SPÉCIFIQUES AU BOUTON DE LA SECTION PRICING --- */
+/* (Ces media queries n'ont pas changé et doivent rester à leur place) */
+@media (max-width: 992px) {
+    .pricing-card .cta-button.main-cta {
+        padding: 18px 28px;
+        font-size: 1.25em;
+    }
+}
+
+@media (max-width: 768px) {
+    .pricing-card .cta-button.main-cta {
+        padding: 16px 25px;
+        font-size: 1.15em;
+    }
+}
+
+@media (max-width: 480px) {
+    .pricing-card .cta-button.main-cta {
+        padding: 14px 20px;
+        font-size: 1.05em;
+    }
+}
+
+
+/* ========================================= */
+/* --- GUARANTEE SECTION - Garantie de Satisfaction (Optimisé Conversion) --- */
+/* ========================================= */
+/* --- Guarantee Section --- */
+.guarantee-section {
+    background-color: #F2F9FC; /* Un bleu très clair, cohérent avec d'autres sections */
+    padding: var(--padding-section);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    color: #333333;
+}
+
+/* Suppression des effets de fond précédents */
+.guarantee-section::before {
+    content: none;
+    animation: none;
+}
+/* Les @keyframes associés sont également supprimés si non utilisés ailleurs */
+
+.guarantee-section .icon-section {
+    font-size: 5.5em;
+    color: #004678;
+    text-shadow: none;
+    margin-bottom: 20px;
+    animation: none;
+    position: relative;
+    z-index: 1;
+}
+
+.guarantee-section h2 {
+    font-size: 3.8em;
+    color: #004678;
+    line-height: 1.2;
+    margin-bottom: calc(var(--spacing-unit) * 3);
+    font-weight: 800;
+    font-family: 'Poppins', sans-serif;
+    text-shadow: none;
+    position: relative;
+    z-index: 1;
+}
+
+.guarantee-section .section-intro {
+    font-size: var(--font-size-large);
+    max-width: 800px;
+    margin: 0 auto 50px auto;
+    color: #555555;
+    line-height: 1.7;
+    position: relative;
+    z-index: 1;
+}
+
+/* Bloc principal qui contient les détails de la garantie */
+.guarantee-content-block {
+    background-color: #FFFFFF;
+    border: 1px solid #D9E3EB;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    max-width: 800px;
+    margin: 50px auto 0 auto;
+    padding: 40px;
+    text-align: center;
+    transition: all 0.4s ease-in-out;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    position: relative;
+    z-index: 1;
+}
+
+.guarantee-content-block:hover {
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
+    transform: translateY(-5px);
+    border-color: #C0D0E0;
+}
+
+/* Icône de grande taille à l'intérieur du bloc de garantie */
+.guarantee-content-block .guarantee-icon-large {
+    font-size: 4em;
+    color: #00609B;
+    text-shadow: none;
+    margin-bottom: 25px;
+    animation: none;
+}
+/* Les @keyframes associés sont également supprimés si non utilisés ailleurs */
+
+
+/* Style du titre H3 à l'intérieur du bloc de garantie */
+.guarantee-content-block h3 {
+    font-size: 2em;
+    color: #004678;
+    margin-bottom: 20px;
+    font-weight: 700;
+    text-shadow: none;
+}
+
+/* Styles des paragraphes de texte à l'intérieur du bloc de garantie */
+.guarantee-content-block p {
+    font-size: 1.1em;
+    color: #555555;
+    line-height: 1.7;
+    margin-bottom: 15px;
+}
+
+/* Met en couleur et en gras le texte mis en évidence */
+.guarantee-content-block p strong {
+    color: #004678;
+    font-weight: 700;
+    text-shadow: none;
+}
+
+/* Style spécifique pour le paragraphe d'appel à l'action à l'intérieur du bloc de garantie */
+.guarantee-content-block .guarantee-cta-text {
+    font-size: 1.2em;
+    color: #00609B;
+    font-weight: 600;
+    margin-top: 25px;
+    margin-bottom: 25px;
+    text-shadow: none;
+}
+
+/* Texte incitatif juste au-dessus du bouton CTA final de la section Garantie */
+.guarantee-section .guarantee-cta-message {
+    font-size: 1.15em;
+    color: #004678;
+    margin-top: 60px;
+    margin-bottom: 25px;
+    font-weight: 600;
+    text-shadow: none;
+    position: relative;
+    z-index: 1;
+}
+
+/* Le bouton CTA de la section Garantie hérite désormais des styles globaux du bouton */
+/* Il ne contient AUCUN style ou effet spécifique ici pour le différencier des autres boutons */
+.guarantee-section .cta-button {
+    margin-top: 40px;
+    position: relative;
+    z-index: 1;
+}
+
+/* --- Media Queries pour la section Garantie --- */
+@media (max-width: 992px) {
+    /* Il n'y avait pas de règles spécifiques pour 992px dans votre code fourni,
+       mais vous pouvez en ajouter ici si nécessaire. */
+}
+
+@media (max-width: 768px) {
+    .guarantee-section h2 {
+        font-size: 2.8em;
+    }
+    .guarantee-section .section-intro {
+        font-size: 1.1em;
+    }
+    .guarantee-content-block {
+        padding: 30px;
+    }
+    .guarantee-content-block .guarantee-icon-large {
+        font-size: 3.5em;
+    }
+    .guarantee-content-block h3 {
+        font-size: 1.8em;
+    }
+    .guarantee-content-block p {
+        font-size: 1em;
+    }
+    .guarantee-content-block .guarantee-cta-text {
+        font-size: 1.1em;
+    }
+    .guarantee-section .guarantee-cta-message {
+        font-size: 1.05em;
+    }
+}
+
+@media (max-width: 480px) {
+    .guarantee-section h2 {
+        font-size: 2.2em;
+    }
+    .guarantee-section .section-intro {
+        font-size: 1em;
+    }
+    .guarantee-content-block {
+        padding: 25px;
+    }
+    .guarantee-content-block .guarantee-icon-large {
+        font-size: 3em;
+    }
+    .guarantee-content-block h3 {
+        font-size: 1.6em;
+    }
+    .guarantee-content-block p {
+        font-size: 0.95em;
+    }
+    .guarantee-content-block .guarantee-cta-text {
+        font-size: 1.05em;
+    }
+    .guarantee-section .guarantee-cta-message {
+        font-size: 1em;
+    }
+}
+
+
+/* ========================================= */
+/* --- FOOTER - Pied de Page (Optimisé Conversion) --- */
+/* ========================================= */
+footer {
+    background-color: #004678;
+    padding: calc(var(--spacing-unit) * 7.5) calc(var(--spacing-unit) * 2.5) calc(var(--spacing-unit) * 5);
+    font-family: var(--font-family-primary);
+    color: #E0EBF5;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.container.footer-grid-layout {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: calc(var(--spacing-unit) * 5);
+    max-width: 1200px;
+    margin: auto;
+    position: relative;
+    z-index: 1;
+}
+
+.footer-brand-area,
+.footer-nav-area,
+.footer-info-area {
+    text-align: center;
+}
+
+.footer-logo img {
+    max-width: 160px;
+    height: auto;
+    margin-bottom: calc(var(--spacing-unit) * 1.875);
+    filter: brightness(1.1) contrast(1.05);
+    transition: transform 0.3s ease-in-out;
+}
+
+.footer-logo img:hover {
+    transform: scale(1.05);
+}
+
+.footer-slogan {
+    font-size: 15px;
+    color: #A0B0C0;
+    line-height: 1.6;
+    margin-bottom: calc(var(--spacing-unit) * 2.5);
+}
+
+.footer-social {
+    display: flex;
+    justify-content: center;
+    gap: calc(var(--spacing-unit) * 2.5);
+}
+
+.footer-social a {
+    display: inline-block;
+    font-size: 18px;
+    color: #CC0000;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.footer-social a:hover {
+    color: #FF6666;
+    transform: scale(1.3);
+}
+
+.footer-nav-area h4,
+.footer-info-area h4 {
+    font-size: 17px;
+    margin-bottom: calc(var(--spacing-unit) * 1.875);
+    color: #FFFFFF;
+    font-weight: 700;
+}
+
+.footer-links,
+.footer-info-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-links li,
+.footer-info-list li {
+    margin-bottom: calc(var(--spacing-unit) * 1.25);
+}
+
+.footer-links a,
+.footer-info-list a {
+    color: #E0EBF5;
+    text-decoration: none;
+    font-size: 15px;
+    transition: color 0.3s ease;
+}
+
+.footer-links a:hover,
+.footer-info-list a:hover {
+    color: #FFFFFF;
+}
+
+.footer-info-list a[href^="mailto:"] {
+    font-weight: 600;
+    color: #92FE9D;
+}
+
+/* Styles pour les disclaimers */
+.footer-disclaimers {
+    margin-top: calc(var(--spacing-unit) * 2.5);
+    margin-bottom: calc(var(--spacing-unit) * 2.5);
+    font-size: 13px;
+    color: #B0C4DE; /* Un bleu plus doux pour la lisibilité */
+    line-height: 1.5;
+    text-align: center;
+}
+
+.footer-disclaimers p {
+    margin-bottom: calc(var(--spacing-unit) * 1); /* Espacement entre les disclaimers */
+}
+
+.footer-disclaimers p:last-child {
+    margin-bottom: 0; /* Pas de marge après le dernier paragraphe */
+}
+
+.footer-disclaimers strong {
+    color: #FFFFFF; /* Pour faire ressortir les titres des disclaimers */
+}
+
+/* Styles pour le paragraphe de copyright. */
+.footer-copyright {
+    font-size: 13px;
+    color: #889BB0;
+    margin-top: calc(var(--spacing-unit) * 2.5); /* S'assure que le copyright est bien séparé des disclaimers */
+    text-align: center;
+}
+
+/* --- MEDIA QUERIES --- */
+@media (max-width: 768px) {
+    .container.footer-grid-layout {
+        grid-template-columns: 1fr;
+        gap: calc(var(--spacing-unit) * 4);
+    }
+    .footer-brand-area,
+    .footer-nav-area,
+    .footer-info-area {
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    footer {
+        padding: calc(var(--spacing-unit) * 6) calc(var(--spacing-unit) * 1.5);
+    }
+}
