@@ -1,3 +1,6 @@
+/* ========================================= */
+/* 0. ÉVITE LES DÉBORDEMENTS LATÉRAUX INDÉSIRABLES*/
+/* ========================================= */
 /* 0: Réinitialisation et verrouillage horizontal – Évite les débordements latéraux indésirables */
 html, body {
     overflow-x: hidden;       /* Supprime les scrolls horizontaux causés par des débordements */
@@ -11,12 +14,10 @@ html, body {
     box-sizing: border-box;   /* Évite les bugs de layout liés aux padding et borders */
 }
 
-/* --- DÉBUT DU BLOC À REMPLACER (Copiez TOUT ce bloc) --- */
 
 /* ========================================= */
 /* 1. RÉINITIALISATION & VARIABLES GLOBALES TARGETMAX */
 /* ========================================= */
-
 /* Définitions des animations spécifiques aux boutons */
 @keyframes breathingGlow {
     0%, 100% {
@@ -248,10 +249,7 @@ ul {
     right: 25px;
     z-index: 1000; /* Toujours au-dessus */
 
-    /* Masquer le bouton par défaut avec une transition pour une apparition douce */
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(50px); /* Pour un effet d'apparition par le bas */
+    /* Transition pour une apparition/disparition douce */
     transition: opacity 0.3s ease-out, visibility 0.3s ease-out, transform 0.3s ease-out;
 
     /* Styles de base du bouton (reprend ceux de .cta-button .main-cta) */
@@ -272,14 +270,21 @@ ul {
     border: none;
 }
 
-/* État visible (ajouté par JS) */
-#cta-sticky-button.is-visible {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
+/* État masqué : appliqué par le JavaScript */
+#cta-sticky-button.sticky-hidden {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(50px); /* Pour un effet d'apparition par le bas */
 }
 
-/* Hover/Active states (vous pouvez les ajouter si vous voulez un effet spécifique sur le sticky) */
+/* État visible : appliqué lorsque la classe sticky-hidden est retirée par le JavaScript */
+#cta-sticky-button:not(.sticky-hidden) {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0); /* Retour à la position normale */
+}
+
+/* Hover/Active states (ces règles restent les mêmes) */
 #cta-sticky-button:hover {
     background: #BF0A30;
     box-shadow: 0 12px 25px rgba(216, 34, 43, 0.5);
@@ -297,7 +302,7 @@ ul {
         bottom: 15px;
         left: 10px; /* Bouton collé au bord gauche */
         right: auto;
-        transform: translateY(0); /* Supprime le translate X */
+        /* Le transform est géré par sticky-hidden/not(.sticky-hidden) */
         width: calc(100% - 20px); /* Prend presque toute la largeur avec 10px de marge de chaque côté */
         max-width: none; /* Supprime la largeur maximale */
         padding: 12px 15px;
@@ -306,9 +311,10 @@ ul {
         text-align: center;
     }
 
-    #cta-sticky-button.is-visible {
+    /* Le .is-visible ici n'est plus nécessaire si on utilise sticky-hidden */
+    /* #cta-sticky-button.is-visible {
         transform: translateY(0);
-    }
+    } */
 }
 
 /* Pour les écrans encore plus petits */
@@ -318,6 +324,7 @@ ul {
         font-size: 0.9em;
     }
 }
+
 
 
 /* ========================================= */
@@ -366,11 +373,181 @@ section h2::after {
     margin: 0 auto calc(var(--spacing-unit) * 6.25) auto;
     line-height: 1.7;
 }
-/* --- FIN DU BLOC À REMPLACER --- */
+
+/* ========================================= */
+/* --- MAIN HEADER - En-tête Principal (Optimisé Conversion) --- */
+/* ========================================= */
+.main-header {
+    /* Nouveau fond : Un fond clair et professionnel, évoquant la propreté et la confiance */
+    background: linear-gradient(to right, #F9FCFD, #EBF3F8); /* Dégradé de bleus très clairs, presque blancs */
+    padding: calc(var(--spacing-unit) * 3) 0; /* Garde le padding d'origine */
+    /* Bordure subtile et nette, sans lueur */
+    border-bottom: 1px solid #D9E3EB; /* Gris-bleu clair pour une délimitation douce */
+    /* Ombre douce et professionnelle, donnant une légère élévation sans être agressive */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* Ombre très légère et diffuse */
+    position: relative;
+    z-index: 1000; /* Assure qu'il est toujours au-dessus */
+    overflow: hidden; /* Garde l'overflow pour une bonne gestion du contenu */
+}
+
+/* Effet de lueur subtile sur le bas du header : Supprimé car futuriste */
+.main-header::after {
+    content: none; /* Supprime complètement l'élément et son animation futuriste */
+    animation: none;
+}
+
+/* @keyframes header-bottom-glow : Supprimé car l'élément est retiré */
+
+
+.main-header .container {
+    display: flex;
+    justify-content: center; /* Centré par défaut */
+    align-items: center;
+    max-width: var(--container-max-width); /* Utilisation de la variable globale */
+    margin: 0 auto;
+    padding: 0 var(--padding-container-horizontal); /* Utilisation de la variable globale */
+}
+
+@media (min-width: 768px) {
+    .main-header .container {
+        justify-content: flex-start; /* Ou space-between si vous avez un menu à droite */
+    }
+}
+
+.main-header .logo {
+    display: inline-block;
+    transition: transform 0.3s ease-in-out;
+}
+
+.main-header .logo img {
+    max-height: 60px; /* Garde la taille d'origine pour l'impact visuel */
+    width: auto;
+    /* Supprime tous les effets de lueur futuristes et de teinte */
+    filter: none; /* Retire drop-shadow, grayscale, brightness */
+    transition: filter 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.main-header .logo:hover {
+    transform: scale(1.03); /* Léger zoom au survol (légèrement réduit pour plus de subtilité) */
+}
+
+.main-header .logo:hover img {
+    /* Aucune lueur ou teinte spéciale au survol, le logo reste fidèle */
+    filter: none;
+    /* Optionnel : si le logo est monochrome et que vous voulez une touche de couleur au survol
+    filter: drop-shadow(0 0 5px rgba(216, 34, 43, 0.5)); // Petite ombre rouge subtile
+    */
+}
+
+
+
+/* --- MEDIA QUERIES : Header --- */
+@media (max-width: 768px) {
+    .main-header {
+        padding: calc(var(--spacing-unit) * 2) 0;
+    }
+    .main-header .logo img {
+        max-height: 50px;
+    }
+}
+@media (max-width: 480px) {
+    .main-header {
+        padding: calc(var(--spacing-unit) * 1.5) 0;
+    }
+    .main-header .logo img {
+        max-height: 45px;
+    }
+}
+
+/* ========================================= */
+/* --- INITIAL PREVIEW SECTION - Aperçu du Guide (Optimisé Conversion) --- */
+/* ========================================= */
+.initial-preview-section {
+    background-color: #F8F8F8; /* Un fond très clair, presque blanc, pour la propreté et la clarté */
+    padding: calc(var(--spacing-unit) * 10) 0; /* Garde le padding d'origine */
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    color: #333333; /* Texte sombre pour un contraste optimal */
+}
+
+/* Effet de fond : Retiré ou très minimaliste pour un style non-futuriste */
+.initial-preview-section::before {
+    content: none; /* Supprime complètement l'effet de fond futuriste */
+    /* Alternative subtile si souhaité :
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(circle at 50% 10%, rgba(0, 70, 120, 0.02), transparent 70%); // Très léger halo bleu en haut
+    filter: blur(50px);
+    z-index: 0; */
+    animation: none; /* Aucune animation */
+}
+
+
+.initial-preview-section .preview-content {
+    margin-bottom: calc(var(--spacing-unit) * 5); /* Garde l'espacement d'origine */
+    position: relative;
+    z-index: 1;
+}
+
+.initial-preview-section .mockup-display {
+    position: relative;
+    z-index: 1; /* Assure que la maquette est au-dessus du fond */
+    display: inline-block; /* Pour centrer l'ombre de la maquette */
+}
+
+.initial-preview-section .product-mockup {
+    max-width: 500px; /* Garde la taille d'origine pour l'impact visuel */
+    height: auto;
+    margin: 0 auto;
+    display: block;
+    border-radius: calc(var(--spacing-unit) * 1.5); /* Bords légèrement arrondis pour un aspect plus doux et professionnel (légèrement moins que l'original calc(var(--spacing-unit) * 2)) */
+    /* Ombre réaliste pour donner de la profondeur et un aspect tangible, sans lueur */
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15), /* Ombre plus diffuse pour un effet "flottant" doux */
+                0 5px 10px rgba(0, 0, 0, 0.08); /* Ombre plus nette pour la définition */
+    transition: transform 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
+    border: 1px solid #E0E0E0; /* Bordure très fine et discrète pour délimiter l'objet */
+    animation: none; /* Supprime toutes les animations de pulsation */
+}
+
+.initial-preview-section .product-mockup:hover {
+    transform: translateY(-5px) scale(1.01); /* Léger soulèvement et agrandissement au survol pour l'interactivité */
+    /* Ombre accentuée pour l'effet de soulèvement */
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2),
+                0 8px 15px rgba(0, 0, 0, 0.12);
+    border-color: #D8222B; /* Bordure Rouge Canada au survol pour un feedback visuel */
+    animation: none; /* S'assure que l'animation est toujours désactivée au survol */
+}
+
+
+/* --- MEDIA QUERIES : Initial Preview Section --- */
+@media (max-width: 768px) {
+    .initial-preview-section {
+        padding: calc(var(--spacing-unit) * 6) 0;
+    }
+    .initial-preview-section .product-mockup {
+        max-width: 400px;
+        box-shadow: 0 0 25px rgba(0, 201, 255, 0.5); /* Ombre ajustée pour mobile */
+    }
+}
+@media (max-width: 480px) {
+    .initial-preview-section {
+        padding: calc(var(--spacing-unit) * 4) 0;
+    }
+    .initial-preview-section .product-mockup {
+        max-width: 300px;
+        border-radius: calc(var(--spacing-unit) * 1.5);
+        box-shadow: 0 0 20px rgba(0, 201, 255, 0.4);
+    }
+}
 
 
 /* ========================================= */
-/* --- HERO SECTION - Guide Immigration Canada (Optimisé Conversion) --- */
+/* 4.--- HERO SECTION - Guide Immigration Canada (Optimisé Conversion) --- */
 /* ========================================= */
 .hero-section {
     background: linear-gradient(160deg, #E6F2F7 0%, #D1E7F2 100%);
@@ -500,9 +677,8 @@ section h2::after {
 }
 
 
-
 /* ========================================= */
-/* --- PROBLEM SECTION - Défis de l'Immigration (Optimisé Conversion) --- */
+/* 5.--- PROBLEM SECTION - Défis de l'Immigration (Optimisé Conversion) --- */
 /* ========================================= */
 .problem-section {
     /* Fond apaisant et professionnel, légèrement contrasté avec le Hero Section */
@@ -918,1448 +1094,6 @@ section h2::after {
     .solution-section .cta-button.main-cta {
         font-size: 1.1em;
         padding: 12px 20px;
-    }
-}
-
-/* ========================================= */
-/* --- APERÇU DU CONTENU--- */
-/* ========================================= */
-/* Variables (assurez-vous qu'elles sont définies plus haut dans votre CSS si ce n'est pas déjà fait) */
-:root {
-    --spacing-unit: 10px; /* Exemple, ajustez si nécessaire */
-    /* ... autres variables si vous en avez ... */
-}
-
-/* Styles existants pour .guide-preview-section et ses enfants */
-.guide-preview-section {
-    background-color: #F8F8F8;
-    padding: calc(var(--spacing-unit) * 10) 0;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-    color: #333333;
-}
-
-.guide-preview-section .icon-section {
-    font-size: 5.5em;
-    color: #004678;
-    margin-bottom: calc(var(--spacing-unit) * 4);
-    position: relative;
-    z-index: 1;
-}
-
-.guide-preview-section h2 {
-    font-size: 3.8em;
-    color: #004678;
-    line-height: 1.2;
-    margin-bottom: calc(var(--spacing-unit) * 3);
-    font-weight: 800;
-    font-family: 'Poppins', sans-serif;
-    position: relative;
-    z-index: 1;
-}
-
-.guide-preview-section .section-intro {
-    font-size: 1.25em;
-    text-align: center;
-    max-width: 850px;
-    margin: 0 auto calc(var(--spacing-unit) * 4) auto;
-    color: #555555;
-    line-height: 1.7;
-    position: relative;
-    z-index: 1;
-}
-
-.guide-preview-section .click-instruction {
-    font-size: 1.1em;
-    color: #00609B;
-    font-weight: 600;
-    margin-bottom: calc(var(--spacing-unit) * 5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: calc(var(--spacing-unit) * 1);
-    text-shadow: 0 0 5px rgba(0, 96, 155, 0.2);
-    padding: calc(var(--spacing-unit) * 1) 0;
-}
-
-.animated-hand {
-    animation: wave 2s infinite ease-in-out;
-    transform-origin: bottom right;
-    display: inline-block;
-    font-size: 1.3em;
-    color: #D8222B;
-}
-
-@keyframes wave {
-    0% { transform: rotate(0deg); }
-    15% { transform: rotate(14deg); }
-    30% { transform: rotate(-8deg); }
-    45% { transform: rotate(14deg); }
-    60% { transform: rotate(-4deg); }
-    75% { transform: rotate(10deg); }
-    100% { transform: rotate(0deg); }
-}
-
-.access-platform-showcase {
-    max-width: 500px;
-    margin: 0 auto calc(var(--spacing-unit) * 6) auto;
-    border: 1px solid #D9E3EB;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-    background-color: #FFFFFF;
-}
-
-.access-platform-showcase img {
-    width: 100%;
-    height: auto;
-    display: block;
-}
-
-.access-platform-showcase .image-description {
-    font-size: 1em;
-    color: #666;
-    padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 2);
-    text-align: center;
-    line-height: 1.5;
-    background-color: #fcfcfc;
-    border-top: 1px solid #eee;
-}
-
-.separator {
-    width: 100px;
-    height: 4px;
-    background-color: #00609B;
-    margin: calc(var(--spacing-unit) * 8) auto;
-    border-radius: 2px;
-}
-
-.preview-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    /* AJUSTEMENT : Augmenter le gap vertical si besoin, et s'assurer d'un bon gap horizontal */
-    gap: calc(var(--spacing-unit) * 5) calc(var(--spacing-unit) * 4); /* Vertical, Horizontal */
-    margin-top: calc(var(--spacing-unit) * 5);
-    /* AJUSTEMENT : S'assurer d'un padding latéral suffisant pour éviter que les bords des cartes ne touchent l'écran */
-    padding: 0 calc(var(--spacing-unit) * 3); /* Augmenté légèrement pour desktop/tablet */
-}
-
-.preview-item {
-    background-color: #FFFFFF;
-    border-radius: 8px;
-    border: 1px solid #D9E3EB;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    text-align: left;
-    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-    cursor: pointer;
-    /* AJOUT : Assurer un padding interne si le contenu se collait aux bords */
-    padding-bottom: calc(var(--spacing-unit) * 2.5); /* Pour que le bas ne soit pas trop collé si le texte est long */
-}
-
-.preview-item:hover {
-    transform: translateY(-5px) scale(1.01);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-}
-
-.preview-item .image-wrapper {
-    position: relative;
-    width: 100%;
-    padding-bottom: 75%; /* Ratio 4:3 pour l'espace de l'image */
-    overflow: hidden;
-    background-color: #f0f0f0;
-}
-
-.preview-item img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.3s ease-in-out;
-}
-
-.preview-item:hover img {
-    transform: scale(1.05);
-}
-
-.preview-item .overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 70, 120, 0.6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.3s ease-in-out;
-}
-
-.preview-item:hover .overlay {
-    opacity: 1;
-}
-
-.preview-item .overlay i {
-    color: #FFF;
-    font-size: 2.5em;
-}
-
-.preview-item .item-content {
-    /* AJUSTEMENT : Assurer des paddings généreux pour le texte */
-    padding: calc(var(--spacing-unit) * 2.5) calc(var(--spacing-unit) * 3);
-    text-align: left;
-    /* AJOUT : Uniformiser la hauteur si les textes ont des longueurs très différentes */
-    min-height: 120px; /* Exemple de hauteur minimale, ajustez si besoin */
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start; /* Aligne le contenu en haut */
-}
-
-.preview-item h3 {
-    font-size: 1.5em;
-    color: #004678;
-    margin-bottom: calc(var(--spacing-unit) * 1);
-    font-weight: 700;
-    line-height: 1.3;
-}
-
-.preview-item p {
-    font-size: 0.95em;
-    color: #555555;
-    line-height: 1.6;
-    /* AJOUT : Marge pour séparer les paragraphes si plusieurs dans le futur */
-    margin-bottom: 0; /* Important pour éviter un double padding-bottom avec le parent */
-}
-
-.text-center {
-    margin-top: calc(var(--spacing-unit) * 8);
-    padding-bottom: calc(var(--spacing-unit) * 2);
-}
-
-/* Styles pour la modale (inchangés) */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    padding-top: 60px;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.9);
-}
-
-.modal-content {
-    margin: auto;
-    display: block;
-    max-width: 90%;
-    max-height: 90%;
-    object-fit: contain;
-}
-
-#caption {
-    margin: auto;
-    display: block;
-    width: 80%;
-    max-width: 700px;
-    text-align: center;
-    color: #ccc;
-    padding: 10px 0;
-    height: 150px;
-}
-
-.close-button {
-    position: absolute;
-    top: 15px;
-    right: 35px;
-    color: #f1f1f1;
-    font-size: 40px;
-    font-weight: bold;
-    transition: 0.3s;
-    cursor: pointer;
-}
-
-.close-button:hover,
-.close-button:focus {
-    color: #bbb;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.prev-button, .next-button {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 3em;
-    color: #f1f1f1;
-    cursor: pointer;
-    padding: 10px;
-    z-index: 1001;
-    transition: 0.3s;
-}
-
-.prev-button {
-    left: 20px;
-}
-
-.next-button {
-    right: 20px;
-}
-
-.prev-button:hover, .next-button:hover {
-    color: #bbb;
-}
-
-/* --- MEDIA QUERIES : Guide Preview Section --- */
-@media (max-width: 768px) {
-    .guide-preview-section {
-        padding: calc(var(--spacing-unit) * 8) 0;
-    }
-    .guide-preview-section .icon-section {
-        font-size: 4.5em;
-        margin-bottom: calc(var(--spacing-unit) * 3);
-    }
-    .guide-preview-section h2 {
-        font-size: 2.8em;
-    }
-    .guide-preview-section .section-intro {
-        font-size: 1.1em;
-        margin-bottom: calc(var(--spacing-unit) * 3);
-    }
-    .guide-preview-section .click-instruction {
-        font-size: 1em;
-        margin-bottom: calc(var(--spacing-unit) * 4);
-    }
-    .animated-hand {
-        font-size: 1.2em;
-    }
-    .access-platform-showcase {
-        max-width: 100%;
-        margin-left: calc(var(--spacing-unit) * 2);
-        margin-right: calc(var(--spacing-unit) * 2);
-        margin-bottom: calc(var(--spacing-unit) * 5);
-    }
-    .access-platform-showcase .image-description {
-        font-size: 0.9em;
-        padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 1.5);
-    }
-    .separator {
-        margin: calc(var(--spacing-unit) * 7) auto;
-    }
-
-    .preview-grid {
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        /* AJUSTEMENT : Augmentation du gap vertical pour mobile/tablet */
-        gap: calc(var(--spacing-unit) * 4) calc(var(--spacing-unit) * 3); /* Vertical, Horizontal */
-        margin-top: calc(var(--spacing-unit) * 4);
-        /* AJUSTEMENT : Plus de padding latéral pour les bords */
-        padding: 0 calc(var(--spacing-unit) * 3); /* Augmenté */
-    }
-    .preview-item .image-wrapper {
-        padding-bottom: 70%;
-    }
-    .preview-item .item-content {
-        padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 2.5);
-        /* AJUSTEMENT : Maintenir la min-height pour la consistance */
-        min-height: 110px; /* Ajusté pour mobile */
-    }
-    .preview-item h3 {
-        font-size: 1.2em;
-    }
-    .preview-item p {
-        font-size: 0.9em;
-    }
-    .modal-content {
-        max-width: 95%;
-        max-height: 95%;
-    }
-    .text-center {
-        margin-top: calc(var(--spacing-unit) * 7);
-    }
-}
-
-@media (max-width: 480px) {
-    .guide-preview-section .icon-section {
-        font-size: 3.5em;
-    }
-    .guide-preview-section h2 {
-        font-size: 2.2em;
-    }
-    .guide-preview-section .section-intro {
-        font-size: 1em;
-    }
-    .guide-preview-section .click-instruction {
-        font-size: 0.9em;
-        margin-bottom: calc(var(--spacing-unit) * 3.5);
-    }
-    .animated-hand {
-        font-size: 1.1em;
-    }
-    .access-platform-showcase {
-        margin-left: calc(var(--spacing-unit) * 1.5);
-        margin-right: calc(var(--spacing-unit) * 1.5);
-        margin-bottom: calc(var(--spacing-unit) * 4);
-    }
-    .access-platform-showcase .image-description {
-        font-size: 0.85em;
-        padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 1.5);
-    }
-    .separator {
-        margin: calc(var(--spacing-unit) * 5) auto;
-    }
-    .preview-grid {
-        grid-template-columns: 1fr;
-        /* AJUSTEMENT : Augmentation du gap vertical pour très petit mobile */
-        gap: calc(var(--spacing-unit) * 3.5); /* Vertical */
-        margin-top: calc(var(--spacing-unit) * 3.5);
-        /* AJUSTEMENT : Encore plus de padding latéral pour les bords */
-        padding: 0 calc(var(--spacing-unit) * 2.5); /* Augmenté */
-    }
-    .preview-item .image-wrapper {
-        padding-bottom: 65%;
-    }
-    .preview-item .item-content {
-        padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 2);
-        /* AJUSTEMENT : Maintenir la min-height pour la consistance */
-        min-height: 100px; /* Ajusté pour très petit mobile */
-    }
-    .preview-item h3 {
-        font-size: 1.1em;
-    }
-    .preview-item p {
-        font-size: 0.85em;
-    }
-    .prev-button, .next-button {
-        font-size: 2.5em;
-    }
-    .text-center {
-        margin-top: calc(var(--spacing-unit) * 6);
-    }
-}
-
-
-/* ========================================= */
-/* --- STORY SECTION - L'Histoire de Réussite (Optimisé Conversion) --- */
-/* ========================================= */
-.aisha-story-section {
-    /* Fond apaisant pour raconter une histoire personnelle, propice à l'empathie */
-    background-color: #E6F2F7; /* Un bleu très clair, doux et accueillant */
-    padding: calc(var(--spacing-unit) * 10) 0; /* Garde le padding d'origine */
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-    color: #333333; /* Texte sombre pour la lisibilité */
-}
-
-/* Effet de fond : lignes de temps lumineuses ou flux de données : Supprimé car futuriste */
-.aisha-story-section::before {
-    content: none; /* Supprime l'effet futuriste */
-    animation: none;
-}
-
-/* @keyframes background-pulse : Supprimé */
-
-.aisha-story-section .icon-section {
-    font-size: 5.5em; /* Garde la taille d'origine */
-    color: #004678; /* Bleu marine profond pour l'icône principale (chemin, guidance) */
-    text-shadow: none; /* Supprime les lueurs futuristes */
-    margin-bottom: calc(var(--spacing-unit) * 4); /* Garde la marge d'origine */
-    animation: none; /* Supprime l'animation de pulsation */
-    position: relative;
-    z-index: 1;
-}
-
-/* @keyframes icon-time-pulse : Supprimé */
-
-.aisha-story-section h2 {
-    font-size: 3.8em; /* Garde la taille d'origine */
-    color: #004678; /* Bleu marine pour le titre */
-    line-height: 1.2;
-    margin-bottom: calc(var(--spacing-unit) * 5); /* Garde la marge d'origine */
-    font-weight: 800;
-    font-family: 'Poppins', sans-serif;
-    text-shadow: none; /* Supprime les lueurs */
-    position: relative;
-    z-index: 1;
-}
-
-.aisha-story-section .aisha-story-block {
-    /* Fond clair pour le bloc d'histoire, mettant en valeur le texte */
-    background-color: #FFFFFF; /* Blanc pur pour la clarté */
-    /* Bordure latérale : Rouge Canada pour le problème, Vert succès pour la solution */
-    border-left: 5px solid #D8222B; /* Bordure Rouge Canada pour la phase "problème" */
-    padding: calc(var(--spacing-unit) * 5); /* Garde le padding d'origine */
-    border-radius: 8px; /* Bords légèrement arrondis pour un look professionnel */
-    /* Ombre douce et professionnelle, sans lueurs futuristes */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    max-width: 850px; /* Garde le max-width d'origine */
-    margin: 0 auto calc(var(--spacing-unit) * 5) auto; /* Garde les marges d'origine */
-    text-align: left;
-    /* Bordures fines et subtiles */
-    border-right: 1px solid #D9E3EB; /* Gris-bleu clair */
-    border-top: 1px solid #D9E3EB;
-    border-bottom: 1px solid #D9E3EB;
-    backdrop-filter: none; /* Supprime l'effet glassmorphism */
-    -webkit-backdrop-filter: none;
-    position: relative;
-    z-index: 1;
-    animation: story-reveal 2s ease-out forwards; /* Garde l'animation de révélation */
-}
-
-@keyframes story-reveal {
-    0% { opacity: 0; transform: translateY(20px); border-left-color: #D8222B; } /* Commence en Rouge Canada */
-    50% { opacity: 1; transform: translateY(0); border-left-color: #D8222B; } /* Transition en Rouge Canada */
-    100% { 
-        border-left-color: #00A859; /* Termine en Vert succès */
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Ombre douce à la fin */
-    }
-}
-
-
-.aisha-story-section .aisha-story-block p {
-    font-size: 1.15em; /* Garde la taille d'origine */
-    color: #555555; /* Gris foncé pour le texte, très lisible */
-    line-height: 1.7;
-    margin-bottom: calc(var(--spacing-unit) * 2.5); /* Garde la marge d'origine */
-}
-.aisha-story-section .aisha-story-block p strong {
-    color: #D8222B; /* Les mots clés du problème en Rouge Canada */
-    text-shadow: none; /* Supprime les lueurs */
-    transition: color 1s ease-in-out; /* Garde la transition de couleur */
-}
-
-/* Applique la couleur de solution aux paragraphes spécifiques qui décrivent la solution */
-/* Les sélecteurs doivent correspondre aux paragraphes où la solution est introduite */
-.aisha-story-section .aisha-story-block p:nth-child(3) strong, /* "C'est là qu'il a découvert le Guide TargetMax" */
-.aisha-story-section .aisha-story-block p:nth-child(4) strong, /* "Chaque module du guide était une révélation" */
-.aisha-story-section .aisha-story-block p:nth-child(5) strong { /* "Aujourd'hui, Karim est fier..." */
-    color: #00A859; /* Mots clés de la solution en Vert succès */
-    text-shadow: none; /* Supprime les lueurs */
-}
-
-.aisha-story-section .aisha-story-block p:last-child {
-    margin-bottom: 0;
-}
-
-.aisha-story-section .story-lesson-text {
-    font-size: 1.4em; /* Garde la taille d'origine */
-    font-weight: 600;
-    color: #004678; /* Bleu marine pour la leçon finale, autoritaire et rassurante */
-    text-shadow: none; /* Supprime les lueurs */
-    max-width: 900px; /* Garde le max-width d'origine */
-    margin: 0 auto;
-    line-height: 1.6;
-    margin-bottom: calc(var(--spacing-unit) * 5); /* Garde la marge d'origine */
-    position: relative;
-    z-index: 1;
-}
-
-.aisha-story-section .cta-button {
-    /* Reprise du style du CTA du Hero pour la cohérence */
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 18px 35px; /* Garde le padding d'origine */
-    border-radius: 8px; /* Coins légèrement arrondis pour un look professionnel (cohérent avec le Hero) */
-    text-decoration: none;
-    font-size: 1.5em; /* Garde la taille d'origine */
-    font-weight: 800;
-    color: #FFF; /* Texte blanc */
-    background: #D8222B; /* Rouge Canada vibrant pour l'action principale (cohérent avec le Hero) */
-    /* Ombre douce pour un effet de profondeur et d'importance */
-    box-shadow: 0 8px 20px rgba(216, 34, 43, 0.4);
-    transition: all 0.3s ease-in-out;
-    letter-spacing: 0.02em; /* Espacement de lettres subtil (cohérent avec le Hero) */
-    text-transform: uppercase;
-    text-shadow: none; /* Pas de lueur */
-    border: none; /* Pas de bordure */
-    margin-top: calc(var(--spacing-unit) * 4); /* Garde l'espacement d'origine */
-    position: relative;
-    z-index: 1;
-}
-
-.aisha-story-section .cta-button:hover {
-    background: #BF0A30; /* Rouge Canada plus profond au survol */
-    /* Ombre plus prononcée pour l'effet de soulèvement */
-    box-shadow: 0 12px 25px rgba(216, 34, 43, 0.5);
-    transform: translateY(-3px); /* Léger effet de soulèvement */
-}
-
-.aisha-story-section .aisha-disclaimer-text {
-    font-size: 0.9em; /* Garde la taille d'origine */
-    color: #808080; /* Gris moyen pour le disclaimer, lisible et discret */
-    margin-top: calc(var(--spacing-unit) * 2.5); /* Garde la marge d'origine */
-    text-align: center;
-    position: relative;
-    z-index: 1;
-    text-shadow: none; /* Supprime les lueurs */
-}
-
-/* --- MEDIA QUERIES : Aisha Story Section --- */
-@media (max-width: 768px) {
-    .aisha-story-section {
-        padding: calc(var(--spacing-unit) * 8) 0;
-    }
-    .aisha-story-section .icon-section {
-        font-size: 4.5em;
-        margin-bottom: calc(var(--spacing-unit) * 3);
-    }
-    .aisha-story-section h2 {
-        font-size: 2.8em;
-        margin-bottom: calc(var(--spacing-unit) * 4);
-    }
-    .aisha-story-section .aisha-story-block {
-        padding: calc(var(--spacing-unit) * 4);
-        margin-bottom: calc(var(--spacing-unit) * 4);
-    }
-    .aisha-story-section .aisha-story-block p {
-        font-size: 1.05em;
-    }
-    .aisha-story-section .story-lesson-text {
-        font-size: 1.2em;
-        margin-bottom: calc(var(--spacing-unit) * 4);
-    }
-    .aisha-story-section .cta-button {
-        font-size: 1.3em;
-        padding: 15px 25px;
-        margin-top: calc(var(--spacing-unit) * 3);
-    }
-    .aisha-story-section .aisha-disclaimer-text {
-        font-size: 0.8em;
-    }
-}
-
-@media (max-width: 480px) {
-    .aisha-story-section .icon-section {
-        font-size: 3.5em;
-    }
-    .aisha-story-section h2 {
-        font-size: 2.2em;
-    }
-    .aisha-story-section .aisha-story-block {
-        padding: calc(var(--spacing-unit) * 3);
-    }
-    .aisha-story-section .aisha-story-block p {
-        font-size: 0.95em;
-    }
-    .aisha-story-section .story-lesson-text {
-        font-size: 1.1em;
-    }
-    .aisha-story-section .cta-button {
-        font-size: 1.1em;
-        padding: 12px 20px;
-    }
-}
-
-
-
-/* ========================================= */
-/* --- MEDIA QUERIES (RESPONSIVE DESIGN) --- */
-/* (Ordre du plus grand au plus petit pour max-width) */
-/* ========================================= */
-
-@media (max-width: 992px) {
-    /* Ajustements généraux pour tablettes (992px et moins) */
-    section {
-        padding: calc(var(--spacing-unit) * 7.5) 0; /* 60px -> 7.5 * 8 = 60px */
-    }
-    section h2 {
-        font-size: 2.8em;
-        margin-bottom: calc(var(--spacing-unit) * 2.5); /* 20px -> 2.5 * 8 = 20px */
-        padding-bottom: calc(var(--spacing-unit) * 1.875); /* 15px -> 1.875 * 8 = 15px */
-    }
-    section h2::after {
-        width: 60px;
-        height: 3px;
-        margin: calc(var(--spacing-unit) * 1.25) auto 0 auto; /* 10px -> 1.25 * 8 = 10px */
-    }
-    .icon-section {
-        color: var(--color-primary-blue);
-        margin-bottom: calc(var(--spacing-unit) * 2.5); /* 20px -> 2.5 * 8 = 20px */
-    }
-    .section-intro {
-        font-size: 1.15em;
-        margin-bottom: calc(var(--spacing-unit) * 5); /* 40px -> 5 * 8 = 40px */
-    }
-
-    /* Hero Section */
-    .hero-section {
-        padding: calc(var(--spacing-unit) * 10) 0; /* 80px -> 10 * 8 = 80px */
-    }
-    .hero-section h1 {
-        font-size: 3.5em;
-    }
-    .hero-section .subtitle {
-        font-size: 1.5em;
-    }
-    .hero-section .intro-paragraph {
-        font-size: 1.05em;
-        margin-bottom: calc(var(--spacing-unit) * 5); /* 40px -> 5 * 8 = 40px */
-    }
-    .hero-section .cta-subtext {
-        font-size: 1em;
-    }
-
-    /* Problem Section */
-    .problem-section h2 {
-        font-size: 2.5em;
-    }
-    .problem-section .intro-problem-text {
-        font-size: 1.1em;
-        margin-bottom: calc(var(--spacing-unit) * 3.75); /* 30px -> 3.75 * 8 = 30px */
-    }
-    .problem-scenarios-grid {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: calc(var(--spacing-unit) * 3.125); /* 25px -> 3.125 * 8 = 25px */
-        margin-bottom: calc(var(--spacing-unit) * 5); /* 40px -> 5 * 8 = 40px */
-    }
-    .scenario-item {
-        padding: calc(var(--spacing-unit) * 3.125); /* 25px -> 3.125 * 8 = 25px */
-    }
-    .scenario-item .scenario-icon {
-        font-size: 3em;
-    }
-    .scenario-item h3 {
-        font-size: 1.4em;
-    }
-    .problem-section .call-to-action-problem {
-        font-size: 1.2em;
-        margin-top: calc(var(--spacing-unit) * 5); /* 40px -> 5 * 8 = 40px */
-    }
-
-    /* Solution Section */
-    .solution-grid {
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: calc(var(--spacing-unit) * 3.125); /* 25px -> 3.125 * 8 = 25px */
-    }
-    .solution-item {
-        padding: calc(var(--spacing-unit) * 3.125); /* 25px -> 3.125 * 8 = 25px */
-    }
-    .solution-item h3 {
-        font-size: 1.4em;
-    }
-    .solution-item h3 i {
-        font-size: 1.1em;
-    }
-    .solution-item p {
-        font-size: 1em;
-    }
-
-    /* Content/Themes Section */
-    .themes-grid {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: calc(var(--spacing-unit) * 3.125); /* 25px -> 3.125 * 8 = 25px */
-        margin-bottom: calc(var(--spacing-unit) * 5); /* 40px -> 5 * 8 = 40px */
-    }
-    .theme-item {
-        padding: calc(var(--spacing-unit) * 3.125); /* 25px -> 3.125 * 8 = 25px */
-    }
-    .theme-item .theme-icon {
-        font-size: 3em;
-    }
-    .theme-item h3 {
-        font-size: 1.4em;
-    }
-
-    /* Aisha Story Section */
-    .aisha-story-section h2 {
-        font-size: 2.5em;
-    }
-    .aisha-story-section .aisha-story-block {
-        padding: calc(var(--spacing-unit) * 3.75); /* 30px -> 3.75 * 8 = 30px */
-    }
-    .aisha-story-section .aisha-story-block p {
-        font-size: 1.1em;
-    }
-    .aisha-story-section .story-lesson-text {
-        font-size: 1.2em;
-    }
-
-    /* Garantie Section */
-    .guarantee-content-block {
-        padding: calc(var(--spacing-unit) * 4.375); /* 35px -> 4.375 * 8 = 35px */
-    }
-    .guarantee-content-block .guarantee-icon-large {
-        font-size: 3.5em;
-        margin-bottom: calc(var(--spacing-unit) * 2.5); /* 20px -> 2.5 * 8 = 20px */
-    }
-    .guarantee-content-block h3 {
-        font-size: 1.8em;
-    }
-    .guarantee-content-block p {
-        font-size: 1.05em;
-    }
-    .guarantee-content-block .guarantee-cta-text {
-        font-size: 1.1em;
-    }
-}
-
-@media (max-width: 768px) {
-    /* Ajustements généraux pour mobiles et tablettes plus petites (768px et moins) */
-    section {
-        padding: calc(var(--spacing-unit) * 5) 0; /* 40px -> 5 * 8 = 40px */
-    }
-    section h2 {
-        font-size: 2.2em;
-        margin-bottom: calc(var(--spacing-unit) * 1.875); /* 15px -> 1.875 * 8 = 15px */
-        padding-bottom: calc(var(--spacing-unit) * 1.25); /* 10px -> 1.25 * 8 = 10px */
-    }
-    section h2::after {
-        width: 50px;
-        height: 2px;
-        margin: calc(var(--spacing-unit) * 0.625) auto 0 auto; /* 5px -> 0.625 * 8 = 5px */
-    }
-    .icon-section {
-        color: var(--color-primary-blue);
-        margin-bottom: calc(var(--spacing-unit) * 1.875); /* 15px -> 1.875 * 8 = 15px */
-    }
-    .section-intro {
-        font-size: 1em;
-        margin-bottom: calc(var(--spacing-unit) * 3.75); /* 30px -> 3.75 * 8 = 30px */
-    }
-
-    .hero-section {
-        padding: calc(var(--spacing-unit) * 7.5) 0; /* 60px -> 7.5 * 8 = 60px */
-    }
-    .hero-section h1 {
-        font-size: 2.8em;
-    }
-    .hero-section .subtitle {
-        font-size: 1.3em;
-    }
-    .hero-section .intro-paragraph {
-        font-size: 1em;
-        margin-bottom: calc(var(--spacing-unit) * 3.75); /* 30px -> 3.75 * 8 = 30px */
-    }
-    .hero-section .cta-subtext {
-        font-size: 0.95em;
-    }
-
-    .problem-section h2 {
-        font-size: 2.2em;
-    }
-    .problem-section .intro-problem-text {
-        font-size: 1em;
-        margin-bottom: calc(var(--spacing-unit) * 2.5); /* 20px -> 2.5 * 8 = 20px */
-    }
-    .problem-scenarios-grid {
-        grid-template-columns: 1fr;
-        gap: calc(var(--spacing-unit) * 2.5); /* 20px -> 2.5 * 8 = 20px */
-        margin-bottom: calc(var(--spacing-unit) * 3.75); /* 30px -> 3.75 * 8 = 30px */
-    }
-    .scenario-item {
-        padding: calc(var(--spacing-unit) * 2.5); /* 20px -> 2.5 * 8 = 20px */
-    }
-    .scenario-item .scenario-icon {
-        font-size: 2.5em;
-    }
-    .scenario-item h3 {
-        font-size: 1.2em;
-    }
-    .problem-section .call-to-action-problem {
-        font-size: 1.1em;
-        margin-top: calc(var(--spacing-unit) * 3.75); /* 30px -> 3.75 * 8 = 30px */
-    }
-
-    .solution-grid {
-        grid-template-columns: 1fr;
-        gap: calc(var(--spacing-unit) * 2.5); /* 20px -> 2.5 * 8 = 20px */
-    }
-    .solution-item {
-        padding: calc(var(--spacing-unit) * 2.5); /* 20px -> 2.5 * 8 = 20px */
-    }
-    .solution-item h3 {
-        font-size: 1.2em;
-    }
-    .solution-item h3 i {
-        font-size: 1em;
-    }
-    .solution-item p {
-        font-size: 0.95em;
-    }
-
-    .themes-grid {
-        grid-template-columns: 1fr;
-        gap: calc(var(--spacing-unit) * 2.5); /* 20px -> 2.5 * 8 = 20px */
-        margin-bottom: calc(var(--spacing-unit) * 3.75); /* 30px -> 3.75 * 8 = 30px */
-    }
-    .theme-item {
-        padding: calc(var(--spacing-unit) * 2.5); /* 20px -> 2.5 * 8 = 20px */
-    }
-    .theme-item .theme-icon {
-        font-size: 2.5em;
-    }
-    .theme-item h3 {
-        font-size: 1.2em;
-    }
-
-    /* Aisha Story Section */
-    .aisha-story-section h2 {
-        font-size: 2em;
-    }
-    .aisha-story-section .aisha-story-block {
-        padding: calc(var(--spacing-unit) * 2.5); /* 20px -> 2.5 * 8 = 20px */
-        margin-bottom: calc(var(--spacing-unit) * 3.125); /* 25px -> 3.125 * 8 = 25px */
-    }
-    .aisha-story-section .aisha-story-block p {
-        font-size: 0.95em;
-    }
-    .aisha-story-section .story-lesson-text {
-        font-size: 1em;
-    }
-
-    /* Garantie Section */
-    .guarantee-section {
-        padding: calc(var(--spacing-unit) * 7.5) 0; /* 60px -> 7.5 * 8 = 60px */
-    }
-    .guarantee-content-block {
-        margin-top: calc(var(--spacing-unit) * 5); /* 40px -> 5 * 8 = 40px */
-        padding: calc(var(--spacing-unit) * 3.75); /* 30px -> 3.75 * 8 = 30px */
-    }
-    .guarantee-content-block .guarantee-icon-large {
-        font-size: 3em;
-        margin-bottom: calc(var(--spacing-unit) * 1.875); /* 15px -> 1.875 * 8 = 15px */
-    }
-    .guarantee-content-block h3 {
-        font-size: 1.6em;
-    }
-    .guarantee-content-block p {
-        font-size: 1em;
-    }
-    .guarantee-content-block .guarantee-cta-text {
-        font-size: 1.05em;
-    }
-
-    /* Footer adjustments for small screens */
-    .footer-grid-layout {
-        grid-template-columns: 1fr;
-        gap: calc(var(--spacing-unit) * 3.75); /* 30px -> 3.75 * 8 = 30px */
-    }
-    .footer-nav-area,
-    .footer-info-area {
-        text-align: center;
-    }
-    .footer-nav-area h4,
-    .footer-info-area h4 {
-        text-align: center;
-        margin-bottom: calc(var(--spacing-unit) * 1.875); /* 15px -> 1.875 * 8 = 15px */
-    }
-    .footer-social {
-        justify-content: center;
-        margin-top: calc(var(--spacing-unit) * 1.875); /* 15px -> 1.875 * 8 = 15px */
-    }
-    .footer-social a {
-        margin: 0 calc(var(--spacing-unit) * 1.25); /* 10px -> 1.25 * 8 = 10px */
-    }
-}
-
-@media (max-width: 480px) {
-    /* Ajustements généraux pour mobiles étroits (480px et moins) */
-    .container {
-        padding: 0 calc(var(--spacing-unit) * 1.875); /* 15px -> 1.875 * 8 = 15px */
-    }
-    section h2 {
-        font-size: 1.8em;
-    }
-    .hero-section h1 {
-        font-size: 2.2em;
-    }
-    .hero-section .subtitle {
-        font-size: 1.1em;
-    }
-    .problem-section h2,
-    .solution-section h2,
-    .content-section h2,
-    .aisha-story-section h2 {
-        font-size: 1.8em;
-    }
-    .scenario-item .scenario-icon,
-    .theme-item .theme-icon {
-        font-size: 2em;
-    }
-    .scenario-item h3,
-    .theme-item h3 {
-        font-size: 1.1em;
-    }
-
-    /* Garantie Section */
-    .guarantee-content-block {
-        padding: calc(var(--spacing-unit) * 3.125); /* 25px -> 3.125 * 8 = 25px */
-    }
-    .guarantee-content-block .guarantee-icon-large {
-        font-size: 2.5em;
-    }
-    .guarantee-content-block h3 {
-        font-size: 1.4em;
-    }
-    .guarantee-content-block p {
-        font-size: 0.95em;
-    }
-    .guarantee-content-block .guarantee-cta-text {
-        font-size: 1em;
-    }
-
-    /* Footer adjustments for small screens */
-    .footer-grid-layout {
-        grid-template-columns: 1fr;
-        gap: calc(var(--spacing-unit) * 3.75); /* 30px -> 3.75 * 8 = 30px */
-    }
-    .footer-nav-area,
-    .footer-info-area {
-        text-align: center;
-    }
-    .footer-nav-area h4,
-    .footer-info-area h4 {
-        text-align: center;
-        margin-bottom: calc(var(--spacing-unit) * 1.875); /* 15px -> 1.875 * 8 = 15px */
-    }
-    .footer-social {
-        justify-content: center;
-        margin-top: calc(var(--spacing-unit) * 1.875); /* 15px -> 1.875 * 8 = 15px */
-    }
-    .footer-social a {
-        margin: 0 calc(var(--spacing-unit) * 1.25); /* 10px -> 1.25 * 8 = 10px */
-    }
-
-    /* Header & Mockup */
-    .main-header {
-        padding: calc(var(--spacing-unit) * 1.25) 0; /* 10px -> 1.25 * 8 = 10px */
-    }
-    .main-header .logo img {
-        max-height: 35px;
-    }
-    .initial-preview-section {
-        padding: calc(var(--spacing-unit) * 2.5) 0; /* 20px -> 2.5 * 8 = 20px */
-    }
-    .initial-preview-section .product-mockup {
-        max-width: 250px;
-    }
-
-    /* Testimonials */
-    .testimonial .fa-quote-left {
-        font-size: 1.8em;
-    }
-    .testimonial p {
-        font-size: 0.9em;
-        padding-left: calc(var(--spacing-unit) * 3.75); /* 30px -> 3.75 * 8 = 30px */
-    }
-    .testimonial .author {
-        font-size: 0.9em;
-    }
-}
-
-/* ========================================= */
-/* --- MAIN HEADER - En-tête Principal (Optimisé Conversion) --- */
-/* ========================================= */
-.main-header {
-    /* Nouveau fond : Un fond clair et professionnel, évoquant la propreté et la confiance */
-    background: linear-gradient(to right, #F9FCFD, #EBF3F8); /* Dégradé de bleus très clairs, presque blancs */
-    padding: calc(var(--spacing-unit) * 3) 0; /* Garde le padding d'origine */
-    /* Bordure subtile et nette, sans lueur */
-    border-bottom: 1px solid #D9E3EB; /* Gris-bleu clair pour une délimitation douce */
-    /* Ombre douce et professionnelle, donnant une légère élévation sans être agressive */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* Ombre très légère et diffuse */
-    position: relative;
-    z-index: 1000; /* Assure qu'il est toujours au-dessus */
-    overflow: hidden; /* Garde l'overflow pour une bonne gestion du contenu */
-}
-
-/* Effet de lueur subtile sur le bas du header : Supprimé car futuriste */
-.main-header::after {
-    content: none; /* Supprime complètement l'élément et son animation futuriste */
-    animation: none;
-}
-
-/* @keyframes header-bottom-glow : Supprimé car l'élément est retiré */
-
-
-.main-header .container {
-    display: flex;
-    justify-content: center; /* Centré par défaut */
-    align-items: center;
-    max-width: var(--container-max-width); /* Utilisation de la variable globale */
-    margin: 0 auto;
-    padding: 0 var(--padding-container-horizontal); /* Utilisation de la variable globale */
-}
-
-@media (min-width: 768px) {
-    .main-header .container {
-        justify-content: flex-start; /* Ou space-between si vous avez un menu à droite */
-    }
-}
-
-.main-header .logo {
-    display: inline-block;
-    transition: transform 0.3s ease-in-out;
-}
-
-.main-header .logo img {
-    max-height: 60px; /* Garde la taille d'origine pour l'impact visuel */
-    width: auto;
-    /* Supprime tous les effets de lueur futuristes et de teinte */
-    filter: none; /* Retire drop-shadow, grayscale, brightness */
-    transition: filter 0.3s ease-in-out, transform 0.3s ease-in-out;
-}
-
-.main-header .logo:hover {
-    transform: scale(1.03); /* Léger zoom au survol (légèrement réduit pour plus de subtilité) */
-}
-
-.main-header .logo:hover img {
-    /* Aucune lueur ou teinte spéciale au survol, le logo reste fidèle */
-    filter: none;
-    /* Optionnel : si le logo est monochrome et que vous voulez une touche de couleur au survol
-    filter: drop-shadow(0 0 5px rgba(216, 34, 43, 0.5)); // Petite ombre rouge subtile
-    */
-}
-
-
-
-/* --- MEDIA QUERIES : Header --- */
-@media (max-width: 768px) {
-    .main-header {
-        padding: calc(var(--spacing-unit) * 2) 0;
-    }
-    .main-header .logo img {
-        max-height: 50px;
-    }
-}
-@media (max-width: 480px) {
-    .main-header {
-        padding: calc(var(--spacing-unit) * 1.5) 0;
-    }
-    .main-header .logo img {
-        max-height: 45px;
-    }
-}
-
-/* ========================================= */
-/* --- INITIAL PREVIEW SECTION - Aperçu du Guide (Optimisé Conversion) --- */
-/* ========================================= */
-.initial-preview-section {
-    background-color: #F8F8F8; /* Un fond très clair, presque blanc, pour la propreté et la clarté */
-    padding: calc(var(--spacing-unit) * 10) 0; /* Garde le padding d'origine */
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-    color: #333333; /* Texte sombre pour un contraste optimal */
-}
-
-/* Effet de fond : Retiré ou très minimaliste pour un style non-futuriste */
-.initial-preview-section::before {
-    content: none; /* Supprime complètement l'effet de fond futuriste */
-    /* Alternative subtile si souhaité :
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: radial-gradient(circle at 50% 10%, rgba(0, 70, 120, 0.02), transparent 70%); // Très léger halo bleu en haut
-    filter: blur(50px);
-    z-index: 0; */
-    animation: none; /* Aucune animation */
-}
-
-
-.initial-preview-section .preview-content {
-    margin-bottom: calc(var(--spacing-unit) * 5); /* Garde l'espacement d'origine */
-    position: relative;
-    z-index: 1;
-}
-
-.initial-preview-section .mockup-display {
-    position: relative;
-    z-index: 1; /* Assure que la maquette est au-dessus du fond */
-    display: inline-block; /* Pour centrer l'ombre de la maquette */
-}
-
-.initial-preview-section .product-mockup {
-    max-width: 500px; /* Garde la taille d'origine pour l'impact visuel */
-    height: auto;
-    margin: 0 auto;
-    display: block;
-    border-radius: calc(var(--spacing-unit) * 1.5); /* Bords légèrement arrondis pour un aspect plus doux et professionnel (légèrement moins que l'original calc(var(--spacing-unit) * 2)) */
-    /* Ombre réaliste pour donner de la profondeur et un aspect tangible, sans lueur */
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15), /* Ombre plus diffuse pour un effet "flottant" doux */
-                0 5px 10px rgba(0, 0, 0, 0.08); /* Ombre plus nette pour la définition */
-    transition: transform 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
-    border: 1px solid #E0E0E0; /* Bordure très fine et discrète pour délimiter l'objet */
-    animation: none; /* Supprime toutes les animations de pulsation */
-}
-
-.initial-preview-section .product-mockup:hover {
-    transform: translateY(-5px) scale(1.01); /* Léger soulèvement et agrandissement au survol pour l'interactivité */
-    /* Ombre accentuée pour l'effet de soulèvement */
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2),
-                0 8px 15px rgba(0, 0, 0, 0.12);
-    border-color: #D8222B; /* Bordure Rouge Canada au survol pour un feedback visuel */
-    animation: none; /* S'assure que l'animation est toujours désactivée au survol */
-}
-
-
-/* --- MEDIA QUERIES : Initial Preview Section --- */
-@media (max-width: 768px) {
-    .initial-preview-section {
-        padding: calc(var(--spacing-unit) * 6) 0;
-    }
-    .initial-preview-section .product-mockup {
-        max-width: 400px;
-        box-shadow: 0 0 25px rgba(0, 201, 255, 0.5); /* Ombre ajustée pour mobile */
-    }
-}
-@media (max-width: 480px) {
-    .initial-preview-section {
-        padding: calc(var(--spacing-unit) * 4) 0;
-    }
-    .initial-preview-section .product-mockup {
-        max-width: 300px;
-        border-radius: calc(var(--spacing-unit) * 1.5);
-        box-shadow: 0 0 20px rgba(0, 201, 255, 0.4);
-    }
-}
-
-
-/* ========================================= */
-/* --- TESTIMONIALS SECTION - Témoignages (Optimisé Conversion) --- */
-/* ========================================= */
-.testimonials-section {
-    /* Fond professionnel et inspirant pour les témoignages */
-    background-color: #004678; /* Bleu marine profond, évoquant la confiance et l'autorité */
-    padding: calc(var(--spacing-unit) * 10) 0; /* Garde le padding d'origine */
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-    color: #FFFFFF; /* Texte blanc par défaut sur fond sombre */
-}
-
-/* Effet de fond : ondes lumineuses ou connexions de données : Supprimé car futuriste */
-.testimonials-section::before {
-    content: none; /* Supprime l'effet futuriste */
-    animation: none;
-}
-
-/* @keyframes radial-pulse : Supprimé */
-
-.testimonials-section .icon-section {
-    font-size: 5.5em; /* Garde la taille d'origine */
-    color: #FFFFFF; /* Icône blanche sur fond bleu, très lisible */
-    text-shadow: none; /* Supprime les lueurs futuristes */
-    margin-bottom: calc(var(--spacing-unit) * 4); /* Garde la marge d'origine */
-    animation: none; /* Supprime l'animation de pulsation */
-    position: relative;
-    z-index: 1;
-}
-
-.testimonials-section h2 {
-    font-size: 3.8em; /* Garde la taille d'origine */
-    color: #FFFFFF; /* Blanc pur pour le titre sur fond bleu */
-    line-height: 1.2;
-    margin-bottom: calc(var(--spacing-unit) * 3); /* Garde la marge d'origine */
-    font-weight: 800;
-    font-family: 'Poppins', sans-serif;
-    text-shadow: none; /* Supprime les lueurs */
-    position: relative;
-    z-index: 1;
-}
-
-.testimonials-section .section-intro {
-    font-size: 1.25em; /* Garde la taille d'origine */
-    text-align: center;
-    max-width: 850px; /* Garde le max-width d'origine */
-    margin: 0 auto calc(var(--spacing-unit) * 6) auto; /* Garde les marges d'origine */
-    color: #D9E3EB; /* Gris-bleu clair pour le texte d'intro, harmonieux sur le fond */
-    line-height: 1.7;
-    position: relative;
-    z-index: 1;
-}
-
-.testimonials-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: calc(var(--spacing-unit) * 5); /* Garde l'espacement d'origine */
-    margin-top: calc(var(--spacing-unit) * 5);
-    margin-bottom: calc(var(--spacing-unit) * 6);
-    position: relative;
-    z-index: 1;
-}
-
-.testimonial {
-    /* Fond clair pour chaque témoignage, pour un contraste maximal avec le fond de section */
-    background-color: #FFFFFF; /* Blanc pur pour la clarté */
-    padding: calc(var(--spacing-unit) * 4); /* Garde le padding d'origine */
-    border-radius: 8px; /* Bords légèrement arrondis pour un look professionnel */
-    /* Bordure subtile et nette */
-    border: 1px solid #D9E3EB; /* Gris-bleu clair */
-    /* Ombre douce pour la profondeur, sans lueur futuriste */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    position: relative;
-    text-align: left;
-    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, background-color 0.3s ease;
-    backdrop-filter: none; /* Supprime l'effet glassmorphism */
-    -webkit-backdrop-filter: none;
-}
-
-.testimonial:hover {
-    transform: translateY(-5px) scale(1.01); /* Soulèvement subtil au survol */
-    /* Ombre accentuée pour l'effet de soulèvement */
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-    background-color: #FDFDFD; /* Très léger changement de fond au survol */
-    border-color: #00609B; /* Bordure bleu "information" au survol */
-}
-
-.testimonial .fa-quote-left {
-    font-size: 3em; /* Garde la taille d'origine */
-    color: #D9E3EB; /* Gris-bleu clair pour le guillemet, subtil et élégant */
-    position: absolute;
-    top: calc(var(--spacing-unit) * 2.5); /* Garde la position d'origine */
-    left: calc(var(--spacing-unit) * 2.5); /* Garde la position d'origine */
-    opacity: 0.8; /* Garde l'opacité d'origine */
-    text-shadow: none; /* Supprime les lueurs */
-}
-
-.testimonial p {
-    font-size: 1.05em; /* Garde la taille d'origine */
-    color: #555555; /* Gris foncé pour le texte du témoignage, très lisible */
-    line-height: 1.7;
-    margin-bottom: calc(var(--spacing-unit) * 2.5); /* Garde la marge d'origine */
-    padding-left: calc(var(--spacing-unit) * 7); /* Garde le padding d'origine */
-    position: relative;
-}
-.testimonial p strong {
-    font-weight: 700;
-    color: #00609B; /* Bleu "information" pour les mots clés importants, cohérent et professionnel */
-    text-shadow: none; /* Supprime les lueurs */
-}
-.testimonial .author {
-    font-size: 1em; /* Garde la taille d'origine */
-    color: #777777; /* Gris un peu plus foncé pour l'auteur, bien lisible */
-    font-style: normal; /* Garde le style normal */
-    text-align: right;
-    margin-top: calc(var(--spacing-unit) * 1.5); /* Garde la marge d'origine */
-    font-weight: 500;
-}
-
-
-/* --- MEDIA QUERIES : Testimonials Section --- */
-@media (max-width: 768px) {
-    .testimonials-section {
-        padding: calc(var(--spacing-unit) * 8) 0;
-    }
-    .testimonials-section .icon-section {
-        font-size: 4.5em;
-        margin-bottom: calc(var(--spacing-unit) * 3);
-    }
-    .testimonials-section h2 {
-        font-size: 2.8em;
-    }
-    .testimonials-section .section-intro {
-        font-size: 1.1em;
-        margin-bottom: calc(var(--spacing-unit) * 4);
-    }
-    .testimonials-grid {
-        gap: calc(var(--spacing-unit) * 3);
-    }
-    .testimonial {
-        padding: calc(var(--spacing-unit) * 3);
-    }
-    .testimonial .fa-quote-left {
-        font-size: 2.5em;
-        top: calc(var(--spacing-unit) * 2);
-        left: calc(var(--spacing-unit) * 2);
-    }
-    .testimonial p {
-        font-size: 1em;
-        padding-left: calc(var(--spacing-unit) * 6);
-    }
-    .testimonial .author {
-        font-size: 0.95em;
-    }
-}
-
-@media (max-width: 480px) {
-    .testimonials-section .icon-section {
-        font-size: 3.5em;
-    }
-    .testimonials-section h2 {
-        font-size: 2.2em;
-    }
-    .testimonials-section .section-intro {
-        font-size: 1em;
-    }
-    .testimonial {
-        padding: calc(var(--spacing-unit) * 2.5);
-    }
-    .testimonial .fa-quote-left {
-        font-size: 2em;
-        top: calc(var(--spacing-unit) * 1.5);
-        left: calc(var(--spacing-unit) * 1.5);
-    }
-    .testimonial p {
-        font-size: 0.95em;
-        padding-left: calc(var(--spacing-unit) * 5);
-    }
-    .testimonial .author {
-        font-size: 0.9em;
-    }
-}
-
-
-/* --- MEDIA QUERIES : Témoignages --- */
-@media (max-width: 992px) {
-    .testimonials-grid {
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 25px;
-    }
-    .testimonial {
-        padding: 25px;
-    }
-    .testimonial .fa-quote-left {
-        font-size: 2.2em;
-        top: 15px;
-        left: 15px;
-    }
-    .testimonial p {
-        font-size: 1em;
-        padding-left: 40px;
-    }
-}
-@media (max-width: 768px) {
-    .testimonials-grid {
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
-    .testimonial {
-        padding: 20px;
-    }
-    .testimonial .fa-quote-left {
-        font-size: 2em;
-        top: 10px;
-        left: 10px;
-    }
-    .testimonial p {
-        font-size: 0.95em;
-        padding-left: 35px;
-    }
-}
-@media (max-width: 480px) {
-    .testimonial .fa-quote-left {
-        font-size: 1.8em;
-    }
-    .testimonial p {
-        font-size: 0.9em;
-        padding-left: 30px;
-    }
-    .testimonial .author {
-        font-size: 0.9em;
     }
 }
 
@@ -3218,6 +1952,1280 @@ section h2::after {
 
 
 /* ========================================= */
+/* --- APERÇU DU CONTENU--- */
+/* ========================================= */
+/* Variables (assurez-vous qu'elles sont définies plus haut dans votre CSS si ce n'est pas déjà fait) */
+:root {
+    --spacing-unit: 10px; /* Exemple, ajustez si nécessaire */
+    /* ... autres variables si vous en avez ... */
+}
+
+/* Styles existants pour .guide-preview-section et ses enfants */
+.guide-preview-section {
+    background-color: #F8F8F8;
+    padding: calc(var(--spacing-unit) * 10) 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    color: #333333;
+}
+
+.guide-preview-section .icon-section {
+    font-size: 5.5em;
+    color: #004678;
+    margin-bottom: calc(var(--spacing-unit) * 4);
+    position: relative;
+    z-index: 1;
+}
+
+.guide-preview-section h2 {
+    font-size: 3.8em;
+    color: #004678;
+    line-height: 1.2;
+    margin-bottom: calc(var(--spacing-unit) * 3);
+    font-weight: 800;
+    font-family: 'Poppins', sans-serif;
+    position: relative;
+    z-index: 1;
+}
+
+.guide-preview-section .section-intro {
+    font-size: 1.25em;
+    text-align: center;
+    max-width: 850px;
+    margin: 0 auto calc(var(--spacing-unit) * 4) auto;
+    color: #555555;
+    line-height: 1.7;
+    position: relative;
+    z-index: 1;
+}
+
+.guide-preview-section .click-instruction {
+    font-size: 1.1em;
+    color: #00609B;
+    font-weight: 600;
+    margin-bottom: calc(var(--spacing-unit) * 5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: calc(var(--spacing-unit) * 1);
+    text-shadow: 0 0 5px rgba(0, 96, 155, 0.2);
+    padding: calc(var(--spacing-unit) * 1) 0;
+}
+
+.animated-hand {
+    animation: wave 2s infinite ease-in-out;
+    transform-origin: bottom right;
+    display: inline-block;
+    font-size: 1.3em;
+    color: #D8222B;
+}
+
+@keyframes wave {
+    0% { transform: rotate(0deg); }
+    15% { transform: rotate(14deg); }
+    30% { transform: rotate(-8deg); }
+    45% { transform: rotate(14deg); }
+    60% { transform: rotate(-4deg); }
+    75% { transform: rotate(10deg); }
+    100% { transform: rotate(0deg); }
+}
+
+.access-platform-showcase {
+    max-width: 500px;
+    margin: 0 auto calc(var(--spacing-unit) * 6) auto;
+    border: 1px solid #D9E3EB;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    background-color: #FFFFFF;
+}
+
+.access-platform-showcase img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.access-platform-showcase .image-description {
+    font-size: 1em;
+    color: #666;
+    padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 2);
+    text-align: center;
+    line-height: 1.5;
+    background-color: #fcfcfc;
+    border-top: 1px solid #eee;
+}
+
+.separator {
+    width: 100px;
+    height: 4px;
+    background-color: #00609B;
+    margin: calc(var(--spacing-unit) * 8) auto;
+    border-radius: 2px;
+}
+
+.preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    /* AJUSTEMENT : Augmenter le gap vertical si besoin, et s'assurer d'un bon gap horizontal */
+    gap: calc(var(--spacing-unit) * 5) calc(var(--spacing-unit) * 4); /* Vertical, Horizontal */
+    margin-top: calc(var(--spacing-unit) * 5);
+    /* AJUSTEMENT : S'assurer d'un padding latéral suffisant pour éviter que les bords des cartes ne touchent l'écran */
+    padding: 0 calc(var(--spacing-unit) * 3); /* Augmenté légèrement pour desktop/tablet */
+}
+
+.preview-item {
+    background-color: #FFFFFF;
+    border-radius: 8px;
+    border: 1px solid #D9E3EB;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    cursor: pointer;
+    /* AJOUT : Assurer un padding interne si le contenu se collait aux bords */
+    padding-bottom: calc(var(--spacing-unit) * 2.5); /* Pour que le bas ne soit pas trop collé si le texte est long */
+}
+
+.preview-item:hover {
+    transform: translateY(-5px) scale(1.01);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.preview-item .image-wrapper {
+    position: relative;
+    width: 100%;
+    padding-bottom: 75%; /* Ratio 4:3 pour l'espace de l'image */
+    overflow: hidden;
+    background-color: #f0f0f0;
+}
+
+.preview-item img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease-in-out;
+}
+
+.preview-item:hover img {
+    transform: scale(1.05);
+}
+
+.preview-item .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 70, 120, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.preview-item:hover .overlay {
+    opacity: 1;
+}
+
+.preview-item .overlay i {
+    color: #FFF;
+    font-size: 2.5em;
+}
+
+.preview-item .item-content {
+    /* AJUSTEMENT : Assurer des paddings généreux pour le texte */
+    padding: calc(var(--spacing-unit) * 2.5) calc(var(--spacing-unit) * 3);
+    text-align: left;
+    /* AJOUT : Uniformiser la hauteur si les textes ont des longueurs très différentes */
+    min-height: 120px; /* Exemple de hauteur minimale, ajustez si besoin */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Aligne le contenu en haut */
+}
+
+.preview-item h3 {
+    font-size: 1.5em;
+    color: #004678;
+    margin-bottom: calc(var(--spacing-unit) * 1);
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.preview-item p {
+    font-size: 0.95em;
+    color: #555555;
+    line-height: 1.6;
+    /* AJOUT : Marge pour séparer les paragraphes si plusieurs dans le futur */
+    margin-bottom: 0; /* Important pour éviter un double padding-bottom avec le parent */
+}
+
+.text-center {
+    margin-top: calc(var(--spacing-unit) * 8);
+    padding-bottom: calc(var(--spacing-unit) * 2);
+}
+
+/* Styles pour la modale (inchangés) */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    padding-top: 60px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.9);
+}
+
+.modal-content {
+    margin: auto;
+    display: block;
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+}
+
+#caption {
+    margin: auto;
+    display: block;
+    width: 80%;
+    max-width: 700px;
+    text-align: center;
+    color: #ccc;
+    padding: 10px 0;
+    height: 150px;
+}
+
+.close-button {
+    position: absolute;
+    top: 15px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.prev-button, .next-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 3em;
+    color: #f1f1f1;
+    cursor: pointer;
+    padding: 10px;
+    z-index: 1001;
+    transition: 0.3s;
+}
+
+.prev-button {
+    left: 20px;
+}
+
+.next-button {
+    right: 20px;
+}
+
+.prev-button:hover, .next-button:hover {
+    color: #bbb;
+}
+
+/* --- MEDIA QUERIES : Guide Preview Section --- */
+@media (max-width: 768px) {
+    .guide-preview-section {
+        padding: calc(var(--spacing-unit) * 8) 0;
+    }
+    .guide-preview-section .icon-section {
+        font-size: 4.5em;
+        margin-bottom: calc(var(--spacing-unit) * 3);
+    }
+    .guide-preview-section h2 {
+        font-size: 2.8em;
+    }
+    .guide-preview-section .section-intro {
+        font-size: 1.1em;
+        margin-bottom: calc(var(--spacing-unit) * 3);
+    }
+    .guide-preview-section .click-instruction {
+        font-size: 1em;
+        margin-bottom: calc(var(--spacing-unit) * 4);
+    }
+    .animated-hand {
+        font-size: 1.2em;
+    }
+    .access-platform-showcase {
+        max-width: 100%;
+        margin-left: calc(var(--spacing-unit) * 2);
+        margin-right: calc(var(--spacing-unit) * 2);
+        margin-bottom: calc(var(--spacing-unit) * 5);
+    }
+    .access-platform-showcase .image-description {
+        font-size: 0.9em;
+        padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 1.5);
+    }
+    .separator {
+        margin: calc(var(--spacing-unit) * 7) auto;
+    }
+
+    .preview-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        /* AJUSTEMENT : Augmentation du gap vertical pour mobile/tablet */
+        gap: calc(var(--spacing-unit) * 4) calc(var(--spacing-unit) * 3); /* Vertical, Horizontal */
+        margin-top: calc(var(--spacing-unit) * 4);
+        /* AJUSTEMENT : Plus de padding latéral pour les bords */
+        padding: 0 calc(var(--spacing-unit) * 3); /* Augmenté */
+    }
+    .preview-item .image-wrapper {
+        padding-bottom: 70%;
+    }
+    .preview-item .item-content {
+        padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 2.5);
+        /* AJUSTEMENT : Maintenir la min-height pour la consistance */
+        min-height: 110px; /* Ajusté pour mobile */
+    }
+    .preview-item h3 {
+        font-size: 1.2em;
+    }
+    .preview-item p {
+        font-size: 0.9em;
+    }
+    .modal-content {
+        max-width: 95%;
+        max-height: 95%;
+    }
+    .text-center {
+        margin-top: calc(var(--spacing-unit) * 7);
+    }
+}
+
+@media (max-width: 480px) {
+    .guide-preview-section .icon-section {
+        font-size: 3.5em;
+    }
+    .guide-preview-section h2 {
+        font-size: 2.2em;
+    }
+    .guide-preview-section .section-intro {
+        font-size: 1em;
+    }
+    .guide-preview-section .click-instruction {
+        font-size: 0.9em;
+        margin-bottom: calc(var(--spacing-unit) * 3.5);
+    }
+    .animated-hand {
+        font-size: 1.1em;
+    }
+    .access-platform-showcase {
+        margin-left: calc(var(--spacing-unit) * 1.5);
+        margin-right: calc(var(--spacing-unit) * 1.5);
+        margin-bottom: calc(var(--spacing-unit) * 4);
+    }
+    .access-platform-showcase .image-description {
+        font-size: 0.85em;
+        padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 1.5);
+    }
+    .separator {
+        margin: calc(var(--spacing-unit) * 5) auto;
+    }
+    .preview-grid {
+        grid-template-columns: 1fr;
+        /* AJUSTEMENT : Augmentation du gap vertical pour très petit mobile */
+        gap: calc(var(--spacing-unit) * 3.5); /* Vertical */
+        margin-top: calc(var(--spacing-unit) * 3.5);
+        /* AJUSTEMENT : Encore plus de padding latéral pour les bords */
+        padding: 0 calc(var(--spacing-unit) * 2.5); /* Augmenté */
+    }
+    .preview-item .image-wrapper {
+        padding-bottom: 65%;
+    }
+    .preview-item .item-content {
+        padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 2);
+        /* AJUSTEMENT : Maintenir la min-height pour la consistance */
+        min-height: 100px; /* Ajusté pour très petit mobile */
+    }
+    .preview-item h3 {
+        font-size: 1.1em;
+    }
+    .preview-item p {
+        font-size: 0.85em;
+    }
+    .prev-button, .next-button {
+        font-size: 2.5em;
+    }
+    .text-center {
+        margin-top: calc(var(--spacing-unit) * 6);
+    }
+}
+
+
+
+/* ========================================= */
+/* --- STORY SECTION - L'Histoire de Réussite (Optimisé Conversion) --- */
+/* ========================================= */
+.aisha-story-section {
+    /* Fond apaisant pour raconter une histoire personnelle, propice à l'empathie */
+    background-color: #E6F2F7; /* Un bleu très clair, doux et accueillant */
+    padding: calc(var(--spacing-unit) * 10) 0; /* Garde le padding d'origine */
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    color: #333333; /* Texte sombre pour la lisibilité */
+}
+
+/* Effet de fond : lignes de temps lumineuses ou flux de données : Supprimé car futuriste */
+.aisha-story-section::before {
+    content: none; /* Supprime l'effet futuriste */
+    animation: none;
+}
+
+/* @keyframes background-pulse : Supprimé */
+
+.aisha-story-section .icon-section {
+    font-size: 5.5em; /* Garde la taille d'origine */
+    color: #004678; /* Bleu marine profond pour l'icône principale (chemin, guidance) */
+    text-shadow: none; /* Supprime les lueurs futuristes */
+    margin-bottom: calc(var(--spacing-unit) * 4); /* Garde la marge d'origine */
+    animation: none; /* Supprime l'animation de pulsation */
+    position: relative;
+    z-index: 1;
+}
+
+/* @keyframes icon-time-pulse : Supprimé */
+
+.aisha-story-section h2 {
+    font-size: 3.8em; /* Garde la taille d'origine */
+    color: #004678; /* Bleu marine pour le titre */
+    line-height: 1.2;
+    margin-bottom: calc(var(--spacing-unit) * 5); /* Garde la marge d'origine */
+    font-weight: 800;
+    font-family: 'Poppins', sans-serif;
+    text-shadow: none; /* Supprime les lueurs */
+    position: relative;
+    z-index: 1;
+}
+
+.aisha-story-section .aisha-story-block {
+    /* Fond clair pour le bloc d'histoire, mettant en valeur le texte */
+    background-color: #FFFFFF; /* Blanc pur pour la clarté */
+    /* Bordure latérale : Rouge Canada pour le problème, Vert succès pour la solution */
+    border-left: 5px solid #D8222B; /* Bordure Rouge Canada pour la phase "problème" */
+    padding: calc(var(--spacing-unit) * 5); /* Garde le padding d'origine */
+    border-radius: 8px; /* Bords légèrement arrondis pour un look professionnel */
+    /* Ombre douce et professionnelle, sans lueurs futuristes */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    max-width: 850px; /* Garde le max-width d'origine */
+    margin: 0 auto calc(var(--spacing-unit) * 5) auto; /* Garde les marges d'origine */
+    text-align: left;
+    /* Bordures fines et subtiles */
+    border-right: 1px solid #D9E3EB; /* Gris-bleu clair */
+    border-top: 1px solid #D9E3EB;
+    border-bottom: 1px solid #D9E3EB;
+    backdrop-filter: none; /* Supprime l'effet glassmorphism */
+    -webkit-backdrop-filter: none;
+    position: relative;
+    z-index: 1;
+    animation: story-reveal 2s ease-out forwards; /* Garde l'animation de révélation */
+}
+
+@keyframes story-reveal {
+    0% { opacity: 0; transform: translateY(20px); border-left-color: #D8222B; } /* Commence en Rouge Canada */
+    50% { opacity: 1; transform: translateY(0); border-left-color: #D8222B; } /* Transition en Rouge Canada */
+    100% { 
+        border-left-color: #00A859; /* Termine en Vert succès */
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Ombre douce à la fin */
+    }
+}
+
+
+.aisha-story-section .aisha-story-block p {
+    font-size: 1.15em; /* Garde la taille d'origine */
+    color: #555555; /* Gris foncé pour le texte, très lisible */
+    line-height: 1.7;
+    margin-bottom: calc(var(--spacing-unit) * 2.5); /* Garde la marge d'origine */
+}
+.aisha-story-section .aisha-story-block p strong {
+    color: #D8222B; /* Les mots clés du problème en Rouge Canada */
+    text-shadow: none; /* Supprime les lueurs */
+    transition: color 1s ease-in-out; /* Garde la transition de couleur */
+}
+
+/* Applique la couleur de solution aux paragraphes spécifiques qui décrivent la solution */
+/* Les sélecteurs doivent correspondre aux paragraphes où la solution est introduite */
+.aisha-story-section .aisha-story-block p:nth-child(3) strong, /* "C'est là qu'il a découvert le Guide TargetMax" */
+.aisha-story-section .aisha-story-block p:nth-child(4) strong, /* "Chaque module du guide était une révélation" */
+.aisha-story-section .aisha-story-block p:nth-child(5) strong { /* "Aujourd'hui, Karim est fier..." */
+    color: #00A859; /* Mots clés de la solution en Vert succès */
+    text-shadow: none; /* Supprime les lueurs */
+}
+
+.aisha-story-section .aisha-story-block p:last-child {
+    margin-bottom: 0;
+}
+
+.aisha-story-section .story-lesson-text {
+    font-size: 1.4em; /* Garde la taille d'origine */
+    font-weight: 600;
+    color: #004678; /* Bleu marine pour la leçon finale, autoritaire et rassurante */
+    text-shadow: none; /* Supprime les lueurs */
+    max-width: 900px; /* Garde le max-width d'origine */
+    margin: 0 auto;
+    line-height: 1.6;
+    margin-bottom: calc(var(--spacing-unit) * 5); /* Garde la marge d'origine */
+    position: relative;
+    z-index: 1;
+}
+
+.aisha-story-section .cta-button {
+    /* Reprise du style du CTA du Hero pour la cohérence */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px 35px; /* Garde le padding d'origine */
+    border-radius: 8px; /* Coins légèrement arrondis pour un look professionnel (cohérent avec le Hero) */
+    text-decoration: none;
+    font-size: 1.5em; /* Garde la taille d'origine */
+    font-weight: 800;
+    color: #FFF; /* Texte blanc */
+    background: #D8222B; /* Rouge Canada vibrant pour l'action principale (cohérent avec le Hero) */
+    /* Ombre douce pour un effet de profondeur et d'importance */
+    box-shadow: 0 8px 20px rgba(216, 34, 43, 0.4);
+    transition: all 0.3s ease-in-out;
+    letter-spacing: 0.02em; /* Espacement de lettres subtil (cohérent avec le Hero) */
+    text-transform: uppercase;
+    text-shadow: none; /* Pas de lueur */
+    border: none; /* Pas de bordure */
+    margin-top: calc(var(--spacing-unit) * 4); /* Garde l'espacement d'origine */
+    position: relative;
+    z-index: 1;
+}
+
+.aisha-story-section .cta-button:hover {
+    background: #BF0A30; /* Rouge Canada plus profond au survol */
+    /* Ombre plus prononcée pour l'effet de soulèvement */
+    box-shadow: 0 12px 25px rgba(216, 34, 43, 0.5);
+    transform: translateY(-3px); /* Léger effet de soulèvement */
+}
+
+.aisha-story-section .aisha-disclaimer-text {
+    font-size: 0.9em; /* Garde la taille d'origine */
+    color: #808080; /* Gris moyen pour le disclaimer, lisible et discret */
+    margin-top: calc(var(--spacing-unit) * 2.5); /* Garde la marge d'origine */
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    text-shadow: none; /* Supprime les lueurs */
+}
+
+/* --- MEDIA QUERIES : Aisha Story Section --- */
+@media (max-width: 768px) {
+    .aisha-story-section {
+        padding: calc(var(--spacing-unit) * 8) 0;
+    }
+    .aisha-story-section .icon-section {
+        font-size: 4.5em;
+        margin-bottom: calc(var(--spacing-unit) * 3);
+    }
+    .aisha-story-section h2 {
+        font-size: 2.8em;
+        margin-bottom: calc(var(--spacing-unit) * 4);
+    }
+    .aisha-story-section .aisha-story-block {
+        padding: calc(var(--spacing-unit) * 4);
+        margin-bottom: calc(var(--spacing-unit) * 4);
+    }
+    .aisha-story-section .aisha-story-block p {
+        font-size: 1.05em;
+    }
+    .aisha-story-section .story-lesson-text {
+        font-size: 1.2em;
+        margin-bottom: calc(var(--spacing-unit) * 4);
+    }
+    .aisha-story-section .cta-button {
+        font-size: 1.3em;
+        padding: 15px 25px;
+        margin-top: calc(var(--spacing-unit) * 3);
+    }
+    .aisha-story-section .aisha-disclaimer-text {
+        font-size: 0.8em;
+    }
+}
+
+@media (max-width: 480px) {
+    .aisha-story-section .icon-section {
+        font-size: 3.5em;
+    }
+    .aisha-story-section h2 {
+        font-size: 2.2em;
+    }
+    .aisha-story-section .aisha-story-block {
+        padding: calc(var(--spacing-unit) * 3);
+    }
+    .aisha-story-section .aisha-story-block p {
+        font-size: 0.95em;
+    }
+    .aisha-story-section .story-lesson-text {
+        font-size: 1.1em;
+    }
+    .aisha-story-section .cta-button {
+        font-size: 1.1em;
+        padding: 12px 20px;
+    }
+}
+
+
+
+/* ========================================= */
+/* --- MEDIA QUERIES (RESPONSIVE DESIGN) --- */
+/* (Ordre du plus grand au plus petit pour max-width) */
+/* ========================================= */
+
+@media (max-width: 992px) {
+    /* Ajustements généraux pour tablettes (992px et moins) */
+    section {
+        padding: calc(var(--spacing-unit) * 7.5) 0; /* 60px -> 7.5 * 8 = 60px */
+    }
+    section h2 {
+        font-size: 2.8em;
+        margin-bottom: calc(var(--spacing-unit) * 2.5); /* 20px -> 2.5 * 8 = 20px */
+        padding-bottom: calc(var(--spacing-unit) * 1.875); /* 15px -> 1.875 * 8 = 15px */
+    }
+    section h2::after {
+        width: 60px;
+        height: 3px;
+        margin: calc(var(--spacing-unit) * 1.25) auto 0 auto; /* 10px -> 1.25 * 8 = 10px */
+    }
+    .icon-section {
+        color: var(--color-primary-blue);
+        margin-bottom: calc(var(--spacing-unit) * 2.5); /* 20px -> 2.5 * 8 = 20px */
+    }
+    .section-intro {
+        font-size: 1.15em;
+        margin-bottom: calc(var(--spacing-unit) * 5); /* 40px -> 5 * 8 = 40px */
+    }
+
+    /* Hero Section */
+    .hero-section {
+        padding: calc(var(--spacing-unit) * 10) 0; /* 80px -> 10 * 8 = 80px */
+    }
+    .hero-section h1 {
+        font-size: 3.5em;
+    }
+    .hero-section .subtitle {
+        font-size: 1.5em;
+    }
+    .hero-section .intro-paragraph {
+        font-size: 1.05em;
+        margin-bottom: calc(var(--spacing-unit) * 5); /* 40px -> 5 * 8 = 40px */
+    }
+    .hero-section .cta-subtext {
+        font-size: 1em;
+    }
+
+    /* Problem Section */
+    .problem-section h2 {
+        font-size: 2.5em;
+    }
+    .problem-section .intro-problem-text {
+        font-size: 1.1em;
+        margin-bottom: calc(var(--spacing-unit) * 3.75); /* 30px -> 3.75 * 8 = 30px */
+    }
+    .problem-scenarios-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: calc(var(--spacing-unit) * 3.125); /* 25px -> 3.125 * 8 = 25px */
+        margin-bottom: calc(var(--spacing-unit) * 5); /* 40px -> 5 * 8 = 40px */
+    }
+    .scenario-item {
+        padding: calc(var(--spacing-unit) * 3.125); /* 25px -> 3.125 * 8 = 25px */
+    }
+    .scenario-item .scenario-icon {
+        font-size: 3em;
+    }
+    .scenario-item h3 {
+        font-size: 1.4em;
+    }
+    .problem-section .call-to-action-problem {
+        font-size: 1.2em;
+        margin-top: calc(var(--spacing-unit) * 5); /* 40px -> 5 * 8 = 40px */
+    }
+
+    /* Solution Section */
+    .solution-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: calc(var(--spacing-unit) * 3.125); /* 25px -> 3.125 * 8 = 25px */
+    }
+    .solution-item {
+        padding: calc(var(--spacing-unit) * 3.125); /* 25px -> 3.125 * 8 = 25px */
+    }
+    .solution-item h3 {
+        font-size: 1.4em;
+    }
+    .solution-item h3 i {
+        font-size: 1.1em;
+    }
+    .solution-item p {
+        font-size: 1em;
+    }
+
+    /* Content/Themes Section */
+    .themes-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: calc(var(--spacing-unit) * 3.125); /* 25px -> 3.125 * 8 = 25px */
+        margin-bottom: calc(var(--spacing-unit) * 5); /* 40px -> 5 * 8 = 40px */
+    }
+    .theme-item {
+        padding: calc(var(--spacing-unit) * 3.125); /* 25px -> 3.125 * 8 = 25px */
+    }
+    .theme-item .theme-icon {
+        font-size: 3em;
+    }
+    .theme-item h3 {
+        font-size: 1.4em;
+    }
+
+    /* Aisha Story Section */
+    .aisha-story-section h2 {
+        font-size: 2.5em;
+    }
+    .aisha-story-section .aisha-story-block {
+        padding: calc(var(--spacing-unit) * 3.75); /* 30px -> 3.75 * 8 = 30px */
+    }
+    .aisha-story-section .aisha-story-block p {
+        font-size: 1.1em;
+    }
+    .aisha-story-section .story-lesson-text {
+        font-size: 1.2em;
+    }
+
+    /* Garantie Section */
+    .guarantee-content-block {
+        padding: calc(var(--spacing-unit) * 4.375); /* 35px -> 4.375 * 8 = 35px */
+    }
+    .guarantee-content-block .guarantee-icon-large {
+        font-size: 3.5em;
+        margin-bottom: calc(var(--spacing-unit) * 2.5); /* 20px -> 2.5 * 8 = 20px */
+    }
+    .guarantee-content-block h3 {
+        font-size: 1.8em;
+    }
+    .guarantee-content-block p {
+        font-size: 1.05em;
+    }
+    .guarantee-content-block .guarantee-cta-text {
+        font-size: 1.1em;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Ajustements généraux pour mobiles et tablettes plus petites (768px et moins) */
+    section {
+        padding: calc(var(--spacing-unit) * 5) 0; /* 40px -> 5 * 8 = 40px */
+    }
+    section h2 {
+        font-size: 2.2em;
+        margin-bottom: calc(var(--spacing-unit) * 1.875); /* 15px -> 1.875 * 8 = 15px */
+        padding-bottom: calc(var(--spacing-unit) * 1.25); /* 10px -> 1.25 * 8 = 10px */
+    }
+    section h2::after {
+        width: 50px;
+        height: 2px;
+        margin: calc(var(--spacing-unit) * 0.625) auto 0 auto; /* 5px -> 0.625 * 8 = 5px */
+    }
+    .icon-section {
+        color: var(--color-primary-blue);
+        margin-bottom: calc(var(--spacing-unit) * 1.875); /* 15px -> 1.875 * 8 = 15px */
+    }
+    .section-intro {
+        font-size: 1em;
+        margin-bottom: calc(var(--spacing-unit) * 3.75); /* 30px -> 3.75 * 8 = 30px */
+    }
+
+    .hero-section {
+        padding: calc(var(--spacing-unit) * 7.5) 0; /* 60px -> 7.5 * 8 = 60px */
+    }
+    .hero-section h1 {
+        font-size: 2.8em;
+    }
+    .hero-section .subtitle {
+        font-size: 1.3em;
+    }
+    .hero-section .intro-paragraph {
+        font-size: 1em;
+        margin-bottom: calc(var(--spacing-unit) * 3.75); /* 30px -> 3.75 * 8 = 30px */
+    }
+    .hero-section .cta-subtext {
+        font-size: 0.95em;
+    }
+
+    .problem-section h2 {
+        font-size: 2.2em;
+    }
+    .problem-section .intro-problem-text {
+        font-size: 1em;
+        margin-bottom: calc(var(--spacing-unit) * 2.5); /* 20px -> 2.5 * 8 = 20px */
+    }
+    .problem-scenarios-grid {
+        grid-template-columns: 1fr;
+        gap: calc(var(--spacing-unit) * 2.5); /* 20px -> 2.5 * 8 = 20px */
+        margin-bottom: calc(var(--spacing-unit) * 3.75); /* 30px -> 3.75 * 8 = 30px */
+    }
+    .scenario-item {
+        padding: calc(var(--spacing-unit) * 2.5); /* 20px -> 2.5 * 8 = 20px */
+    }
+    .scenario-item .scenario-icon {
+        font-size: 2.5em;
+    }
+    .scenario-item h3 {
+        font-size: 1.2em;
+    }
+    .problem-section .call-to-action-problem {
+        font-size: 1.1em;
+        margin-top: calc(var(--spacing-unit) * 3.75); /* 30px -> 3.75 * 8 = 30px */
+    }
+
+    .solution-grid {
+        grid-template-columns: 1fr;
+        gap: calc(var(--spacing-unit) * 2.5); /* 20px -> 2.5 * 8 = 20px */
+    }
+    .solution-item {
+        padding: calc(var(--spacing-unit) * 2.5); /* 20px -> 2.5 * 8 = 20px */
+    }
+    .solution-item h3 {
+        font-size: 1.2em;
+    }
+    .solution-item h3 i {
+        font-size: 1em;
+    }
+    .solution-item p {
+        font-size: 0.95em;
+    }
+
+    .themes-grid {
+        grid-template-columns: 1fr;
+        gap: calc(var(--spacing-unit) * 2.5); /* 20px -> 2.5 * 8 = 20px */
+        margin-bottom: calc(var(--spacing-unit) * 3.75); /* 30px -> 3.75 * 8 = 30px */
+    }
+    .theme-item {
+        padding: calc(var(--spacing-unit) * 2.5); /* 20px -> 2.5 * 8 = 20px */
+    }
+    .theme-item .theme-icon {
+        font-size: 2.5em;
+    }
+    .theme-item h3 {
+        font-size: 1.2em;
+    }
+
+    /* Aisha Story Section */
+    .aisha-story-section h2 {
+        font-size: 2em;
+    }
+    .aisha-story-section .aisha-story-block {
+        padding: calc(var(--spacing-unit) * 2.5); /* 20px -> 2.5 * 8 = 20px */
+        margin-bottom: calc(var(--spacing-unit) * 3.125); /* 25px -> 3.125 * 8 = 25px */
+    }
+    .aisha-story-section .aisha-story-block p {
+        font-size: 0.95em;
+    }
+    .aisha-story-section .story-lesson-text {
+        font-size: 1em;
+    }
+
+    /* Garantie Section */
+    .guarantee-section {
+        padding: calc(var(--spacing-unit) * 7.5) 0; /* 60px -> 7.5 * 8 = 60px */
+    }
+    .guarantee-content-block {
+        margin-top: calc(var(--spacing-unit) * 5); /* 40px -> 5 * 8 = 40px */
+        padding: calc(var(--spacing-unit) * 3.75); /* 30px -> 3.75 * 8 = 30px */
+    }
+    .guarantee-content-block .guarantee-icon-large {
+        font-size: 3em;
+        margin-bottom: calc(var(--spacing-unit) * 1.875); /* 15px -> 1.875 * 8 = 15px */
+    }
+    .guarantee-content-block h3 {
+        font-size: 1.6em;
+    }
+    .guarantee-content-block p {
+        font-size: 1em;
+    }
+    .guarantee-content-block .guarantee-cta-text {
+        font-size: 1.05em;
+    }
+
+    /* Footer adjustments for small screens */
+    .footer-grid-layout {
+        grid-template-columns: 1fr;
+        gap: calc(var(--spacing-unit) * 3.75); /* 30px -> 3.75 * 8 = 30px */
+    }
+    .footer-nav-area,
+    .footer-info-area {
+        text-align: center;
+    }
+    .footer-nav-area h4,
+    .footer-info-area h4 {
+        text-align: center;
+        margin-bottom: calc(var(--spacing-unit) * 1.875); /* 15px -> 1.875 * 8 = 15px */
+    }
+    .footer-social {
+        justify-content: center;
+        margin-top: calc(var(--spacing-unit) * 1.875); /* 15px -> 1.875 * 8 = 15px */
+    }
+    .footer-social a {
+        margin: 0 calc(var(--spacing-unit) * 1.25); /* 10px -> 1.25 * 8 = 10px */
+    }
+}
+
+@media (max-width: 480px) {
+    /* Ajustements généraux pour mobiles étroits (480px et moins) */
+    .container {
+        padding: 0 calc(var(--spacing-unit) * 1.875); /* 15px -> 1.875 * 8 = 15px */
+    }
+    section h2 {
+        font-size: 1.8em;
+    }
+    .hero-section h1 {
+        font-size: 2.2em;
+    }
+    .hero-section .subtitle {
+        font-size: 1.1em;
+    }
+    .problem-section h2,
+    .solution-section h2,
+    .content-section h2,
+    .aisha-story-section h2 {
+        font-size: 1.8em;
+    }
+    .scenario-item .scenario-icon,
+    .theme-item .theme-icon {
+        font-size: 2em;
+    }
+    .scenario-item h3,
+    .theme-item h3 {
+        font-size: 1.1em;
+    }
+
+    /* Garantie Section */
+    .guarantee-content-block {
+        padding: calc(var(--spacing-unit) * 3.125); /* 25px -> 3.125 * 8 = 25px */
+    }
+    .guarantee-content-block .guarantee-icon-large {
+        font-size: 2.5em;
+    }
+    .guarantee-content-block h3 {
+        font-size: 1.4em;
+    }
+    .guarantee-content-block p {
+        font-size: 0.95em;
+    }
+    .guarantee-content-block .guarantee-cta-text {
+        font-size: 1em;
+    }
+
+    /* Footer adjustments for small screens */
+    .footer-grid-layout {
+        grid-template-columns: 1fr;
+        gap: calc(var(--spacing-unit) * 3.75); /* 30px -> 3.75 * 8 = 30px */
+    }
+    .footer-nav-area,
+    .footer-info-area {
+        text-align: center;
+    }
+    .footer-nav-area h4,
+    .footer-info-area h4 {
+        text-align: center;
+        margin-bottom: calc(var(--spacing-unit) * 1.875); /* 15px -> 1.875 * 8 = 15px */
+    }
+    .footer-social {
+        justify-content: center;
+        margin-top: calc(var(--spacing-unit) * 1.875); /* 15px -> 1.875 * 8 = 15px */
+    }
+    .footer-social a {
+        margin: 0 calc(var(--spacing-unit) * 1.25); /* 10px -> 1.25 * 8 = 10px */
+    }
+
+    /* Header & Mockup */
+    .main-header {
+        padding: calc(var(--spacing-unit) * 1.25) 0; /* 10px -> 1.25 * 8 = 10px */
+    }
+    .main-header .logo img {
+        max-height: 35px;
+    }
+    .initial-preview-section {
+        padding: calc(var(--spacing-unit) * 2.5) 0; /* 20px -> 2.5 * 8 = 20px */
+    }
+    .initial-preview-section .product-mockup {
+        max-width: 250px;
+    }
+
+    /* Testimonials */
+    .testimonial .fa-quote-left {
+        font-size: 1.8em;
+    }
+    .testimonial p {
+        font-size: 0.9em;
+        padding-left: calc(var(--spacing-unit) * 3.75); /* 30px -> 3.75 * 8 = 30px */
+    }
+    .testimonial .author {
+        font-size: 0.9em;
+    }
+}
+
+
+
+/* ========================================= */
+/* --- TESTIMONIALS SECTION - Témoignages (Optimisé Conversion) --- */
+/* ========================================= */
+.testimonials-section {
+    /* Fond professionnel et inspirant pour les témoignages */
+    background-color: #004678; /* Bleu marine profond, évoquant la confiance et l'autorité */
+    padding: calc(var(--spacing-unit) * 10) 0; /* Garde le padding d'origine */
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    color: #FFFFFF; /* Texte blanc par défaut sur fond sombre */
+}
+
+/* Effet de fond : ondes lumineuses ou connexions de données : Supprimé car futuriste */
+.testimonials-section::before {
+    content: none; /* Supprime l'effet futuriste */
+    animation: none;
+}
+
+/* @keyframes radial-pulse : Supprimé */
+
+.testimonials-section .icon-section {
+    font-size: 5.5em; /* Garde la taille d'origine */
+    color: #FFFFFF; /* Icône blanche sur fond bleu, très lisible */
+    text-shadow: none; /* Supprime les lueurs futuristes */
+    margin-bottom: calc(var(--spacing-unit) * 4); /* Garde la marge d'origine */
+    animation: none; /* Supprime l'animation de pulsation */
+    position: relative;
+    z-index: 1;
+}
+
+.testimonials-section h2 {
+    font-size: 3.8em; /* Garde la taille d'origine */
+    color: #FFFFFF; /* Blanc pur pour le titre sur fond bleu */
+    line-height: 1.2;
+    margin-bottom: calc(var(--spacing-unit) * 3); /* Garde la marge d'origine */
+    font-weight: 800;
+    font-family: 'Poppins', sans-serif;
+    text-shadow: none; /* Supprime les lueurs */
+    position: relative;
+    z-index: 1;
+}
+
+.testimonials-section .section-intro {
+    font-size: 1.25em; /* Garde la taille d'origine */
+    text-align: center;
+    max-width: 850px; /* Garde le max-width d'origine */
+    margin: 0 auto calc(var(--spacing-unit) * 6) auto; /* Garde les marges d'origine */
+    color: #D9E3EB; /* Gris-bleu clair pour le texte d'intro, harmonieux sur le fond */
+    line-height: 1.7;
+    position: relative;
+    z-index: 1;
+}
+
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: calc(var(--spacing-unit) * 5); /* Garde l'espacement d'origine */
+    margin-top: calc(var(--spacing-unit) * 5);
+    margin-bottom: calc(var(--spacing-unit) * 6);
+    position: relative;
+    z-index: 1;
+}
+
+.testimonial {
+    /* Fond clair pour chaque témoignage, pour un contraste maximal avec le fond de section */
+    background-color: #FFFFFF; /* Blanc pur pour la clarté */
+    padding: calc(var(--spacing-unit) * 4); /* Garde le padding d'origine */
+    border-radius: 8px; /* Bords légèrement arrondis pour un look professionnel */
+    /* Bordure subtile et nette */
+    border: 1px solid #D9E3EB; /* Gris-bleu clair */
+    /* Ombre douce pour la profondeur, sans lueur futuriste */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    position: relative;
+    text-align: left;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, background-color 0.3s ease;
+    backdrop-filter: none; /* Supprime l'effet glassmorphism */
+    -webkit-backdrop-filter: none;
+}
+
+.testimonial:hover {
+    transform: translateY(-5px) scale(1.01); /* Soulèvement subtil au survol */
+    /* Ombre accentuée pour l'effet de soulèvement */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    background-color: #FDFDFD; /* Très léger changement de fond au survol */
+    border-color: #00609B; /* Bordure bleu "information" au survol */
+}
+
+.testimonial .fa-quote-left {
+    font-size: 3em; /* Garde la taille d'origine */
+    color: #D9E3EB; /* Gris-bleu clair pour le guillemet, subtil et élégant */
+    position: absolute;
+    top: calc(var(--spacing-unit) * 2.5); /* Garde la position d'origine */
+    left: calc(var(--spacing-unit) * 2.5); /* Garde la position d'origine */
+    opacity: 0.8; /* Garde l'opacité d'origine */
+    text-shadow: none; /* Supprime les lueurs */
+}
+
+.testimonial p {
+    font-size: 1.05em; /* Garde la taille d'origine */
+    color: #555555; /* Gris foncé pour le texte du témoignage, très lisible */
+    line-height: 1.7;
+    margin-bottom: calc(var(--spacing-unit) * 2.5); /* Garde la marge d'origine */
+    padding-left: calc(var(--spacing-unit) * 7); /* Garde le padding d'origine */
+    position: relative;
+}
+.testimonial p strong {
+    font-weight: 700;
+    color: #00609B; /* Bleu "information" pour les mots clés importants, cohérent et professionnel */
+    text-shadow: none; /* Supprime les lueurs */
+}
+.testimonial .author {
+    font-size: 1em; /* Garde la taille d'origine */
+    color: #777777; /* Gris un peu plus foncé pour l'auteur, bien lisible */
+    font-style: normal; /* Garde le style normal */
+    text-align: right;
+    margin-top: calc(var(--spacing-unit) * 1.5); /* Garde la marge d'origine */
+    font-weight: 500;
+}
+
+
+/* --- MEDIA QUERIES : Testimonials Section --- */
+@media (max-width: 768px) {
+    .testimonials-section {
+        padding: calc(var(--spacing-unit) * 8) 0;
+    }
+    .testimonials-section .icon-section {
+        font-size: 4.5em;
+        margin-bottom: calc(var(--spacing-unit) * 3);
+    }
+    .testimonials-section h2 {
+        font-size: 2.8em;
+    }
+    .testimonials-section .section-intro {
+        font-size: 1.1em;
+        margin-bottom: calc(var(--spacing-unit) * 4);
+    }
+    .testimonials-grid {
+        gap: calc(var(--spacing-unit) * 3);
+    }
+    .testimonial {
+        padding: calc(var(--spacing-unit) * 3);
+    }
+    .testimonial .fa-quote-left {
+        font-size: 2.5em;
+        top: calc(var(--spacing-unit) * 2);
+        left: calc(var(--spacing-unit) * 2);
+    }
+    .testimonial p {
+        font-size: 1em;
+        padding-left: calc(var(--spacing-unit) * 6);
+    }
+    .testimonial .author {
+        font-size: 0.95em;
+    }
+}
+
+@media (max-width: 480px) {
+    .testimonials-section .icon-section {
+        font-size: 3.5em;
+    }
+    .testimonials-section h2 {
+        font-size: 2.2em;
+    }
+    .testimonials-section .section-intro {
+        font-size: 1em;
+    }
+    .testimonial {
+        padding: calc(var(--spacing-unit) * 2.5);
+    }
+    .testimonial .fa-quote-left {
+        font-size: 2em;
+        top: calc(var(--spacing-unit) * 1.5);
+        left: calc(var(--spacing-unit) * 1.5);
+    }
+    .testimonial p {
+        font-size: 0.95em;
+        padding-left: calc(var(--spacing-unit) * 5);
+    }
+    .testimonial .author {
+        font-size: 0.9em;
+    }
+}
+
+
+/* --- MEDIA QUERIES : Témoignages --- */
+@media (max-width: 992px) {
+    .testimonials-grid {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+    }
+    .testimonial {
+        padding: 25px;
+    }
+    .testimonial .fa-quote-left {
+        font-size: 2.2em;
+        top: 15px;
+        left: 15px;
+    }
+    .testimonial p {
+        font-size: 1em;
+        padding-left: 40px;
+    }
+}
+@media (max-width: 768px) {
+    .testimonials-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    .testimonial {
+        padding: 20px;
+    }
+    .testimonial .fa-quote-left {
+        font-size: 2em;
+        top: 10px;
+        left: 10px;
+    }
+    .testimonial p {
+        font-size: 0.95em;
+        padding-left: 35px;
+    }
+}
+@media (max-width: 480px) {
+    .testimonial .fa-quote-left {
+        font-size: 1.8em;
+    }
+    .testimonial p {
+        font-size: 0.9em;
+        padding-left: 30px;
+    }
+    .testimonial .author {
+        font-size: 0.9em;
+    }
+}
+
+
+/* ========================================= */
 /* --- FAQ SECTION - Questions Fréquentes (Optimisé Conversion) --- */
 /* ========================================= */
 /* --- FAQ Section --- */
@@ -3440,6 +3448,207 @@ section h2::after {
         font-size: 0.9em;
     }
 }
+
+/* ========================================= */
+/* --- GUARANTEE SECTION - Garantie de Satisfaction (Optimisé Conversion) --- */
+/* ========================================= */
+/* --- Guarantee Section --- */
+.guarantee-section {
+    background-color: #F2F9FC; /* Un bleu très clair, cohérent avec d'autres sections */
+    padding: var(--padding-section);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    color: #333333;
+}
+
+/* Suppression des effets de fond précédents */
+.guarantee-section::before {
+    content: none;
+    animation: none;
+}
+/* Les @keyframes associés sont également supprimés si non utilisés ailleurs */
+
+.guarantee-section .icon-section {
+    font-size: 5.5em;
+    color: #004678;
+    text-shadow: none;
+    margin-bottom: 20px;
+    animation: none;
+    position: relative;
+    z-index: 1;
+}
+
+.guarantee-section h2 {
+    font-size: 3.8em;
+    color: #004678;
+    line-height: 1.2;
+    margin-bottom: calc(var(--spacing-unit) * 3);
+    font-weight: 800;
+    font-family: 'Poppins', sans-serif;
+    text-shadow: none;
+    position: relative;
+    z-index: 1;
+}
+
+.guarantee-section .section-intro {
+    font-size: var(--font-size-large);
+    max-width: 800px;
+    margin: 0 auto 50px auto;
+    color: #555555;
+    line-height: 1.7;
+    position: relative;
+    z-index: 1;
+}
+
+/* Bloc principal qui contient les détails de la garantie */
+.guarantee-content-block {
+    background-color: #FFFFFF;
+    border: 1px solid #D9E3EB;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    max-width: 800px;
+    margin: 50px auto 0 auto;
+    padding: 40px;
+    text-align: center;
+    transition: all 0.4s ease-in-out;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    position: relative;
+    z-index: 1;
+}
+
+.guarantee-content-block:hover {
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
+    transform: translateY(-5px);
+    border-color: #C0D0E0;
+}
+
+/* Icône de grande taille à l'intérieur du bloc de garantie */
+.guarantee-content-block .guarantee-icon-large {
+    font-size: 4em;
+    color: #00609B;
+    text-shadow: none;
+    margin-bottom: 25px;
+    animation: none;
+}
+/* Les @keyframes associés sont également supprimés si non utilisés ailleurs */
+
+
+/* Style du titre H3 à l'intérieur du bloc de garantie */
+.guarantee-content-block h3 {
+    font-size: 2em;
+    color: #004678;
+    margin-bottom: 20px;
+    font-weight: 700;
+    text-shadow: none;
+}
+
+/* Styles des paragraphes de texte à l'intérieur du bloc de garantie */
+.guarantee-content-block p {
+    font-size: 1.1em;
+    color: #555555;
+    line-height: 1.7;
+    margin-bottom: 15px;
+}
+
+/* Met en couleur et en gras le texte mis en évidence */
+.guarantee-content-block p strong {
+    color: #004678;
+    font-weight: 700;
+    text-shadow: none;
+}
+
+/* Style spécifique pour le paragraphe d'appel à l'action à l'intérieur du bloc de garantie */
+.guarantee-content-block .guarantee-cta-text {
+    font-size: 1.2em;
+    color: #00609B;
+    font-weight: 600;
+    margin-top: 25px;
+    margin-bottom: 25px;
+    text-shadow: none;
+}
+
+/* Texte incitatif juste au-dessus du bouton CTA final de la section Garantie */
+.guarantee-section .guarantee-cta-message {
+    font-size: 1.15em;
+    color: #004678;
+    margin-top: 60px;
+    margin-bottom: 25px;
+    font-weight: 600;
+    text-shadow: none;
+    position: relative;
+    z-index: 1;
+}
+
+/* Le bouton CTA de la section Garantie hérite désormais des styles globaux du bouton */
+/* Il ne contient AUCUN style ou effet spécifique ici pour le différencier des autres boutons */
+.guarantee-section .cta-button {
+    margin-top: 40px;
+    position: relative;
+    z-index: 1;
+}
+
+/* --- Media Queries pour la section Garantie --- */
+@media (max-width: 992px) {
+    /* Il n'y avait pas de règles spécifiques pour 992px dans votre code fourni,
+       mais vous pouvez en ajouter ici si nécessaire. */
+}
+
+@media (max-width: 768px) {
+    .guarantee-section h2 {
+        font-size: 2.8em;
+    }
+    .guarantee-section .section-intro {
+        font-size: 1.1em;
+    }
+    .guarantee-content-block {
+        padding: 30px;
+    }
+    .guarantee-content-block .guarantee-icon-large {
+        font-size: 3.5em;
+    }
+    .guarantee-content-block h3 {
+        font-size: 1.8em;
+    }
+    .guarantee-content-block p {
+        font-size: 1em;
+    }
+    .guarantee-content-block .guarantee-cta-text {
+        font-size: 1.1em;
+    }
+    .guarantee-section .guarantee-cta-message {
+        font-size: 1.05em;
+    }
+}
+
+@media (max-width: 480px) {
+    .guarantee-section h2 {
+        font-size: 2.2em;
+    }
+    .guarantee-section .section-intro {
+        font-size: 1em;
+    }
+    .guarantee-content-block {
+        padding: 25px;
+    }
+    .guarantee-content-block .guarantee-icon-large {
+        font-size: 3em;
+    }
+    .guarantee-content-block h3 {
+        font-size: 1.6em;
+    }
+    .guarantee-content-block p {
+        font-size: 0.95em;
+    }
+    .guarantee-content-block .guarantee-cta-text {
+        font-size: 1.05em;
+    }
+    .guarantee-section .guarantee-cta-message {
+        font-size: 1em;
+    }
+}
+
 
 
 /* ========================================= */
@@ -3977,207 +4186,6 @@ section h2::after {
     .pricing-card .cta-button.main-cta {
         padding: 14px 20px;
         font-size: 1.05em;
-    }
-}
-
-
-/* ========================================= */
-/* --- GUARANTEE SECTION - Garantie de Satisfaction (Optimisé Conversion) --- */
-/* ========================================= */
-/* --- Guarantee Section --- */
-.guarantee-section {
-    background-color: #F2F9FC; /* Un bleu très clair, cohérent avec d'autres sections */
-    padding: var(--padding-section);
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-    color: #333333;
-}
-
-/* Suppression des effets de fond précédents */
-.guarantee-section::before {
-    content: none;
-    animation: none;
-}
-/* Les @keyframes associés sont également supprimés si non utilisés ailleurs */
-
-.guarantee-section .icon-section {
-    font-size: 5.5em;
-    color: #004678;
-    text-shadow: none;
-    margin-bottom: 20px;
-    animation: none;
-    position: relative;
-    z-index: 1;
-}
-
-.guarantee-section h2 {
-    font-size: 3.8em;
-    color: #004678;
-    line-height: 1.2;
-    margin-bottom: calc(var(--spacing-unit) * 3);
-    font-weight: 800;
-    font-family: 'Poppins', sans-serif;
-    text-shadow: none;
-    position: relative;
-    z-index: 1;
-}
-
-.guarantee-section .section-intro {
-    font-size: var(--font-size-large);
-    max-width: 800px;
-    margin: 0 auto 50px auto;
-    color: #555555;
-    line-height: 1.7;
-    position: relative;
-    z-index: 1;
-}
-
-/* Bloc principal qui contient les détails de la garantie */
-.guarantee-content-block {
-    background-color: #FFFFFF;
-    border: 1px solid #D9E3EB;
-    border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-    max-width: 800px;
-    margin: 50px auto 0 auto;
-    padding: 40px;
-    text-align: center;
-    transition: all 0.4s ease-in-out;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    position: relative;
-    z-index: 1;
-}
-
-.guarantee-content-block:hover {
-    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
-    transform: translateY(-5px);
-    border-color: #C0D0E0;
-}
-
-/* Icône de grande taille à l'intérieur du bloc de garantie */
-.guarantee-content-block .guarantee-icon-large {
-    font-size: 4em;
-    color: #00609B;
-    text-shadow: none;
-    margin-bottom: 25px;
-    animation: none;
-}
-/* Les @keyframes associés sont également supprimés si non utilisés ailleurs */
-
-
-/* Style du titre H3 à l'intérieur du bloc de garantie */
-.guarantee-content-block h3 {
-    font-size: 2em;
-    color: #004678;
-    margin-bottom: 20px;
-    font-weight: 700;
-    text-shadow: none;
-}
-
-/* Styles des paragraphes de texte à l'intérieur du bloc de garantie */
-.guarantee-content-block p {
-    font-size: 1.1em;
-    color: #555555;
-    line-height: 1.7;
-    margin-bottom: 15px;
-}
-
-/* Met en couleur et en gras le texte mis en évidence */
-.guarantee-content-block p strong {
-    color: #004678;
-    font-weight: 700;
-    text-shadow: none;
-}
-
-/* Style spécifique pour le paragraphe d'appel à l'action à l'intérieur du bloc de garantie */
-.guarantee-content-block .guarantee-cta-text {
-    font-size: 1.2em;
-    color: #00609B;
-    font-weight: 600;
-    margin-top: 25px;
-    margin-bottom: 25px;
-    text-shadow: none;
-}
-
-/* Texte incitatif juste au-dessus du bouton CTA final de la section Garantie */
-.guarantee-section .guarantee-cta-message {
-    font-size: 1.15em;
-    color: #004678;
-    margin-top: 60px;
-    margin-bottom: 25px;
-    font-weight: 600;
-    text-shadow: none;
-    position: relative;
-    z-index: 1;
-}
-
-/* Le bouton CTA de la section Garantie hérite désormais des styles globaux du bouton */
-/* Il ne contient AUCUN style ou effet spécifique ici pour le différencier des autres boutons */
-.guarantee-section .cta-button {
-    margin-top: 40px;
-    position: relative;
-    z-index: 1;
-}
-
-/* --- Media Queries pour la section Garantie --- */
-@media (max-width: 992px) {
-    /* Il n'y avait pas de règles spécifiques pour 992px dans votre code fourni,
-       mais vous pouvez en ajouter ici si nécessaire. */
-}
-
-@media (max-width: 768px) {
-    .guarantee-section h2 {
-        font-size: 2.8em;
-    }
-    .guarantee-section .section-intro {
-        font-size: 1.1em;
-    }
-    .guarantee-content-block {
-        padding: 30px;
-    }
-    .guarantee-content-block .guarantee-icon-large {
-        font-size: 3.5em;
-    }
-    .guarantee-content-block h3 {
-        font-size: 1.8em;
-    }
-    .guarantee-content-block p {
-        font-size: 1em;
-    }
-    .guarantee-content-block .guarantee-cta-text {
-        font-size: 1.1em;
-    }
-    .guarantee-section .guarantee-cta-message {
-        font-size: 1.05em;
-    }
-}
-
-@media (max-width: 480px) {
-    .guarantee-section h2 {
-        font-size: 2.2em;
-    }
-    .guarantee-section .section-intro {
-        font-size: 1em;
-    }
-    .guarantee-content-block {
-        padding: 25px;
-    }
-    .guarantee-content-block .guarantee-icon-large {
-        font-size: 3em;
-    }
-    .guarantee-content-block h3 {
-        font-size: 1.6em;
-    }
-    .guarantee-content-block p {
-        font-size: 0.95em;
-    }
-    .guarantee-content-block .guarantee-cta-text {
-        font-size: 1.05em;
-    }
-    .guarantee-section .guarantee-cta-message {
-        font-size: 1em;
     }
 }
 
