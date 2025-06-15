@@ -393,7 +393,6 @@ section h2::after {
         linear-gradient(90deg, rgba(0, 70, 120, 0.03) 1px, transparent 1px);
     background-size: 80px 80px;
     opacity: 0.8;
-    animation: none;
     z-index: 0;
 }
 
@@ -406,37 +405,26 @@ section h2::after {
 }
 
 .hero-section h1 {
-    /* Ajustement de la taille de police pour le nouveau titre plus long */
-    font-size: 3.8em; /* Légèrement réduit par rapport à 4.5em pour mieux tenir sur 3 lignes */
+    font-size: 2.8em !important; /* Taille ajustée du titre */
     color: #004678;
-    line-height: 1.1; /* Garde votre préférence pour l'interligne serré */
+    line-height: 1.1;
     margin-bottom: calc(var(--spacing-unit) * 3);
     font-weight: 900;
     font-family: 'Poppins', sans-serif;
     text-shadow: none;
-    /* Ajout d'une largeur max pour aider le wrap sur 3 lignes et le centrage du bloc */
-    max-width: 850px; /* Ajustez cette valeur pour contrôler le saut de ligne si nécessaire */
+    max-width: 850px;
     margin-left: auto;
     margin-right: auto;
 }
 
-/* Pas de `<strong>` dans le nouveau titre, donc cette règle n'est plus directement appliquée
-   mais je la laisse au cas où vous en rajouteriez ailleurs.
-   Si vous voulez styliser "Seule Vérité" ou "Réussir Vraiment" spécifiquement,
-   il faudra les entourer d'un <strong> ou <span> et ajuster cette règle.
-*/
+/* RÈGLE RÉTABLIE POUR LE TEXTE ROUGE DANS <strong> */
 .hero-section h1 strong {
-    color: #D8222B; /* Rouge Canada vibrant */
-    background: none;
-    -webkit-background-clip: unset;
-    -webkit-text-fill-color: unset;
-    text-shadow: none;
-    animation: none;
+    color: #D8222B !important; /* Rouge Canada vibrant */
+    /* Les propriétés background/clip/text-fill/text-shadow/animation sont retirées ici car elles ne sont pas nécessaires pour juste la couleur */
 }
 
-
 .hero-section .subtitle {
-    font-size: 1.7em; /* Légèrement ajusté pour mieux s'intégrer */
+    font-size: 1.7em;
     color: #00609B;
     font-weight: 700;
     margin-bottom: calc(var(--spacing-unit) * 4);
@@ -445,7 +433,7 @@ section h2::after {
 }
 
 .hero-section .intro-paragraph {
-    font-size: 1.15em; /* Légèrement ajusté */
+    font-size: 1.15em;
     color: #555555;
     max-width: 750px;
     margin: 0 auto calc(var(--spacing-unit) * 6) auto;
@@ -487,37 +475,17 @@ section h2::after {
 }
 
 /* Media queries */
-@media (max-width: 168px) {
-    .hero-section {
-        padding: calc(var(--spacing-unit) * 8) 0;
-    }
-    .hero-section h1 {
-        font-size: 2.5em; /* Ajusté pour bien tenir sur 3 lignes sur tablette */
-        line-height: 1.2; /* L'interligne peut être un peu plus lâche sur mobile pour la lisibilité */
-        max-width: 90%; /* S'assurer que le titre ne déborde pas */
-    }
-    .hero-section .subtitle {
-        font-size: 1.3em; /* Ajusté */
-    }
-    .hero-section .intro-paragraph {
-        font-size: 1em;
-    }
-    .hero-section .cta-button.main-cta {
-        padding: 15px 25px;
-        font-size: 1.3em;
-    }
-    .hero-section .cta-subtext {
-        font-size: 0.95em; /* Ajusté */
-    }
-}
-
 @media (max-width: 480px) {
+    .hero-section .hero-content {
+        max-width: 100%;
+        padding: 0 calc(var(--spacing-unit) * 2.5);
+    }
     .hero-section h1 {
-        font-size: 1.9em; /* Ajusté pour bien tenir sur 3 lignes sur mobile */
-        line-height: 1.3; /* Encore un peu plus d'espace sur très petits écrans */
+        font-size: 1.6em !important;
+        line-height: 1.3;
     }
     .hero-section .subtitle {
-        font-size: 1.1em; /* Ajusté */
+        font-size: 1.1em;
     }
     .hero-section .intro-paragraph {
         font-size: 0.95em;
@@ -527,9 +495,10 @@ section h2::after {
         padding: 12px 20px;
     }
     .hero-section .cta-subtext {
-        font-size: 0.9em; /* Ajusté */
+        font-size: 0.9em;
     }
 }
+
 
 
 /* ========================================= */
@@ -745,6 +714,14 @@ section h2::after {
         font-size: 1.15em;
         margin-top: calc(var(--spacing-unit) * 1.5); /* Ajustement de la marge */
     }
+}
+/* À ajouter à votre fichier CSS, de préférence après les styles de la .problem-section */
+.problem-section .cta-button.main-cta {
+    margin-top: calc(var(--spacing-unit) * 7); /* Ajout d'une marge supérieure */
+    /* Si des styles de base du bouton ne sont pas appliqués, assurez-vous qu'ils soient définis.
+       Idéalement, vous auriez une règle générique .cta-button.main-cta {...}
+       qui définit display, padding, couleurs, etc.,
+       et ensuite des règles spécifiques à chaque section pour les marges comme celle-ci. */
 }
 
 
@@ -2984,44 +2961,6 @@ section h2::after {
 }
 
 /* ========================================= */
-/* --- STYLES SPÉCIFIQUES POUR LA VARIANTE "WARNING" (Optimisé Conversion) --- */
-/* ========================================= */
-.info-line.warning {
-    /* Styles spécifiques pour l'avertissement, clairs et sans effets futuristes */
-    background-color: #FFF3CD; /* Jaune clair pour un avertissement doux mais visible */
-    color: #856404; /* Couleur de texte sombre pour la lisibilité sur fond jaune */
-    border: 1px solid #FFECB3; /* Bordure subtile assortie */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* Ombre douce */
-    border-left: 8px solid #FFC107; /* Bordure gauche plus épaisse, jaune plus prononcé pour l'avertissement */
-    animation: none; /* Supprime toutes les animations de pulsation ou autres */
-}
-
-/* Couleur de l'icône dans la ligne d'avertissement */
-.info-line.warning i {
-    color: #D39E00; /* Jaune doré pour l'icône d'avertissement */
-    text-shadow: none; /* Supprime les lueurs */
-    animation: none; /* Supprime l'animation de l'icône (hourglass) */
-}
-
-/* Les animations (spinHourglass, pulseWarningGlow) sont supprimées pour cette variante */
-/* @keyframes spinHourglass : Supprimé */
-/* @keyframes pulseWarningGlow : Supprimé */
-
-/* Style pour le texte à l'intérieur de l'info-line, notamment le "strong" */
-.info-line span {
-    color: inherit; /* Utilise la couleur de texte du parent (.info-line ou .info-line.warning) */
-}
-
-.info-line span strong {
-    color: inherit; /* Utilise la couleur de texte du parent */
-    text-shadow: none; /* Supprime les lueurs */
-}
-
-/* Correction spécifique pour le .info-line.warning strong pour avoir une couleur plus sombre */
-.info-line.warning span strong {
-    color: #6C5202; /* Couleur plus foncée pour le texte fort de l'avertissement */
-}
-/* ========================================= */
 /* --- STYLES DE BASE POUR .info-line (Avec Animation Subtile) --- */
 /* ========================================= */
 .info-line {
@@ -3079,6 +3018,55 @@ section h2::after {
     display: inline-block; /* Nécessaire pour les transformations */
 }
 
+/* ========================================= */
+/* --- STYLES SPÉCIFIQUES POUR LA VARIANTE "URGENT" (Rouge Vif avec Animations Intenses) --- */
+/* ========================================= */
+.info-line.urgent {
+    background-color: #FDEDED; /* Rouge très clair */
+    color: #721C24; /* Texte rouge sombre */
+    border: 1px solid #F5C6CB; /* Bordure assortie */
+    border-left: 8px solid #DC3545; /* Bordure gauche épaisse rouge vif */
+    box-shadow: 0 2px 10px rgba(220, 53, 69, 0.1); /* Ombre par défaut avec une touche de rouge */
+    animation: pulseUrgent 1.5s infinite ease-in-out; /* Animation de pulsation plus rapide et intense */
+}
+
+.info-line.urgent i {
+    color: #DC3545; /* Rouge vif pour l'icône d'urgence */
+    text-shadow: 0 0 8px rgba(220, 53, 69, 0.4); /* Légère lueur rouge */
+    animation: iconShakeAndPulse 0.8s infinite alternate ease-in-out; /* Secousse et pulsation pour l'icône */
+}
+
+/* Animation spécifique pour l'icône de sablier dans la variante urgent */
+.info-line.urgent .fas.fa-hourglass-half {
+    animation: spinHourglass 1.8s infinite linear, iconShakeAndPulse 0.8s infinite alternate ease-in-out; /* Rotation plus rapide + secousse/pulsation */
+    display: inline-block;
+}
+
+/* ========================================= */
+/* --- NOUVEAUX STYLES POUR LA VARIANTE "LIMITED" (Urgente mais plus douce) --- */
+/* ========================================= */
+.info-line.limited {
+    background-color: #E6F7FF; /* Un bleu très clair, apaisant mais distinct */
+    color: #004085; /* Texte bleu foncé */
+    border: 1px solid #B3D9FF; /* Bordure assortie */
+    border-left: 8px solid #007BFF; /* Bordure gauche épaisse bleu primaire */
+    box-shadow: 0 2px 10px rgba(0, 123, 255, 0.1); /* Ombre par défaut avec une touche de bleu */
+    animation: pulseLimited 2s infinite ease-in-out; /* Pulsation plus douce */
+}
+
+.info-line.limited i {
+    color: #007BFF; /* Bleu primaire pour l'icône */
+    text-shadow: 0 0 5px rgba(0, 123, 255, 0.2); /* Très légère lueur bleue */
+    animation: iconPulseSubtle 2s infinite alternate ease-in-out; /* Utilise l'animation de pulsation subtile existante */
+}
+
+/* Animation spécifique pour l'icône de sablier dans la variante "limited" */
+.info-line.limited .fas.fa-hourglass-half {
+    animation: spinHourglass 2.5s infinite linear; /* Rotation légèrement ralentie */
+    display: inline-block;
+}
+
+
 /* Animation de pulsation pour l'ombre et la bordure du warning */
 @keyframes pulseWarningSubtle {
     0% {
@@ -3108,6 +3096,49 @@ section h2::after {
     to { transform: rotateZ(360deg); }
 }
 
+/* --- NOUVELLES KEYFRAMES POUR LA VARIANTE "URGENT" --- */
+
+/* Animation de pulsation plus agressive pour l'urgence */
+@keyframes pulseUrgent {
+    0% {
+        box-shadow: 0 2px 10px rgba(220, 53, 69, 0.1);
+        border-color: #F5C6CB;
+    }
+    50% {
+        box-shadow: 0 5px 20px rgba(220, 53, 69, 0.4); /* Ombre rouge plus prononcée */
+        border-color: #DC3545; /* Bordure rouge plus vive */
+    }
+    100% {
+        box-shadow: 0 2px 10px rgba(220, 53, 69, 0.1);
+        border-color: #F5C6CB;
+    }
+}
+
+/* Animation de secousse et pulsation pour l'icône d'urgence */
+@keyframes iconShakeAndPulse {
+    0% { transform: translateX(0) scale(1); opacity: 1; }
+    25% { transform: translateX(-2px) scale(1.05); }
+    50% { transform: translateX(2px) scale(1.1); opacity: 0.9; }
+    75% { transform: translateX(-2px) scale(1.05); }
+    100% { transform: translateX(0) scale(1); opacity: 1; }
+}
+
+/* --- NOUVELLE KEYFRAME POUR LA VARIANTE "LIMITED" --- */
+@keyframes pulseLimited {
+    0% {
+        box-shadow: 0 2px 10px rgba(0, 123, 255, 0.1);
+        border-color: #B3D9FF;
+    }
+    50% {
+        box-shadow: 0 4px 15px rgba(0, 123, 255, 0.25); /* Ombre bleue légèrement plus prononcée */
+        border-color: #007BFF; /* Bordure bleue plus vive */
+    }
+    100% {
+        box-shadow: 0 2px 10px rgba(0, 123, 255, 0.1);
+        border-color: #B3D9FF;
+    }
+}
+
 
 /* Style pour le texte à l'intérieur de l'info-line, notamment le "strong" */
 .info-line span {
@@ -3122,6 +3153,16 @@ section h2::after {
 /* Correction spécifique pour le .info-line.warning strong pour avoir une couleur plus sombre */
 .info-line.warning span strong {
     color: #6C5202; /* Couleur plus foncée pour le texte fort de l'avertissement */
+}
+
+/* Correction spécifique pour le .info-line.urgent strong pour avoir une couleur plus sombre et percutante */
+.info-line.urgent span strong {
+    color: #490D11; /* Couleur très foncée pour le texte fort de l'urgence */
+}
+
+/* Correction spécifique pour le .info-line.limited strong */
+.info-line.limited span strong {
+    color: #002752; /* Couleur plus foncée pour le texte fort de l'alerte limitée */
 }
 
 
@@ -3174,6 +3215,7 @@ section h2::after {
         font-size: 1.6em;
     }
 }
+
 
 /* ========================================= */
 /* --- FAQ SECTION - Questions Fréquentes (Optimisé Conversion) --- */
@@ -3609,6 +3651,8 @@ section h2::after {
     border: 1px solid #C0D0E0;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     color: #555555;
+    /* Conserver cette largeur maximale comme référence pour l'alignement */
+    max-width: 350px;
 }
 
 .pricing-card .card-footer .info-line i {
@@ -3660,25 +3704,36 @@ section h2::after {
 }
 
 .pricing-card .payment-logos {
-    display: flex;
-    justify-content: center;
+    display: flex; /* Retour à flexbox pour une meilleure gestion de 5+ éléments */
+    justify-content: center; /* Centrer les logos horizontalement */
     align-items: center;
-    gap: 15px;
-    flex-wrap: wrap;
+    flex-wrap: wrap; /* Permettre aux logos de passer à la ligne */
+    gap: 15px; /* Espacement entre les logos */
     margin-bottom: 15px;
+    /* Ajuster la largeur du conteneur des logos pour qu'il corresponde à .info-line */
+    max-width: 350px; /* IMPORTANT : doit correspondre à la max-width de .info-line */
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .pricing-card .payment-logos img {
-    max-height: 40px;
-    width: auto;
+    /* Taille des logos et styles pour les rendre ronds et uniformes */
+    height: 70px; /* Taille pour les logos */
+    width: 70px; /* Largeur égale pour forcer un carré avant le border-radius */
+    object-fit: contain; /* S'assurer que le logo est bien contenu */
+    border-radius: 50%; /* Rend l'image complètement ronde */
+    background-color: #FFFFFF; /* Fond blanc pour les logos */
+    padding: 5px; /* Petit padding si les logos sont trop proches des bords ronds */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Légère ombre */
     filter: none;
     opacity: 1;
-    transition: transform 0.3s ease-in-out, opacity 0.3s ease;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease, box-shadow 0.3s ease;
 }
 
 .pricing-card .payment-logos img:hover {
     transform: translateY(-3px) scale(1.05);
     opacity: 0.9;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Ombre plus prononcée au survol */
 }
 
 .pricing-card .mobile-payments-note {
@@ -3735,8 +3790,14 @@ section h2::after {
     .pricing-card .payment-methods p {
         font-size: 0.95em;
     }
+    /* Ajustements pour les logos dans les media queries */
+    .pricing-card .payment-logos {
+        max-width: 320px; /* Ajustez la largeur maximale si nécessaire */
+        gap: 12px; /* Ajustez le gap */
+    }
     .pricing-card .payment-logos img {
-        max-height: 35px;
+        height: 60px; /* Taille ajustée */
+        width: 60px; /* Taille ajustée */
     }
     .pricing-card .mobile-payments-note {
         font-size: 0.85em;
@@ -3776,8 +3837,14 @@ section h2::after {
     .pricing-card .payment-methods p {
         font-size: 0.9em;
     }
+    /* Ajustements pour les logos dans les media queries */
+    .pricing-card .payment-logos {
+        max-width: 280px; /* Ajustez la largeur maximale si nécessaire */
+        gap: 10px; /* Ajustez le gap */
+    }
     .pricing-card .payment-logos img {
-        max-height: 30px;
+        height: 55px; /* Taille ajustée */
+        width: 55px; /* Taille ajustée */
     }
     .pricing-card .mobile-payments-note {
         font-size: 0.8em;
@@ -3806,8 +3873,14 @@ section h2::after {
     .pricing-card .payment-methods p {
         font-size: 0.85em;
     }
+    /* Ajustements pour les logos dans les media queries */
+    .pricing-card .payment-logos {
+        max-width: 240px; /* Ajustez la largeur maximale si nécessaire */
+        gap: 8px; /* Ajustez le gap */
+    }
     .pricing-card .payment-logos img {
-        max-height: 25px;
+        height: 50px; /* Taille ajustée */
+        width: 50px; /* Taille ajustée */
     }
     .pricing-card .mobile-payments-note {
         font-size: 0.75em;
@@ -4214,33 +4287,36 @@ footer {
     color: #92FE9D;
 }
 
-/* Styles pour les disclaimers */
+/* Styles optimisés pour les disclaimers (plus subtils) */
 .footer-disclaimers {
     margin-top: calc(var(--spacing-unit) * 2.5);
     margin-bottom: calc(var(--spacing-unit) * 2.5);
-    font-size: 13px;
-    color: #B0C4DE; /* Un bleu plus doux pour la lisibilité */
+    font-size: 12px; /* LÉGÈREMENT RÉDUIT : 13px -> 12px */
+    color: rgba(176, 196, 222, 0.7); /* COULEUR ADOUCIE : Plus subtile avec transparence */
     line-height: 1.5;
     text-align: center;
 }
 
 .footer-disclaimers p {
-    margin-bottom: calc(var(--spacing-unit) * 1); /* Espacement entre les disclaimers */
+    margin-bottom: calc(var(--spacing-unit) * 1);
 }
 
 .footer-disclaimers p:last-child {
-    margin-bottom: 0; /* Pas de marge après le dernier paragraphe */
+    margin-bottom: 0;
 }
 
 .footer-disclaimers strong {
-    color: #FFFFFF; /* Pour faire ressortir les titres des disclaimers */
+    /* PLUS SUBTIL : Le texte en gras hérite de la couleur du paragraphe,
+       le rendant moins "criard" que le blanc pur. */
+    color: inherit;
+    font-weight: 600; /* Peut-être un peu moins gras que le gras par défaut pour un look plus doux */
 }
 
 /* Styles pour le paragraphe de copyright. */
 .footer-copyright {
     font-size: 13px;
     color: #889BB0;
-    margin-top: calc(var(--spacing-unit) * 2.5); /* S'assure que le copyright est bien séparé des disclaimers */
+    margin-top: calc(var(--spacing-unit) * 2.5);
     text-align: center;
 }
 
