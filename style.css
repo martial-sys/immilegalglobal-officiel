@@ -550,130 +550,249 @@ section h2::after {
 /* 4.--- HERO SECTION - Guide Immigration Canada (Optimisé Conversion) --- */
 /* ========================================= */
 .hero-section {
-    background: linear-gradient(160deg, #E6F2F7 0%, #D1E7F2 100%);
-    padding: calc(var(--spacing-unit) * 12.5) 0;
-    text-align: center;
     position: relative;
     overflow: hidden;
-    color: #333333;
+    min-height: 85vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: calc(var(--spacing-unit) * 12) 0;
+    /* Nouveau dégradé : Professionnel, Calme, Confiance */
+    background: linear-gradient(135deg, var(--color-background-primary), var(--color-background-light)); 
+    color: var(--color-text-dark);
+    text-align: center;
 }
 
-.hero-section::before {
-    content: '';
+/* Éléments de fond organiques (maintenus mais couleurs adaptées) */
+.hero-background-elements {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-image:
-        linear-gradient(rgba(0, 70, 120, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 70, 120, 0.03) 1px, transparent 1px);
-    background-size: 80px 80px;
-    opacity: 0.8;
+    overflow: hidden;
     z-index: 0;
+    pointer-events: none;
 }
 
-.hero-section .hero-content {
-    max-width: 990px;
-    margin: 0 auto;
-    padding: 0 calc(var(--spacing-unit) * 2.5);
-    position: relative;
+.organic-shape {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.15;
+    filter: blur(60px);
+}
+
+.organic-shape-1 {
+    width: 600px;
+    height: 600px;
+    background-color: var(--color-primary-blue-light); /* Utilisant notre nouveau bleu clair */
+    top: -150px;
+    left: -150px;
+    animation: moveShape1 15s infinite alternate ease-in-out;
+}
+
+.organic-shape-2 {
+    width: 700px;
+    height: 700px;
+    background-color: var(--color-primary-accent); /* Utilisant notre nouveau vert accent */
+    bottom: -200px;
+    right: -200px;
+    animation: moveShape2 18s infinite alternate ease-in-out;
+}
+
+/* Effet de superposition (maintenu) */
+.subtle-gradient-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
     z-index: 1;
 }
 
-.hero-section h1 {
-    font-size: 2.8em !important; /* Taille ajustée du titre */
-    color: #004678;
-    line-height: 1.1;
+/* Conteneur de contenu (maintenu) */
+.hero-content-wrapper {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centre le contenu horizontalement sur mobile */
+    gap: calc(var(--spacing-unit) * 6);
+    max-width: 100%; /* Utilise toute la largeur disponible initialement */
+    padding-left: var(--spacing-unit) * 2; /* Ajoute une marge à gauche */
+    padding-right: var(--spacing-unit) * 2; /* Ajoute une marge à droite */
+    margin: 0 auto; /* Centre le conteneur sur les écrans plus larges */
+    box-sizing: border-box;
+    text-align: center; /* S'assure que le texte est centré par défaut sur mobile */
+}
+
+
+/* Bloc visuel du produit (maquette numérique) */
+.hero-product-visual {
+    position: relative;
+    display: inline-block;
+    order: 0;
+    opacity: 0;
+    transform: translateY(30px) scale(0.9);
+    animation: fadeInUp 1.2s ease-out forwards;
+    animation-delay: 0.2s;
+}
+
+.product-hero-mockup {
+    max-width: 320px;
+    height: auto;
+    display: block;
+    /* Bords légèrement moins arrondis pour un produit digital/professionnel */
+    border-radius: var(--border-radius-medium); 
+    /* Ombre ajustée pour un produit numérique */
+    box-shadow: var(--shadow-medium-elevated); 
+    transition: transform 0.4s ease-out, box-shadow 0.4s ease-out;
+}
+
+.product-hero-mockup:hover {
+    transform: translateY(-10px) scale(1.05);
+    box-shadow: var(--shadow-strong); /* Effet d'élévation au survol */
+}
+
+/* Effet de lueur du produit (adapté au bleu) */
+.product-glow-effect {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 85%;
+    height: 85%;
+    background: radial-gradient(circle, var(--color-primary-blue) 0%, transparent 70%); /* Lueur bleue */
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    filter: blur(70px);
+    z-index: -1;
+    animation: pulseGlow 2.5s ease-in-out infinite alternate;
+}
+
+/* Bloc de contenu textuel (maintenu) */
+.hero-text-content {
+    order: 1;
+    max-width: 700px;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 1.2s ease-out forwards;
+    animation-delay: 0.4s;
+}
+
+.hero-title {
+    font-size: var(--font-size-h2);
+    color: var(--color-heading); /* Nouveau : Utilise --color-heading (bleu nuit) */
     margin-bottom: calc(var(--spacing-unit) * 3);
-    font-weight: 900;
-    font-family: 'Poppins', sans-serif;
-    text-shadow: none;
-    max-width: 850px;
+    line-height: 1.2;
+    font-weight: var(--font-weight-bold);
+    letter-spacing: -0.03em;
+}
+
+.hero-title .highlight-text {
+    color: var(--color-primary-blue); /* Nouveau : Notre bleu principal */
+    text-decoration: underline wavy var(--color-primary-blue); /* Soulignement bleu */
+    text-underline-offset: 8px;
+    font-weight: var(--font-weight-extra-bold);
+}
+
+.hero-description {
+    font-size: var(--font-size-large);
+    color: var(--color-text-light); /* Nouveau : Utilise --color-text-light pour un ton plus doux */
+    margin-bottom: calc(var(--spacing-unit) * 5);
+    line-height: 1.6;
+    max-width: 600px;
     margin-left: auto;
     margin-right: auto;
 }
 
-/* RÈGLE RÉTABLIE POUR LE TEXTE ROUGE DANS <strong> */
-.hero-section h1 strong {
-    color: #D8222B !important; /* Rouge Canada vibrant */
-    /* Les propriétés background/clip/text-fill/text-shadow/animation sont retirées ici car elles ne sont pas nécessaires pour juste la couleur */
+/* CTA principal (adapté au nouveau branding et à l'animation globale) */
+.cta-button.main-cta {
+    /* Les styles génériques pour .cta-button.main-cta sont déjà dans les CSS globaux */
+    /* Assure que ce bouton utilise le style bleu principal défini globalement */
+    animation: subtlePulseGlow 3.5s ease-in-out infinite; /* Animation douce globale */
 }
 
-.hero-section .subtitle {
-    font-size: 1.7em;
-    color: #00609B;
-    font-weight: 700;
-    margin-bottom: calc(var(--spacing-unit) * 4);
-    line-height: 1.4;
-    text-shadow: none;
-}
-
-.hero-section .intro-paragraph {
-    font-size: 1.15em;
-    color: #555555;
-    max-width: 750px;
-    margin: 0 auto calc(var(--spacing-unit) * 6) auto;
-    line-height: 1.8;
-}
-
-.hero-section .cta-button.main-cta {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 18px 35px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-size: 1.5em;
-    font-weight: 800;
-    color: #FFF;
-    background: #D8222B;
-    box-shadow: 0 8px 20px rgba(216, 34, 43, 0.4);
-    transition: all 0.3s ease-in-out;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
-    text-shadow: none;
-    border: none;
-}
-
-.hero-section .cta-button.main-cta:hover {
-    background: #BF0A30;
-    box-shadow: 0 12px 25px rgba(216, 34, 43, 0.5);
-    transform: translateY(-3px);
-}
-
-.hero-section .cta-subtext {
-    font-size: 1.05em;
-    color: #777777;
+.cta-sub-text {
+    font-size: var(--font-size-small);
+    color: var(--color-text-light);
     margin-top: calc(var(--spacing-unit) * 3);
-    line-height: 1.6;
     font-style: italic;
-    text-shadow: none;
+    opacity: 0;
+    animation: fadeInUp 1.2s ease-out forwards;
+    animation-delay: 0.8s;
 }
 
-/* Media queries */
-@media (max-width: 480px) {
-    .hero-section .hero-content {
-        max-width: 100%;
-        padding: 0 calc(var(--spacing-unit) * 2.5);
-    }
-    .hero-section h1 {
-        font-size: 1.6em !important;
-        line-height: 1.3;
-    }
-    .hero-section .subtitle {
-        font-size: 1.1em;
-    }
-    .hero-section .intro-paragraph {
-        font-size: 0.95em;
-    }
-    .hero-section .cta-button.main-cta {
-        font-size: 1.1em;
-        padding: 12px 20px;
-    }
-    .hero-section .cta-subtext {
-        font-size: 0.9em;
-    }
+/* Indicateurs de confiance (icônes et couleurs adaptées) */
+.trust-indicators {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: calc(var(--spacing-unit) * 4);
+    margin-top: calc(var(--spacing-unit) * 6);
+    opacity: 0;
+    animation: fadeInScaleUp 1.2s ease-out forwards;
+    animation-delay: 1s;
+}
+
+.trust-item {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--spacing-unit) * 1);
+    color: var(--color-text-dark); /* Couleur de texte plus foncée pour la lisibilité */
+    font-size: var(--font-size-medium);
+    font-weight: var(--font-weight-medium);
+}
+
+.trust-icon {
+    font-size: calc(var(--spacing-unit) * 3.5);
+    color: var(--color-primary-accent); /* Nouveau : Couleur verte de succès/validation */
+}
+
+/* --- Keyframes d'animation (maintenues, mais leurs couleurs sont définies par les variables globales) --- */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInScaleUp {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes pulseGlow {
+    from { transform: translate(-50%, -50%) scale(0.95); opacity: 0.7; }
+    to { transform: translate(-50%, -50%) scale(1.05); opacity: 0.9; }
+}
+
+/* @keyframes pulseCTA est remplacé par subtlePulseGlow via la classe .animated dans le HTML */
+
+@keyframes moveShape1 {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(50px, -30px) rotate(10deg); }
+    50% { transform: translate(0, 0) rotate(0deg); }
+    75% { transform: translate(-40px, 20px) rotate(-8deg); }
+    100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+@keyframes moveShape2 {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(-30px, 40px) rotate(-10deg); }
+    50% { transform: translate(0, 0) rotate(0deg); }
+    75% { transform: translate(20px, -50px) rotate(12deg); }
+    100% { transform: translate(0, 0) rotate(0deg); }
+}
+@media (max-width: 768px) {
+  .hero-description {
+    font-size: 17px;
+    line-height: 1.6;
+  }
+}@media (max-width: 480px) {
+  .hero-description {
+    font-size: 16px;
+  }
 }
 
 
