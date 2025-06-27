@@ -92,7 +92,7 @@ src="https://www.facebook.com/tr?id=2202600666921070&ev=PageView&noscript=1"
 </p>
 
             <a href="#problem-section" class="cta-button main-cta animated">
-                Pourquoi un Guide?🇨🇦
+                Pourquoi Ce Guide?🇨🇦
             </a>
 
             <p class="cta-sub-text">
@@ -937,105 +937,102 @@ src="https://www.facebook.com/tr?id=2202600666921070&ev=PageView&noscript=1"
     });
 
     // -----------------------------------------------------
-    // 5. Sticky CTA Visibility Tracking (Adapté à votre objectif)
-    // -----------------------------------------------------
-    // Initialiser le sticky CTA comme caché
-    if (stickyCta) {
-      stickyCta.classList.add('sticky-hidden');
-    }
+// Sticky CTA - Visible dès Problème, caché dans Hero & Pricing
+// -----------------------------------------------------
 
-    // Un seul observateur pour les sections importantes
-    const stickyCtaVisibilityObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            // Logique pour la section Pricing (prioritaire : doit cacher le bouton)
-            if (entry.target.id === 'pricing') {
-                if (entry.isIntersecting) { // Pricing visible
-                    if (stickyCta && !stickyCta.classList.contains('sticky-hidden')) {
-                        stickyCta.classList.add('sticky-hidden');
-                        trackGA4Event('sticky_cta_visibility', {
-                            action: 'hidden',
-                            location: 'pricing_section_in_view'
-                        });
-                    }
-                } else if (!entry.isIntersecting && entry.boundingClientRect.top > 0) { // Pricing est sorti par le bas (on a scrollé vers le haut après elle)
-                    // Le bouton doit réapparaître si on est sorti de pricing par le bas ET que pack-complet est passé (non visible par le bas)
-                    // Cette condition est gérée par le listener de scroll global ci-dessous pour plus de robustesse.
-                }
-            }
-            // Logique pour la section Pack Complet (déclencheur d'apparition)
-            else if (entry.target.id === 'pack-complet') {
-                // Si la section pack-complet est sortie de l'écran par le haut (c'est-à-dire qu'on l'a passée)
-                if (!entry.isIntersecting && entry.boundingClientRect.bottom < 0) {
-                    // S'assurer que le pricing n'est pas encore visible et que le bouton est caché
-                    if (stickyCta && stickyCta.classList.contains('sticky-hidden') && pricingSection && pricingSection.getBoundingClientRect().top >= window.innerHeight) {
-                        stickyCta.classList.remove('sticky-hidden');
-                        trackGA4Event('sticky_cta_visibility', {
-                            action: 'appeared',
-                            location: 'after_pack_complet_section'
-                        });
-                    }
-                }
-            }
-            // Logique pour la Hero Section (s'assurer qu'il est caché au début)
-            else if (entry.target.id === 'hero-section') {
-                if (entry.isIntersecting) { // Si le héros est visible
-                    if (stickyCta && !stickyCta.classList.contains('sticky-hidden')) {
-                        stickyCta.classList.add('sticky-hidden');
-                        trackGA4Event('sticky_cta_visibility', {
-                            action: 'hidden',
-                            location: 'hero_section_in_view'
-                        });
-                    }
-                }
-            }
+window.addEventListener('DOMContentLoaded', () => {
+  const stickyCta = document.querySelector('#cta-sticky-button');
+  const heroSection = document.querySelector('#hero-section');
+  const pricingSection = document.querySelector('#pricing');
+  const problemSection = document.querySelector('#problem-section');
+  const packCompleteSection = document.querySelector('#pack-complet');
+
+  if (stickyCta) {
+    stickyCta.classList.add('sticky-hidden');
+  }
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const id = entry.target.id;
+
+      // Cacher dans Hero
+      if (id === 'hero-section' && entry.isIntersecting) {
+        stickyCta.classList.add('sticky-hidden');
+        trackGA4Event('sticky_cta_visibility', {
+          action: 'hidden',
+          location: 'hero_section_in_view'
         });
-    }, { threshold: [0, 0.5, 1.0] });
+      }
 
-    // Observation des sections clés
-    if (heroSection) stickyCtaVisibilityObserver.observe(heroSection);
-    if (pricingSection) stickyCtaVisibilityObserver.observe(pricingSection);
-    if (packCompleteSection) stickyCtaVisibilityObserver.observe(packCompleteSection);
+      // Cacher dans Pricing
+      else if (id === 'pricing' && entry.isIntersecting) {
+        stickyCta.classList.add('sticky-hidden');
+        trackGA4Event('sticky_cta_visibility', {
+          action: 'hidden',
+          location: 'pricing_section_in_view'
+        });
+      }
 
-    // --- Logique additionnelle au scroll pour la réapparition après pricing et pour l'initialisation ---
-    // Cette fonction sera appelée au chargement et lors du scroll pour une gestion robuste
-    const manageStickyCtaVisibility = () => {
-        if (!stickyCta || !heroSection || !pricingSection || !packCompleteSection) return;
+      // Afficher dès Problème visible
+      else if (id === 'problem-section' && entry.isIntersecting) {
+        stickyCta.classList.remove('sticky-hidden');
+        trackGA4Event('sticky_cta_visibility', {
+          action: 'appeared',
+          location: 'problem_section_in_view'
+        });
+      }
 
-        const heroRect = heroSection.getBoundingClientRect();
-        const packRect = packCompleteSection.getBoundingClientRect();
-        const pricingRect = pricingSection.getBoundingClientRect();
-
-        const isHeroVisible = heroRect.top < window.innerHeight && heroRect.bottom > 0;
-        const isPackCompletePassed = packRect.bottom <= 0; // Pack complet est passé par le haut
-        const isPricingVisible = pricingRect.top < window.innerHeight && pricingRect.bottom > 0;
-        const isScrollingPastPricing = pricingRect.bottom <= 0; // On a scrollé complètement au-delà du pricing
-
-        // Règle d'apparition principale : Apparaît après pack-complet, et pas dans pricing, et pas dans hero
-        if (isPackCompletePassed && !isPricingVisible && !isHeroVisible) {
-            if (stickyCta.classList.contains('sticky-hidden')) {
-                stickyCta.classList.remove('sticky-hidden');
-                trackGA4Event('sticky_cta_visibility', { action: 'appeared', location: 'after_pack_complete_or_reappeared' });
-            }
+      // Apparition après pack-complet (optionnel)
+      else if (id === 'pack-complet' && !entry.isIntersecting && entry.boundingClientRect.bottom < 0) {
+        if (stickyCta.classList.contains('sticky-hidden') && pricingSection.getBoundingClientRect().top >= window.innerHeight) {
+          stickyCta.classList.remove('sticky-hidden');
+          trackGA4Event('sticky_cta_visibility', {
+            action: 'appeared',
+            location: 'after_pack_complet_section'
+          });
         }
-        // Règle de disparition principale : Se cache dans hero ou dans pricing
-        else if (isHeroVisible || isPricingVisible) {
-            if (!stickyCta.classList.contains('sticky-hidden')) {
-                stickyCta.classList.add('sticky-hidden');
-                trackGA4Event('sticky_cta_visibility', { action: 'hidden', location: 'hero_or_pricing_in_view' });
-            }
-        }
-        // Règle de réapparition après avoir dépassé le pricing
-        else if (isScrollingPastPricing && !isHeroVisible && stickyCta.classList.contains('sticky-hidden')) {
-             stickyCta.classList.remove('sticky-hidden');
-             trackGA4Event('sticky_cta_visibility', { action: 'reappeared', location: 'scrolled_past_pricing' });
-        }
-    };
+      }
+    });
+  }, { threshold: [0, 0.5, 1] });
 
-    // Exécuter au chargement initial et lors du scroll
-    manageStickyCtaVisibility();
-    window.addEventListener('scroll', manageStickyCtaVisibility);
-    // Un petit délai pour s'assurer que le DOM est complètement rendu et que les dimensions sont exactes au chargement
-    setTimeout(manageStickyCtaVisibility, 100);
+  if (heroSection) observer.observe(heroSection);
+  if (pricingSection) observer.observe(pricingSection);
+  if (problemSection) observer.observe(problemSection);
+  if (packCompleteSection) observer.observe(packCompleteSection);
+
+  // Gestion scroll fallback + montée/descente
+  const manageStickyFallback = () => {
+    if (!stickyCta || !heroSection || !pricingSection || !problemSection) return;
+
+    const heroRect = heroSection.getBoundingClientRect();
+    const pricingRect = pricingSection.getBoundingClientRect();
+    const problemRect = problemSection.getBoundingClientRect();
+
+    const isHeroVisible = heroRect.top < window.innerHeight && heroRect.bottom > 0;
+    const isPricingVisible = pricingRect.top < window.innerHeight && pricingRect.bottom > 0;
+    const isProblemVisible = problemRect.top < window.innerHeight && problemRect.bottom > 0;
+
+    // Cacher si Hero ou Pricing visibles
+    if ((isHeroVisible || isPricingVisible) && !stickyCta.classList.contains('sticky-hidden')) {
+      stickyCta.classList.add('sticky-hidden');
+      trackGA4Event('sticky_cta_visibility', {
+        action: 'hidden',
+        location: 'hero_or_pricing_in_view'
+      });
+    }
+    // Afficher si Problème visible
+    else if (isProblemVisible && stickyCta.classList.contains('sticky-hidden')) {
+      stickyCta.classList.remove('sticky-hidden');
+      trackGA4Event('sticky_cta_visibility', {
+        action: 'appeared',
+        location: 'problem_section_fallback'
+      });
+    }
+  };
+
+  window.addEventListener('scroll', manageStickyFallback);
+  setTimeout(manageStickyFallback, 100);
+});
     // -----------------------------------------------------
     // 6. Problem Scenario Icons/Titles Interactions
     // ... (Ce code reste inchangé) ...
